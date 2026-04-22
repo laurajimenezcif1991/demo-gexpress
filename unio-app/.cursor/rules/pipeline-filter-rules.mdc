@@ -1,0 +1,88 @@
+---
+description: Rules for pipeline filter behavior, candidate status labels, and Finalistas unlock logic in /candidatos
+globs: src/components/ui/ValidationPipelineFilter.tsx,src/components/ui/CandidateCard.tsx,src/pages/Candidatos.tsx,src/components/layout/Sidebar.tsx
+alwaysApply: false
+---
+
+# Pipeline Filter Rules
+
+## Rule 1 — Candidate Status Labels Always Visible
+
+`CandidateCard.tsx` MUST show the status label for ALL three `CandidateStatus` values. Never gate it on a single state.
+
+```tsx
+// ✅ CORRECT — always render when statusLabel is present
+{statusLabel && statusConfig[statusLabel] && (
+  <div style={{ color: statusConfig[statusLabel].color }}>
+    {statusConfig[statusLabel].icon}
+    <span>{statusConfig[statusLabel].text}</span>
+  </div>
+)}
+
+// ❌ WRONG — silently drops continua + descartado
+{isPorValidar && <div>Por validar</div>}
+```
+
+Status config must cover all three values:
+- `continua` → CheckCircle2, `var(--color-positive-600)`, text "Continúa"
+- `por_validar` → HelpCircle, `var(--color-warning-600)`, text "Por validar"
+- `descartado` → XCircle, `var(--color-negative-600)`, text "Descartado"
+
+---
+
+## Rule 2 — Finalistas is Locked by Default
+
+Finalistas MUST be disabled in both `ValidationPipelineFilter` and `Sidebar` unless the unlock condition is met. When locked:
+- `pointer-events: none`, `opacity: 0.45`, `cursor: default`
+- Count shows `–` instead of a number
+- Sidebar item is greyed out and non-clickable
+
+---
+
+## Rule 3 — Finalistas Unlock Condition
+
+```typescript
+// Finalistas unlocks ONLY when Evaluaciones is EN PROCESO or COMPLETADO
+const finalistaLocked = activeStage !== 'evaluaciones';
+```
+
+This is computed in `Candidatos.tsx` and shared via `PipelineContext`. Both `ValidationPipelineFilter` and `Sidebar` consume this context.
+
+---
+
+## Rule 4 — Finalistas Count Display
+
+```tsx
+// ✅ When unlocked — show 5 (or actual shortlist count)
+{!finalistaLocked ? finalistCount : '–'}
+
+// Label only shown when unlocked
+{!finalistaLocked && <span>candidatos</span>}
+```
+
+Default `finalistCount` is `5`.
+
+---
+
+## Rule 5 — Stage Navigation Locked Progressively
+
+Stages are navigable only when `en_proceso` or `completado`. The `getStageStatus()` function in `ValidationPipelineFilter` drives this:
+
+```typescript
+// stages BEFORE activeStage → 'completado' → clickable
+// activeStage itself        → 'en_proceso'  → clickable
+// stages AFTER activeStage  → 'sin_iniciar'  → locked
+```
+
+Never allow jumping ahead to a `sin_iniciar` stage. Lock via `pointer-events: none` + `opacity: 0.45`.
+
+---
+
+## Shared State — PipelineContext
+
+`activeStage` is shared via `PipelineContext` (`src/context/PipelineContext.tsx`). All components that need to know the current stage or whether Finalistas is locked must consume this context — never rely on prop drilling through unrelated components.
+
+```typescript
+const { activeStage, setActiveStage } = usePipeline();
+const finalistaLocked = activeStage !== 'evaluaciones';
+```

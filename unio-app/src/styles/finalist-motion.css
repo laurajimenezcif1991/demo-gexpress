@@ -1,0 +1,124 @@
+/* Finalist one-pager motion — subtle, ease-out; respects prefers-reduced-motion */
+
+@keyframes finalist-reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes finalist-reveal-reduced {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes finalist-score-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.finalist-reveal {
+  opacity: 0;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  animation-duration: var(--finalist-reveal-dur, 0.45s);
+  animation-delay: var(--finalist-reveal-delay, 0ms);
+  animation-name: finalist-reveal-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finalist-reveal {
+    animation-name: finalist-reveal-reduced;
+    animation-duration: var(--finalist-reveal-dur-reduced, 0.2s);
+    transform: none;
+  }
+}
+
+/* Logros metric cards */
+.finalist-logro-card {
+  border-radius: 8px;
+  transition:
+    box-shadow 0.18s ease-out,
+    transform 0.18s ease-out;
+}
+
+@media (hover: hover) {
+  .finalist-logro-card:hover {
+    box-shadow: 0 10px 28px rgba(39, 33, 77, 0.09);
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finalist-logro-card {
+    transition: box-shadow 0.15s ease-out;
+  }
+
+  .finalist-logro-card:hover {
+    transform: none;
+  }
+}
+
+/* Estilo de trabajo — score label fade-in (delay via --finalist-score-fade-delay on element) */
+.finalist-work-score {
+  opacity: 0;
+  animation: finalist-score-fade 0.28s ease-out forwards;
+  animation-delay: var(--finalist-score-fade-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finalist-work-score {
+    animation-duration: 0.15s;
+  }
+}
+
+/* Wizard bar actions — override Button inline transition for transform/filter */
+.finalist-wizard-btn {
+  transition:
+    background-color 0.17s ease-out,
+    border-color 0.17s ease-out,
+    color 0.17s ease-out,
+    opacity 0.17s ease-out,
+    filter 0.17s ease-out,
+    box-shadow 0.17s ease-out,
+    transform 0.17s cubic-bezier(0.33, 1, 0.68, 1) !important;
+}
+
+.finalist-wizard-btn:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  .finalist-wizard-btn--primary:hover {
+    filter: brightness(1.06);
+  }
+
+  .finalist-wizard-btn--ghost:hover {
+    background-color: var(--color-neutral-50) !important;
+    border-color: var(--color-neutral-300) !important;
+    color: var(--color-text-primary) !important;
+  }
+
+  .finalist-wizard-btn--danger:hover {
+    background-color: var(--color-negative-50) !important;
+    border-color: var(--color-negative-500) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finalist-wizard-btn:active {
+    transform: none;
+  }
+}

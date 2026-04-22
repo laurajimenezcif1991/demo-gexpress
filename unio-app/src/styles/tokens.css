@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Primary (Indigo) */
+  --color-primary-50: #E5E2F3;
+  --color-primary-100: #CAC6E7;
+  --color-primary-200: #9990D0;
+  --color-primary-300: #6457B7;
+  --color-primary-400: #433984;
+  --color-primary-500: #27214D;
+  --color-primary-600: #1F1A3D;
+  --color-primary-700: #18142E;
+  --color-primary-800: #100E20;
+  --color-primary-900: #07060E;
+  --color-primary-950: #040307;
+
+  /* Secondary (Violet/Purple) */
+  --color-secondary-50: #F2ECFE;
+  --color-secondary-100: #E8DDFD;
+  --color-secondary-200: #D0BBFC;
+  --color-secondary-300: #B694FA;
+  --color-secondary-400: #9F72F8;
+  --color-secondary-500: #8750F6;
+  --color-secondary-600: #5C11F3;
+  --color-secondary-700: #4309B8;
+  --color-secondary-800: #2E067E;
+  --color-secondary-900: #17033F;
+  --color-secondary-950: #0B011D;
+
+  /* Neutral */
+  --color-neutral-50: #f7f7f8;
+  --color-neutral-100: #e6e6e6;
+  --color-neutral-200: #d4d4d5;
+  --color-neutral-300: #c0c0c1;
+  --color-neutral-400: #afaeb0;
+  --color-neutral-500: #8e8e8f;
+  --color-neutral-600: #68686a;
+  --color-neutral-700: #434245;
+  --color-neutral-800: #363539;
+  --color-neutral-900: #1d1c20;
+  --color-neutral-950: #040307;
+
+  /* Positive (Green) */
+  --color-positive-50: #E6FAEE;
+  --color-positive-100: #D0F5E1;
+  --color-positive-200: #A2ECC2;
+  --color-positive-300: #73E2A4;
+  --color-positive-400: #45D985;
+  --color-positive-500: #27BE69;
+  --color-positive-600: #1F9854;
+  --color-positive-700: #17723F;
+  --color-positive-800: #104C2A;
+  --color-positive-900: #082615;
+
+  /* Negative (Red) */
+  --color-negative-50: #FBEAEA;
+  --color-negative-100: #F6D5D5;
+  --color-negative-200: #EDABAB;
+  --color-negative-300: #E48181;
+  --color-negative-400: #DB5757;
+  --color-negative-500: #D32F2F;
+  --color-negative-600: #A82424;
+  --color-negative-700: #7E1B1B;
+
+  /* Warning (Amber) */
+  --color-warning-50: #FFF8E5;
+  --color-warning-100: #FFF3D1;
+  --color-warning-200: #FFE59E;
+  --color-warning-300: #FFD970;
+  --color-warning-400: #FFCB3D;
+  --color-warning-500: #FFBF0F;
+  --color-warning-600: #D69D00;
+  --color-warning-700: #A37800;
+  --color-warning-800: #6B4F00;
+
+  /* Info (Blue) */
+  --color-info-50: #EBEFFF;
+  --color-info-100: #D6E0FF;
+  --color-info-200: #A8BDFF;
+  --color-info-300: #809DFF;
+  --color-info-400: #527AFF;
+  --color-info-500: #295BFF;
+  --color-info-600: #0037EB;
+  --color-info-700: #002AB3;
+
+  /* Border radius */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 30px;
+}
+
+:root {
+  /* Brand */
+  --color-brand-primary: #18142E;
+  --color-brand-accent: #8750F6;
+  --color-brand-accent-dark: #5C11F3;
+  --color-brand-accent-light: #D0BBFC;
+
+  /* Surfaces */
+  --color-surface-base: #ffffff;
+  --color-surface-subtle: #f7f7f8;
+  --color-surface-muted: #e6e6e6;
+  --color-surface-accent: #F2ECFE;
+
+  /* Text */
+  --color-text-primary: #18142E;
+  --color-text-secondary: #1F1A3D;
+  --color-text-muted: #68686a;
+  --color-text-placeholder: #8e8e8f;
+  --color-text-inverse: #ffffff;
+
+  /* Borders */
+  --color-border-default: #c0c0c1;
+  --color-border-focus: #8750F6;
+  --color-border-strong: #434245;
+
+  /* Stage colors */
+  --color-stage-1-bg: #F2ECFE;
+  --color-stage-1-fg: #5C11F3;
+  --color-stage-2-bg: #EBEFFF;
+  --color-stage-2-fg: #0037EB;
+  --color-stage-3-bg: #FFF8E5;
+  --color-stage-3-fg: #A37800;
+  --color-stage-4-bg: #E6FAEE;
+  --color-stage-4-fg: #17723F;
+  --color-finalista-bg: #18142E;
+  --color-finalista-fg: #ffffff;
+
+  /* Semantic */
+  --color-success: #27BE69;
+  --color-success-bg: #E6FAEE;
+  --color-warning: #FFBF0F;
+  --color-warning-bg: #FFF8E5;
+  --color-danger: #D32F2F;
+  --color-danger-bg: #FBEAEA;
+  --color-info: #295BFF;
+  --color-info-bg: #EBEFFF;
+
+  /* Containers */
+  --container-border-default: 1px solid #c0c0c1;
+  --container-bg: rgba(255, 255, 255, 0.43);
+  --container-radius: 16px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--color-text-primary);
+  background-color: #ffffff;
+  background-image: url('/background-gradient.svg');
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Gradient stroke utilities ───────────────────────────────────────────── */
+/*
+ * Uses background-clip technique: the gradient fills only the border area
+ * while the interior background stays solid white.
+ * Usage: add the class, do NOT set a background inline style on the element.
+ */
+
+--gradient-border: linear-gradient(115deg, #9A7CF7, #FDD83F, #F05899, #3DAC56, #00ADFE);
+
+/* Persistent 2px gradient border — white interior, any border-radius */
+.gradient-stroke {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(115deg, #9A7CF7, #FDD83F, #F05899, #3DAC56, #00ADFE) border-box !important;
+}
+
+/* Same for 8px-radius containers (Logros) */
+.gradient-stroke-sm {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(115deg, #9A7CF7, #FDD83F, #F05899, #3DAC56, #00ADFE) border-box !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-muted);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: 3px;
+}
+
+/* ─── Evaluaciones animations ─────────────────────────────────────────────── */
+@keyframes fillBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes radarStroke {
+  from { stroke-dashoffset: var(--path-len); }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Skeleton shimmer ─────────────────────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
