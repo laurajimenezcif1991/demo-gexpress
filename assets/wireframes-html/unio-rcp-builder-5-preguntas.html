@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIO - RCP Builder: Preguntas [Wireframe]</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #000;
+        }
+        
+        .container { max-width: 700px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Main container */
+        .main-container {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 30px;
+        }
+        
+        /* Progress bar */
+        .progress-section {
+            margin-bottom: 30px;
+        }
+        
+        .progress-label {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 24px;
+            border: 2px solid #000;
+            background: #fff;
+            position: relative;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: #000;
+            width: 75%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 11px;
+            font-weight: bold;
+            color: #fff;
+            mix-blend-mode: difference;
+        }
+        
+        /* Info box */
+        .info-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 2px solid #000;
+            margin-bottom: 20px;
+        }
+        
+        .info-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .info-list {
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        
+        .info-item {
+            margin-left: 15px;
+        }
+        
+        /* Divider */
+        .divider {
+            border-top: 2px solid #000;
+            margin: 25px 0;
+        }
+        
+        /* Section */
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        /* Question */
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question-label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .required {
+            color: #000;
+        }
+        
+        .input,
+        .select,
+        .textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #000;
+            font-family: inherit;
+            font-size: 12px;
+            background: #fff;
+        }
+        
+        .input::placeholder,
+        .textarea::placeholder {
+            color: #999;
+        }
+        
+        .textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .input-small {
+            width: 150px;
+        }
+        
+        .input-suffix {
+            display: inline;
+            margin-left: 8px;
+            font-size: 12px;
+        }
+        
+        /* Priority inputs */
+        .priority-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .priority-number {
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 15px;
+        }
+        
+        /* Radio group */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .radio {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .radio-label {
+            font-size: 12px;
+        }
+        
+        .radio-sublabel {
+            font-size: 12px;
+            color: #666;
+            margin-left: 26px;
+        }
+        
+        .radio-subinput {
+            margin-left: 26px;
+            margin-top: 8px;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 13px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0f0f0;
+        }
+        
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">COMPLETA EL RCP</h1>
+            <p class="subtitle">Coordinador de Logística - Área Operaciones</p>
+        </div>
+        
+        <!-- Main container -->
+        <div class="main-container">
+            
+            <!-- Progress bar -->
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>PROGRESO DEL RCP</span>
+                    <span>75% COMPLETADO</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill"></div>
+                    <div class="progress-text">26 de 35 preguntas respondidas</div>
+                </div>
+            </div>
+            
+            <!-- Info extracted -->
+            <div class="info-box">
+                <div class="info-title">✅ Información extraída del JD:</div>
+                <div class="info-list">
+                    <div class="info-item">• Seniority: Mid-level</div>
+                    <div class="info-item">• Skills: SAP, Excel, gestión de inventarios</div>
+                    <div class="info-item">• Modalidad: Presencial</div>
+                </div>
+            </div>
+            
+            <!-- Non-negotiables confirmed -->
+            <div class="info-box">
+                <div class="info-title">✅ No negociables confirmados:</div>
+                <div class="info-list">
+                    <div class="info-item">• Mínimo 5 años de experiencia</div>
+                    <div class="info-item">• Dominio de SAP y Excel Avanzado</div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <!-- Section title -->
+            <h2 class="section-title">❓ Completa la siguiente información:</h2>
+            
+            <!-- Question 1: Señales de mal desempeño -->
+            <div class="question">
+                <div class="question-label">
+                    1. ¿Qué señales identificarían a alguien que no está funcionando bien en este rol? <span class="required">*</span>
+                </div>
+                <textarea class="textarea" placeholder="Ej: No cumple plazos de entrega, falta de comunicación con equipo, errores frecuentes en reportes"></textarea>
+            </div>
+            
+            <!-- Question 2: Red flags en candidatos -->
+            <div class="question">
+                <div class="question-label">
+                    2. ¿Qué red flags ven en candidatos para este cargo? <span class="required">*</span>
+                </div>
+                <textarea class="textarea" placeholder="Ej: Rotación excesiva (más de 3 trabajos en 2 años), falta de proactividad en entrevista, no da ejemplos concretos"></textarea>
+            </div>
+            
+            <!-- Question 3: Beneficios adicionales -->
+            <div class="question">
+                <div class="question-label">
+                    3. ¿Hay beneficios adicionales al salario base?
+                </div>
+                <textarea class="textarea" placeholder="Ej: Bono de desempeño 10%, seguro médico privado, días adicionales de vacaciones, trabajo remoto 2 días/semana"></textarea>
+            </div>
+            
+            <!-- Question 4: Estado de vacante -->
+            <div class="question">
+                <div class="question-label">
+                    4. ¿La vacante está activa o pendiente de publicación? <span class="required">*</span>
+                </div>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" name="status" class="radio" id="activa">
+                        <label for="activa" class="radio-label">Activa - publicar inmediatamente</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="status" class="radio" id="pendiente">
+                        <label for="pendiente" class="radio-label">Pendiente - guardar como borrador</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 5: Filtros duros confirmación -->
+            <div class="question">
+                <div class="question-label">
+                    5. De los siguientes requisitos extraídos del JD, confirma cuáles son filtros duros (si el candidato no los tiene, no pasa): <span class="required">*</span>
+                </div>
+                <div style="margin-left: 15px; margin-top: 10px;">
+                    <div style="margin-bottom: 8px;">
+                        <input type="checkbox" style="margin-right: 8px;" checked>
+                        <label style="font-size: 12px;">Mínimo 5 años en logística</label>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <input type="checkbox" style="margin-right: 8px;" checked>
+                        <label style="font-size: 12px;">Dominio de SAP</label>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <input type="checkbox" style="margin-right: 8px;">
+                        <label style="font-size: 12px;">Experiencia en retail o manufactura</label>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <input type="checkbox" style="margin-right: 8px;">
+                        <label style="font-size: 12px;">Certificación Lean Six Sigma</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-secondary">← ATRÁS</button>
+                <button class="btn btn-primary">GENERAR RCP →</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

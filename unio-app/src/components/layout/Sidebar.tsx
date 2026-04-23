@@ -139,9 +139,9 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       {/* Logo */}
       <div style={{ padding: '20px 20px 16px' }}>
         <img
-          src={companyLogoUrl || '/logo-cliente.png'}
-          alt={companyName || 'Cliente'}
-          style={{ maxHeight: '36px', maxWidth: '168px', width: 'auto', height: 'auto', display: 'block', objectFit: 'contain' }}
+          src={companyLogoUrl || '/logo-comfandi.webp'}
+          alt={companyName || 'Comfandi'}
+          style={{ maxHeight: '56px', maxWidth: '168px', width: 'auto', height: 'auto', display: 'block', objectFit: 'contain' }}
         />
       </div>
 

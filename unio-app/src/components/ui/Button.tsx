@@ -90,7 +90,7 @@ export default function Button({
   return (
     <button
       type={type}
-      className={className}
+      className={['unio-btn', `unio-btn-${variant}`, className].filter(Boolean).join(' ')}
       onClick={onClick}
       disabled={disabled}
       style={{
@@ -102,8 +102,7 @@ export default function Button({
         fontFamily: 'var(--font-display)',
         fontWeight: 700,
         cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease',
+        transition: 'background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease',
         whiteSpace: 'nowrap',
         width: fullWidth ? '100%' : undefined,
         ...vs,

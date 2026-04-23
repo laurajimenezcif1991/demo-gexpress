@@ -30,7 +30,7 @@ const priorityLabel: Record<Vacante['priority'], string> = {
 };
 
 /** Cambiar a `true` cuando exista el flujo de alta de vacante. */
-const NUEVA_VACANTE_UI_ENABLED = false;
+const NUEVA_VACANTE_UI_ENABLED = true;
 
 export default function HomeVacantes() {
   const navigate = useNavigate();
@@ -161,7 +161,7 @@ export default function HomeVacantes() {
       >
         {/* Left: Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img src={logoUrl || '/logo-cliente.png'} alt={companyName || 'Cliente'} style={{ maxHeight: '33px', maxWidth: '200px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+          <img src={logoUrl || '/logo-comfandi.webp'} alt={companyName || 'Comfandi'} style={{ maxHeight: '52px', maxWidth: '200px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
           <div style={{ width: '1px', height: '32px', background: 'var(--color-border-default)' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-muted)' }}>
             <span>Powered by</span>
@@ -172,9 +172,9 @@ export default function HomeVacantes() {
         {/* Right */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {NUEVA_VACANTE_UI_ENABLED ? (
-            <Button variant="primary" size="md" onClick={() => {}}>
+            <Button variant="primary" size="md" onClick={() => navigate('/vacante/nueva')}>
               <Plus size={16} />
-              Nueva Vacante
+              Crear Vacante
             </Button>
           ) : null}
           <Button

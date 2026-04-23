@@ -3,6 +3,12 @@ import HomeVacantes from './pages/HomeVacantes';
 import Pipeline from './pages/Pipeline';
 import CandidateList from './pages/CandidateList';
 import CandidateOnepage from './pages/CandidateOnepage';
+import CrearVacante from './pages/CrearVacante';
+import AnalizandoVacante from './pages/AnalizandoVacante';
+import NoNegociables from './pages/NoNegociables';
+import CompletarRCP from './pages/CompletarRCP';
+import CanalesPublicacion from './pages/CanalesPublicacion';
+import RCPGenerado from './pages/RCPGenerado';
 import FinalistView from './pages/FinalistView';
 import Shortlist from './pages/Shortlist';
 import HMEvalForm from './pages/HMEvalForm';
@@ -40,6 +46,12 @@ export default function App() {
 
             {/* ── App (protected) ── */}
             <Route path="/" element={<ProtectedRoute><HomeVacantes /></ProtectedRoute>} />
+            <Route path="/vacante/nueva" element={<ProtectedRoute><CrearVacante /></ProtectedRoute>} />
+            <Route path="/vacante/nueva/analizando" element={<ProtectedRoute><AnalizandoVacante /></ProtectedRoute>} />
+            <Route path="/vacante/nueva/no-negociables" element={<ProtectedRoute><NoNegociables /></ProtectedRoute>} />
+            <Route path="/vacante/nueva/completar" element={<ProtectedRoute><CompletarRCP /></ProtectedRoute>} />
+            <Route path="/vacante/nueva/canales" element={<ProtectedRoute><CanalesPublicacion /></ProtectedRoute>} />
+            <Route path="/vacante/nueva/rcp" element={<ProtectedRoute><RCPGenerado /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/process/:processId" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
 

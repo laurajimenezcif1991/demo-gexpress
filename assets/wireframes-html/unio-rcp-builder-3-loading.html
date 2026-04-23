@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIO - RCP Builder: Analizando [Wireframe]</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #000;
+        }
+        
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Loading container */
+        .loading-container {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 80px 30px;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f0f0f0;
+            border-top: 6px solid #000;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .loading-steps {
+            margin-top: 20px;
+        }
+        
+        .step {
+            font-size: 12px;
+            color: #666;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">ANALIZANDO JOB DESCRIPTION</h1>
+            <p class="subtitle">Coordinador de Logística</p>
+        </div>
+        
+        <!-- Loading container -->
+        <div class="loading-container">
+            <div class="spinner"></div>
+            
+            <div class="loading-steps">
+                <div class="step">Extrayendo información clave...</div>
+                <div class="step">Identificando requisitos...</div>
+                <div class="step">Sugiriendo no negociables...</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIO - RCP Builder: No Negociables [Wireframe]</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #000;
+        }
+        
+        .container { max-width: 700px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Main container */
+        .main-container {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 30px;
+        }
+        
+        /* Alert box */
+        .alert-box {
+            background: #000;
+            color: #fff;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #000;
+        }
+        
+        .alert-icon {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        
+        .alert-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .helper-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+            margin-left: 28px;
+        }
+        
+        /* Divider */
+        .divider {
+            border-top: 2px solid #000;
+            margin: 25px 0;
+        }
+        
+        /* Section title */
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        /* Checkbox item */
+        .checkbox-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #000;
+        }
+        
+        .checkbox-item.checked {
+            background: #f9f9f9;
+        }
+        
+        .checkbox-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .checkbox-label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        .checkbox-field {
+            margin-left: 28px;
+            margin-top: 10px;
+        }
+        
+        .field-label {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .input,
+        .select {
+            width: 100%;
+            max-width: 400px;
+            padding: 8px;
+            border: 2px solid #000;
+            font-family: inherit;
+            font-size: 12px;
+            background: #fff;
+        }
+        
+        .input::placeholder {
+            color: #999;
+        }
+        
+        /* Counter */
+        .counter {
+            margin-top: 25px;
+            padding: 12px;
+            background: #f0f0f0;
+            border: 2px solid #000;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 13px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0f0f0;
+        }
+        
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">DEFINE LOS NO NEGOCIABLES</h1>
+            <p class="subtitle">Coordinador de Logística - Área Operaciones</p>
+        </div>
+        
+        <!-- Main container -->
+        <div class="main-container">
+            <!-- Alert -->
+            <div class="alert-box">
+                <span class="alert-icon">⚠️</span>
+                <span class="alert-text">IMPORTANTE: Los no negociables son filtros automáticos que descartarán candidatos. Elige mínimo 2, máximo 6.</span>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <!-- Section title -->
+            <h2 class="section-title">✅ No negociables sugeridos:</h2>
+            
+            <!-- Category 1: exclusion_skills (checked) -->
+            <div class="checkbox-item checked">
+                <div class="checkbox-header">
+                    <input type="checkbox" class="checkbox" checked>
+                    <label class="checkbox-label">Skills técnicos obligatorios (exclusion_skills)</label>
+                </div>
+                <div class="checkbox-field">
+                    <div class="field-label">→ ¿Qué skills son obligatorios?</div>
+                    <input type="text" class="input" value="SAP, Excel Avanzado, gestión de inventarios" placeholder="Ej: SAP, Power BI, SQL">
+                    <div class="helper-text">Sin estos skills → excluir automáticamente</div>
+                </div>
+            </div>
+            
+            <!-- Category 2: exclusion_experience (checked) -->
+            <div class="checkbox-item checked">
+                <div class="checkbox-header">
+                    <input type="checkbox" class="checkbox" checked>
+                    <label class="checkbox-label">Experiencia mínima requerida (exclusion_experience)</label>
+                </div>
+                <div class="checkbox-field">
+                    <div class="field-label">→ ¿Qué experiencia es obligatoria?</div>
+                    <input type="text" class="input" value="Mínimo 5 años en logística y gestión de equipos" placeholder="Ej: Mínimo 3 años liderando equipos">
+                    <div class="helper-text">Sin esta experiencia → excluir automáticamente</div>
+                </div>
+            </div>
+            
+            <!-- Category 3: exclusion_sector -->
+            <div class="checkbox-item">
+                <div class="checkbox-header">
+                    <input type="checkbox" class="checkbox">
+                    <label class="checkbox-label">Sector o industria específica (exclusion_sector)</label>
+                </div>
+                <div class="checkbox-field">
+                    <div class="field-label">→ ¿Qué sector/industria es obligatoria?</div>
+                    <input type="text" class="input" placeholder="Ej: Retail, Manufactura, Servicios corporativos">
+                    <div class="helper-text">Sin experiencia en este sector → excluir</div>
+                </div>
+            </div>
+            
+            <!-- Category 4: exclusion_location_legal -->
+            <div class="checkbox-item">
+                <div class="checkbox-header">
+                    <input type="checkbox" class="checkbox">
+                    <label class="checkbox-label">Ubicación obligatoria (exclusion_location_legal)</label>
+                </div>
+                <div class="checkbox-field">
+                    <div class="field-label">→ País, ciudad y modalidad:</div>
+                    <input type="text" class="input" placeholder="Ej: Colombia, Bogotá, Presencial">
+                    <div class="helper-text">Fuera de ubicación/modalidad → excluir</div>
+                </div>
+            </div>
+            
+            <!-- Category 5: exclusion_education -->
+            <div class="checkbox-item">
+                <div class="checkbox-header">
+                    <input type="checkbox" class="checkbox">
+                    <label class="checkbox-label">Nivel educativo obligatorio (exclusion_education)</label>
+                </div>
+                <div class="checkbox-field">
+                    <div class="field-label">→ ¿Qué título/certificación es obligatoria?</div>
+                    <input type="text" class="input" placeholder="Ej: Profesional en Ingeniería Industrial, Lean Six Sigma">
+                    <div class="helper-text">Sin este título/certificación → excluir</div>
+                </div>
+            </div>
+            
+            <!-- Category 6: exclusion_salary_expectations -->
+            <div class="checkbox-item">
+                <div class="checkbox-header">
+                    <input type="checkbox" class="checkbox">
+                    <label class="checkbox-label">Expectativa salarial (exclusion_salary_expectations)</label>
+                </div>
+                <div class="checkbox-field">
+                    <div class="field-label">→ Presupuesto interno (COP):</div>
+                    <input type="text" class="input" style="max-width: 250px; margin-bottom: 15px;" placeholder="Ej: 4.500.000">
+                    <div class="helper-text" style="margin-bottom: 15px;">Presupuesto que la empresa tiene para este rol</div>
+                    
+                    <div class="field-label">→ Rango de validación/exclusión (COP):</div>
+                    <div>
+                        Mín: <input type="text" class="input input-small" placeholder="Ej: 3.500.000">
+                        <span class="input-suffix">Máx:</span>
+                        <input type="text" class="input input-small" placeholder="Ej: 5.500.000">
+                    </div>
+                    <div class="helper-text">Expectativa salarial fuera de este rango → excluir</div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <!-- Counter -->
+            <div class="counter">✅ 2 de 6 no negociables seleccionados (mín 2, máx 6)</div>
+            
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-secondary">← ATRÁS</button>
+                <button class="btn btn-primary">CONTINUAR →</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

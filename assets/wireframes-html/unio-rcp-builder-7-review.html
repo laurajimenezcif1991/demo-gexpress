@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIO - RCP Builder: Review [Wireframe]</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #000;
+        }
+        
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Main container */
+        .main-container {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 30px;
+        }
+        
+        /* Section */
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+        .edit-btn {
+            padding: 6px 12px;
+            background: #fff;
+            border: 2px solid #000;
+            font-family: inherit;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .edit-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        /* Field */
+        .field {
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .field-label {
+            font-weight: bold;
+            display: inline;
+        }
+        
+        .field-value {
+            display: inline;
+        }
+        
+        /* List */
+        .list {
+            margin-top: 8px;
+            margin-left: 20px;
+        }
+        
+        .list-item {
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            font-family: inherit;
+            font-size: 13px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0f0f0;
+        }
+        
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">RCP GENERADO</h1>
+            <p class="subtitle">Coordinador de Logística - Área Operaciones</p>
+        </div>
+        
+        <!-- Main container -->
+        <div class="main-container">
+            
+            <!-- Section 0: Canales de publicación -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📢 CANALES DE PUBLICACIÓN</h2>
+                    <button class="edit-btn">EDITAR</button>
+                </div>
+                <div class="field">
+                    <div class="list">
+                        <div class="list-item">• Redes sociales (LinkedIn, Facebook, Instagram)</div>
+                        <div class="list-item">• Sitios de empleo (Computrabajo, Indeed, LinkedIn Jobs)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 1: Identificación -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📋 IDENTIFICACIÓN</h2>
+                    <button class="edit-btn">EDITAR</button>
+                </div>
+                <div class="field">
+                    <span class="field-label">• Área:</span>
+                    <span class="field-value">Operaciones</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">• Cargo:</span>
+                    <span class="field-value">Coordinador de Logística</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">• Fecha ingreso:</span>
+                    <span class="field-value">1 Jul 2026</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">• Seniority:</span>
+                    <span class="field-value">Mid-level</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">• Type:</span>
+                    <span class="field-value">Manager (3 personas)</span>
+                </div>
+            </div>
+            
+            <!-- Section 2: Contexto del Rol -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">🎯 CONTEXTO DEL ROL</h2>
+                    <button class="edit-btn">EDITAR</button>
+                </div>
+                <div class="field">
+                    <span class="field-label">Top 3 Priorities:</span>
+                    <div class="list">
+                        <div class="list-item">1. Optimizar tiempos de entrega</div>
+                        <div class="list-item">2. Reducir mermas en bodega</div>
+                        <div class="list-item">3. Implementar sistema WMS</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <span class="field-label">Autonomy:</span>
+                    <span class="field-value">Media</span>
+                </div>
+            </div>
+            
+            <!-- Section 3: Skills & Experiencia -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">💡 SKILLS & EXPERIENCIA</h2>
+                    <button class="edit-btn">EDITAR</button>
+                </div>
+                <div class="field">
+                    <span class="field-label">Años requeridos:</span>
+                    <span class="field-value">5+ años</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">Must:</span>
+                    <span class="field-value">SAP, Excel Avanzado, Gestión de inventarios</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">Nice:</span>
+                    <span class="field-value">Power BI, Lean Six Sigma</span>
+                </div>
+            </div>
+            
+            <!-- Section 4: No Negociables -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">⚠️ NO NEGOCIABLES (FILTROS)</h2>
+                    <button class="edit-btn">EDITAR</button>
+                </div>
+                <div class="field">
+                    <div class="list">
+                        <div class="list-item">• Mínimo 5 años de experiencia</div>
+                        <div class="list-item">• Dominio obligatorio: SAP, Excel Avanzado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 5: Compensación -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">💰 COMPENSACIÓN</h2>
+                    <button class="edit-btn">EDITAR</button>
+                </div>
+                <div class="field">
+                    <span class="field-label">Salary:</span>
+                    <span class="field-value">$3.5M - $5M COP</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">Mode:</span>
+                    <span class="field-value">Presencial</span>
+                </div>
+                <div class="field">
+                    <span class="field-label">Location:</span>
+                    <span class="field-value">Bogotá, Colombia</span>
+                </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-secondary">GUARDAR BORRADOR</button>
+                <button class="btn btn-primary">ACTIVAR VACANTE →</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIO - RCP Builder: Canales [Wireframe]</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #000;
+        }
+        
+        .container { max-width: 700px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Main container */
+        .main-container {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 30px;
+        }
+        
+        /* Progress bar */
+        .progress-section {
+            margin-bottom: 30px;
+        }
+        
+        .progress-label {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 24px;
+            border: 2px solid #000;
+            background: #fff;
+            position: relative;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: #000;
+            width: 90%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 11px;
+            font-weight: bold;
+            color: #fff;
+            mix-blend-mode: difference;
+        }
+        
+        /* Section title */
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .section-description {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        /* Channel card */
+        .channel-card {
+            margin-bottom: 15px;
+            padding: 20px;
+            border: 2px solid #000;
+            background: #fff;
+        }
+        
+        .channel-card.selected {
+            background: #f9f9f9;
+        }
+        
+        .channel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .channel-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .channel-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .channel-description {
+            font-size: 11px;
+            color: #666;
+            margin-left: 32px;
+            line-height: 1.5;
+        }
+        
+        /* Divider */
+        .divider {
+            border-top: 2px solid #000;
+            margin: 25px 0;
+        }
+        
+        /* Info box */
+        .info-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 2px solid #000;
+            margin-bottom: 25px;
+        }
+        
+        .info-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .info-text {
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        
+        /* Counter */
+        .counter {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f0f0f0;
+            border: 2px solid #000;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 13px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #000;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0f0f0;
+        }
+        
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">SELECCIONA CANALES DE PUBLICACIÓN</h1>
+            <p class="subtitle">Coordinador de Logística - Área Operaciones</p>
+        </div>
+        
+        <!-- Main container -->
+        <div class="main-container">
+            
+            <!-- Progress bar -->
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>PROGRESO DEL RCP</span>
+                    <span>90% COMPLETADO</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill"></div>
+                    <div class="progress-text">32 de 35 preguntas respondidas</div>
+                </div>
+            </div>
+            
+            <!-- Section title -->
+            <h2 class="section-title">¿Dónde quieres publicar esta vacante?</h2>
+            <p class="section-description">Selecciona al menos un canal. Puedes elegir todos los que apliquen para maximizar el alcance.</p>
+            
+            <!-- Channel 1: Redes sociales (checked) -->
+            <div class="channel-card selected">
+                <div class="channel-header">
+                    <input type="checkbox" class="checkbox" checked>
+                    <span class="channel-icon">📱</span>
+                    <span class="channel-name">Redes sociales</span>
+                </div>
+                <div class="channel-description">
+                    LinkedIn, Facebook, Instagram. Publicación orgánica con opción de promoción paga.
+                </div>
+            </div>
+            
+            <!-- Channel 2: Sitios de empleo (checked) -->
+            <div class="channel-card selected">
+                <div class="channel-header">
+                    <input type="checkbox" class="checkbox" checked>
+                    <span class="channel-icon">💼</span>
+                    <span class="channel-name">Sitios de empleo</span>
+                </div>
+                <div class="channel-description">
+                    Computrabajo, Indeed, LinkedIn Jobs, El Empleo. Distribución automática a múltiples portales.
+                </div>
+            </div>
+            
+            <!-- Channel 3: Página web -->
+            <div class="channel-card">
+                <div class="channel-header">
+                    <input type="checkbox" class="checkbox">
+                    <span class="channel-icon">🌐</span>
+                    <span class="channel-name">Página web de la empresa</span>
+                </div>
+                <div class="channel-description">
+                    Sección de "Trabaja con nosotros" en el sitio corporativo. Requiere integración previa.
+                </div>
+            </div>
+            
+            <!-- Channel 4: Físico (QR) -->
+            <div class="channel-card">
+                <div class="channel-header">
+                    <input type="checkbox" class="checkbox">
+                    <span class="channel-icon">📄</span>
+                    <span class="channel-name">Físico (QR)</span>
+                </div>
+                <div class="channel-description">
+                    Código QR descargable para imprimir en carteleras, sucursales, eventos de reclutamiento.
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <!-- Info box -->
+            <div class="info-box">
+                <div class="info-title">💡 ¿Cuándo usar cada canal?</div>
+                <div class="info-text">
+                    • <strong>Redes sociales:</strong> Roles profesionales, tech, creativos<br>
+                    • <strong>Sitios de empleo:</strong> Mayor alcance, todo tipo de roles<br>
+                    • <strong>Página web:</strong> Refuerza employer branding, candidatos que ya conocen la empresa<br>
+                    • <strong>Físico (QR):</strong> Roles operativos, retail, logística, manufactura
+                </div>
+            </div>
+            
+            <!-- Counter -->
+            <div class="counter">✅ 2 canales seleccionados</div>
+            
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-secondary">← ATRÁS</button>
+                <button class="btn btn-primary">CONTINUAR →</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
