@@ -191,6 +191,22 @@ export default function CandidateOnepage() {
     window.open(url, '_blank');
   };
   const isPendingPrescreening = isMockJob && isCandidatePending(jobId, 'prescreening', candidateId);
+
+  // Demo: candidato enviado a pre-entrevista IA → mostrar como completado inmediatamente
+  // Si ya tiene prescreeningAI real lo usamos; si no, sintetizamos uno a partir del scoring.
+  const demoPrescreening = isPendingPrescreening && !candidate?.prescreeningAI
+    ? {
+        score: Math.min((candidate?.score ?? 75) + 3, 98),
+        status: 'continua' as const,
+        resumen: `Pre-entrevista completada vía WhatsApp por Alex IA. ${candidate?.name?.split(' ')[0] ?? 'El candidato'} confirmó disponibilidad, expectativa salarial en rango y experiencia relevante para el rol.`,
+        noNegociables: (candidate?.scoringAI?.noNegociables ?? []).map(n => ({
+          label: n.label,
+          score: n.cumple ? 95 : 20,
+        })),
+        plusDetectados: candidate?.scoringAI?.logros?.slice(0, 2) ?? [],
+        senales: candidate?.scoringAI?.senales ?? [],
+      }
+    : candidate?.prescreeningAI ?? null;
   const isPendingEntrevistas  = isMockJob && isCandidatePending(jobId, 'entrevistas',  candidateId);
   const isPendingEvaluaciones = isMockJob && isCandidatePending(jobId, 'evaluaciones', candidateId);
   const candidate = apiCandidate ?? { id: candidateId, name: '', role: '', sector: '', years: '', location: '', bio: '', score: 0, avatarInitials: candidateId.slice(0, 2).toUpperCase(), avatarColor: '#8750F6', hasCurrentJob: false, superpoder: '', aspiration: '', budget: '', salaryRange: 'en_rango' as const, currentStage: stage, scoringAI: { score: 0, status: 'pendiente' as const, resumen: '', noNegociables: [], logros: [], senales: [] } };
@@ -601,31 +617,25 @@ export default function CandidateOnepage() {
             <AccordionSection
               number={2}
               title="Pre-entrevista IA"
-              score={hasPrescreening && !isPendingPrescreening ? candidate.prescreeningAI?.score : undefined}
+              score={hasPrescreening && demoPrescreening ? demoPrescreening.score : undefined}
               statusText={
-                isPendingPrescreening
-                  ? 'En proceso'
-                  : hasPrescreening
-                  ? candidate.prescreeningAI?.status === 'rechazado'
-                    ? 'Descartado'
-                    : candidate.prescreeningAI?.status === 'continua'
-                    ? 'Continúa'
-                    : 'Pendiente'
-                  : 'Por iniciar'
+                !hasPrescreening
+                  ? 'Por iniciar'
+                  : demoPrescreening?.status === 'rechazado'
+                  ? 'Descartado'
+                  : demoPrescreening?.status === 'continua'
+                  ? 'Continúa'
+                  : 'Pendiente'
               }
-              statusOk={!isPendingPrescreening && hasPrescreening && candidate.prescreeningAI?.status === 'continua'}
+              statusOk={hasPrescreening && demoPrescreening?.status === 'continua'}
               isOpen={prescreeningOpen}
               onToggle={() => hasPrescreening && setPrescreeningOpen(!prescreeningOpen)}
               isLocked={!hasPrescreening}
             >
               {hasPrescreening && (
-                isPendingPrescreening ? (
-                  <div style={{ padding: '8px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
-                    Pendiente: la pre-entrevista IA aún no ha sido procesada para este candidato.
-                  </div>
-                ) : candidate.prescreeningAI ? (
-                  <PrescreeningContent prescreening={candidate.prescreeningAI} />
-                ) : null
+                demoPrescreening
+                  ? <PrescreeningContent prescreening={demoPrescreening} />
+                  : null
               )}
             </AccordionSection>
           </div>
