@@ -34,7 +34,7 @@ const stageLabelMap: Record<PipelineStageKey, string> = {
   scoring:      'Scoring',
   prescreening: 'Pre-screening',
   entrevistas:  'Entrevistas',
-  evaluaciones: 'Evaluaciones',
+  evaluaciones: 'Pruebas',
 };
 
 interface CandidateCardProps {

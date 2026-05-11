@@ -449,7 +449,16 @@ export default function CandidateList() {
           {currentStage === 'scoring' && (
             <button
               onClick={() => {
+                const ids = Array.from(selected);
                 const sel = filteredCandidates.filter(c => selected.has(c.id));
+                // Avanzar candidatos a Pre-screening IA y desbloquear etapa en sidebar
+                if (isMock) {
+                  const nextStage = advanceCandidates(jobId, 'scoring', ids);
+                  if (nextStage) setProgressStage(nextStage as Parameters<typeof setProgressStage>[0]);
+                }
+                setToastMessage(`${ids.length} candidato${ids.length !== 1 ? 's' : ''} enviado${ids.length !== 1 ? 's' : ''} a Pre-screening IA`);
+                setToastVisible(true);
+                setSelected(new Set());
                 setWaCandidates(sel);
                 setWaModalOpen(true);
               }}

@@ -2069,7 +2069,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
         s('scoring',      'Scoring IA',        'Scoring',       'in_progress', 15, true),
         s('prescreening', 'Pre-entrevista IA',  'Pre screening', 'not_started',       0, true),
         s('entrevistas',  'Entrevistas',        'Entrevistas',   'not_started',       0, false),
-        s('evaluaciones', 'Evaluaciones',       'Evaluaciones',  'not_started',       0, false),
+        s('evaluaciones', 'Pruebas',            'Pruebas',       'not_started',       0, false),
         s('finalistas',   'Finalistas',         'Finalistas',    'not_started',       0, false),
       ];
     case 'mock-bodega':
@@ -2077,7 +2077,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
         s('scoring',      'Scoring IA',        'Scoring',       'completed',   20, true),
         s('prescreening', 'Pre-entrevista IA',  'Pre screening', 'in_progress', 15, true),
         s('entrevistas',  'Entrevistas',        'Entrevistas',   'not_started',       0, false),
-        s('evaluaciones', 'Evaluaciones',       'Evaluaciones',  'not_started',       0, false),
+        s('evaluaciones', 'Pruebas',            'Pruebas',       'not_started',       0, false),
         s('finalistas',   'Finalistas',         'Finalistas',    'not_started',       0, false),
       ];
     case 'mock-th':
@@ -2085,7 +2085,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
         s('scoring',      'Scoring IA',        'Scoring',       'completed',   30, true),
         s('prescreening', 'Pre-entrevista IA',  'Pre screening', 'completed',   18, true),
         s('entrevistas',  'Entrevistas',        'Entrevistas',   'in_progress', 10, false),
-        s('evaluaciones', 'Evaluaciones',       'Evaluaciones',  'not_started',       0, false),
+        s('evaluaciones', 'Pruebas',            'Pruebas',       'not_started',       0, false),
         s('finalistas',   'Finalistas',         'Finalistas',    'not_started',       0, false),
       ];
     case 'mock-finanzas':
@@ -2093,7 +2093,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
         s('scoring',      'Scoring IA',        'Scoring',       'completed',   30, true),
         s('prescreening', 'Pre-entrevista IA',  'Pre screening', 'completed',   20, true),
         s('entrevistas',  'Entrevistas',        'Entrevistas',   'completed',   12, false),
-        s('evaluaciones', 'Evaluaciones',       'Evaluaciones',  'in_progress',  6, false),
+        s('evaluaciones', 'Pruebas',            'Pruebas',       'in_progress',  6, false),
         s('finalistas',   'Finalistas',         'Finalistas',    'not_started',       0, false),
       ];
     case 'mock-ventas':
@@ -2102,7 +2102,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
         s('scoring',      'Scoring IA',        'Scoring',       'completed',   50, true),
         s('prescreening', 'Pre-entrevista IA',  'Pre screening', 'completed',   30, true),
         s('entrevistas',  'Entrevistas',        'Entrevistas',   'completed',   25, false),
-        s('evaluaciones', 'Evaluaciones',       'Evaluaciones',  'completed',   10, false),
+        s('evaluaciones', 'Pruebas',            'Pruebas',       'completed',   10, false),
         s('finalistas',   'Finalistas',         'Finalistas',    'in_progress',  3, false),
       ];
   }
@@ -2112,7 +2112,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
     s('scoring',      'Scoring IA',        'Scoring',       'not_started', 0, true),
     s('prescreening', 'Pre-entrevista IA',  'Pre screening', 'not_started', 0, true),
     s('entrevistas',  'Entrevistas',        'Entrevistas',   'not_started', 0, false),
-    s('evaluaciones', 'Evaluaciones',       'Evaluaciones',  'not_started', 0, false),
+    s('evaluaciones', 'Pruebas',            'Pruebas',       'not_started', 0, false),
     s('finalistas',   'Finalistas',         'Finalistas',    'not_started', 0, false),
   ];
 }

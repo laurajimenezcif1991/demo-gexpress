@@ -26,7 +26,7 @@ const stages: StageConfig[] = [
   { key: 'scoring',      label: 'Scoring',       bgToken: 'var(--color-stage-1-bg)', fgToken: 'var(--color-stage-1-fg)', isAI: true  },
   { key: 'prescreening', label: 'Pre-screening',  bgToken: 'var(--color-stage-2-bg)', fgToken: 'var(--color-stage-2-fg)', isAI: true  },
   { key: 'entrevistas',  label: 'Entrevistas',    bgToken: 'var(--color-stage-3-bg)', fgToken: 'var(--color-stage-3-fg)', isAI: false },
-  { key: 'evaluaciones', label: 'Evaluaciones',   bgToken: 'var(--color-stage-4-bg)', fgToken: 'var(--color-stage-4-fg)', isAI: false },
+  { key: 'evaluaciones', label: 'Pruebas',         bgToken: 'var(--color-stage-4-bg)', fgToken: 'var(--color-stage-4-fg)', isAI: false },
 ];
 
 type StageStatus = 'sin_iniciar' | 'en_proceso' | 'completado';
