@@ -7,6 +7,12 @@
 
 ## [Sin commitear]
 
+_Sin cambios pendientes._
+
+---
+
+## [e427ce7] — 11 May 2026
+
 ### Simulación pre-entrevista IA por WhatsApp
 - **`WhatsAppPreEntrevistaModal.tsx`** (nuevo) — Modal de simulación de pre-entrevista estilo WhatsApp con Alex IA: vista de confirmación con lista de candidatos seleccionados, chat auto-play con indicador de escritura, 7 fases del guión adaptado (Apertura → Cierre), panel de progreso lateral y resultado final
 - **`CandidateList.tsx`** — Nuevo botón verde "Iniciar pre-entrevista IA" (icono WhatsApp) en el WizardBar de selección masiva, solo visible en etapa Scoring IA

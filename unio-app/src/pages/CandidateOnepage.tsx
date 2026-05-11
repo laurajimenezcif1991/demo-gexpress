@@ -39,7 +39,8 @@ import Gauge from '../components/ui/Gauge';
 import StarRating from '../components/ui/StarRating';
 import PruebaPsicologicaContent from '../components/ui/PruebaPsicologicaContent';
 import PruebaTecnicaContent from '../components/ui/PruebaTecnicaContent';
-import ValidacionAntecedentes from '../components/ui/ValidacionAntecedentes';
+import ValidacionAntecedentes, { getAntecedentesScore } from '../components/ui/ValidacionAntecedentes';
+import type { VariantKey } from '../components/ui/ValidacionAntecedentes';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import {
   interviewData,
@@ -715,33 +716,39 @@ export default function CandidateOnepage() {
               </AccordionSection>
             </div>
 
-            {/* 6. Validación de Antecedentes */}
-            <div style={{ marginTop: 12 }}>
-              <AccordionSection
-                number={6}
-                title="Validación de Antecedentes"
-                score={(hasEntrevistas || isPendingEvaluaciones) ? 10 : undefined}
-                statusText={
-                  (!hasEntrevistas && !isPendingEvaluaciones) ? 'Por iniciar' :
-                  isPendingEvaluaciones ? 'En proceso' :
-                  'Riesgo Muy Alto'
-                }
-                statusOk={false}
-                isOpen={antecedentesOpen}
-                onToggle={() => (hasEntrevistas || isPendingEvaluaciones) && setAntecedentesOpen(!antecedentesOpen)}
-                isLocked={!hasEntrevistas && !isPendingEvaluaciones}
-              >
-                {(hasEntrevistas || isPendingEvaluaciones) && (
-                  isPendingEvaluaciones ? (
-                    <div style={{ padding: '8px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
-                      Pendiente: la validación de antecedentes aún no ha sido completada.
-                    </div>
-                  ) : (
-                    <ValidacionAntecedentes />
-                  )
-                )}
-              </AccordionSection>
-            </div>
+            {/* 6. Validación de Antecedentes — variante por score del candidato */}
+            {(() => {
+              const antVar: VariantKey = candidate.score >= 80 ? 'sin_novedad' : 'alto_riesgo';
+              const antScore = getAntecedentesScore(antVar);
+              const antStatusText =
+                (!hasEntrevistas && !isPendingEvaluaciones) ? 'Por iniciar' :
+                isPendingEvaluaciones ? 'En proceso' :
+                antVar === 'sin_novedad' ? 'Sin novedad' : 'Riesgo Muy Alto';
+              return (
+                <div style={{ marginTop: 12 }}>
+                  <AccordionSection
+                    number={6}
+                    title="Validación de Antecedentes"
+                    score={(hasEntrevistas || isPendingEvaluaciones) ? antScore : undefined}
+                    statusText={antStatusText}
+                    statusOk={!isPendingEvaluaciones && antVar === 'sin_novedad' && hasEntrevistas}
+                    isOpen={antecedentesOpen}
+                    onToggle={() => (hasEntrevistas || isPendingEvaluaciones) && setAntecedentesOpen(!antecedentesOpen)}
+                    isLocked={!hasEntrevistas && !isPendingEvaluaciones}
+                  >
+                    {(hasEntrevistas || isPendingEvaluaciones) && (
+                      isPendingEvaluaciones ? (
+                        <div style={{ padding: '8px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
+                          Pendiente: la validación de antecedentes aún no ha sido completada.
+                        </div>
+                      ) : (
+                        <ValidacionAntecedentes variant={antVar} />
+                      )
+                    )}
+                  </AccordionSection>
+                </div>
+              );
+            })()}
           </div>
         </div>
         </div>
