@@ -483,7 +483,10 @@ export default function CandidateList() {
               onClick={() => handleBulkAction('pasar')}
             >
               <CheckCircle2 size={18} />
-              Pasar etapa
+              {currentStage === 'prescreening' ? 'Pasar a Entrevistas'
+                : currentStage === 'entrevistas' ? 'Pasar a Pruebas'
+                : currentStage === 'evaluaciones' ? 'Pasar a Finalistas'
+                : 'Pasar etapa'}
             </Button>
           )}
           <Button

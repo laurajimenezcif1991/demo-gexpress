@@ -794,8 +794,7 @@ export default function CandidateOnepage() {
             </button>
           )}
           {stage !== 'scoring' && (
-            <>
-              <Button
+            <Button
                 variant="primary"
                 size="md"
                 onClick={() => {
@@ -809,20 +808,11 @@ export default function CandidateOnepage() {
                 }}
               >
                 <CheckCircle2 size={16} />
-                Pasar etapa
+                {stage === 'prescreening' ? 'Pasar a Entrevistas'
+                  : stage === 'entrevistas' ? 'Pasar a Pruebas'
+                  : stage === 'evaluaciones' ? 'Pasar a Finalistas'
+                  : 'Pasar etapa'}
               </Button>
-              <Button
-                variant="ghost"
-                size="md"
-                onClick={() => {
-                  setStatus(candidateId, stage, 'por_validar');
-                  showToast('¡Marcado como pendiente!');
-                }}
-              >
-                <HelpCircle size={16} />
-                Marcar pendiente
-              </Button>
-            </>
           )}
           <Button
             variant="danger-outline"
