@@ -585,11 +585,13 @@ export default function CandidateOnepage() {
               statusText={
                 candidate.scoringAI.status === 'rechazado'
                   ? 'Descartado'
+                  : stage !== 'scoring'
+                  ? 'Continúa'
                   : candidate.scoringAI.status === 'continua'
                   ? 'Continúa'
                   : 'Pendiente'
               }
-              statusOk={candidate.scoringAI.status === 'continua'}
+              statusOk={stage !== 'scoring' || candidate.scoringAI.status === 'continua'}
               isOpen={scoringOpen}
               onToggle={() => setScoringOpen(!scoringOpen)}
               isLocked={false}
@@ -1013,23 +1015,25 @@ function AccordionSection({
               {score === null ? '—' : score}
             </div>
           )}
-          {isLocked ? (
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--color-surface-subtle)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Lock size={20} color="var(--color-neutral-400)" />
-            </div>
-          ) : (
-            isOpen ? <ChevronUp size={20} color="var(--color-text-muted)" /> : <ChevronDown size={20} color="var(--color-text-muted)" />
-          )}
+          <div
+            style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: 'var(--radius-md)',
+              background: isLocked ? 'var(--color-surface-subtle)' : 'transparent',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            {isLocked
+              ? <Lock size={20} color="var(--color-neutral-400)" />
+              : isOpen
+                ? <ChevronUp size={20} color="var(--color-text-muted)" />
+                : <ChevronDown size={20} color="var(--color-text-muted)" />
+            }
+          </div>
         </div>
       </div>
 
