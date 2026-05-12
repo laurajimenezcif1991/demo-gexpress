@@ -564,8 +564,8 @@ function TableRow({ vacante, selected, onSelect, onClick }: TableRowProps) {
       style={{
         display: 'grid',
         gridTemplateColumns: '40px 100px 1fr 180px 90px 1fr 70px 70px 120px',
-        padding: '0 20px',
-        height: '60px',
+        padding: '14px 20px',
+        minHeight: '60px',
         alignItems: 'center',
         borderBottom: '1px solid var(--color-border-default)',
         cursor: 'pointer',
@@ -613,20 +613,19 @@ function TableRow({ vacante, selected, onSelect, onClick }: TableRowProps) {
           fontWeight: 600,
           fontSize: '14px',
           color: 'var(--color-text-primary)',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
           paddingRight: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
+          lineHeight: '1.35',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
         }}
       >
         {vacante.title}
       </div>
 
       {/* Area */}
-      <div style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
+      <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: '1.4', paddingRight: '8px' }}>
         {vacante.area.join(' • ')}
       </div>
 
