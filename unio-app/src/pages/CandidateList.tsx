@@ -64,6 +64,9 @@ export default function CandidateList() {
     if (processId) setSelectionProcessId(processId);
   }, [processId, setSelectionProcessId]);
 
+  // For mock flows, use local mock data instead of API results
+  const isMock = jobId.startsWith('mock-');
+
   // Advance progressStage when navigating to a later stage — never go backwards.
   // Also seed from DEFAULT_MOCK_PROGRESS on first load so pre-seeded demo vacancies
   // unlock the correct sidebar stages without requiring any navigation.
@@ -89,9 +92,6 @@ export default function CandidateList() {
     apiStage,
     processId ?? ''
   );
-
-  // For mock flows, use local mock data instead of API results
-  const isMock = jobId.startsWith('mock-');
 
   // Candidates advanced INTO the current stage (show as "Pendiente" at top)
   const pendingIds = isMock ? getPendingCandidates(jobId, currentStage) : [];
