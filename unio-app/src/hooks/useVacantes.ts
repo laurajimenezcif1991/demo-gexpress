@@ -26,7 +26,13 @@ export function useVacantes(): UseVacantesResult {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setLogoUrl(assetUrl('/logo-comfandi.webp'));
+      setCompanyName('Comfandi');
+      setVacantes([...MOCK_VACANTES]);
+      setLoading(false);
+      return;
+    }
 
     let cancelled = false;
     setLoading(true);
@@ -47,6 +53,8 @@ export function useVacantes(): UseVacantesResult {
       .catch((err: unknown) => {
         if (cancelled) return;
         setError(err instanceof Error ? err.message : 'Error al cargar vacantes');
+        setLogoUrl(assetUrl('/logo-comfandi.webp'));
+        setCompanyName('Comfandi');
         setVacantes([...MOCK_VACANTES]);
       })
       .finally(() => {
