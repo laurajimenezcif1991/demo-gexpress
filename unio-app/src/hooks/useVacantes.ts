@@ -5,6 +5,7 @@ import { mapJobToVacantes } from '../api/mappers';
 import type { Vacante } from '../data/mock';
 import { MOCK_VACANTES } from '../data/mock';
 import type { Job } from '../types/dashboard';
+import { assetUrl } from '../utils/assets';
 
 interface UseVacantesResult {
   vacantes: Vacante[];
@@ -19,7 +20,7 @@ export function useVacantes(): UseVacantesResult {
   const { token } = useAuth();
   const [vacantes, setVacantes] = useState<Vacante[]>([]);
   const [rawJobs, setRawJobs] = useState<Job[]>([]);
-  const [logoUrl, setLogoUrl] = useState<string>('/logo-comfandi.webp');
+  const [logoUrl, setLogoUrl] = useState<string>(assetUrl('/logo-comfandi.webp'));
   const [companyName, setCompanyName] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export function useVacantes(): UseVacantesResult {
         if (cancelled) return;
         const jobs = data.jobs ?? [];
         setRawJobs(jobs);
-        setLogoUrl('/logo-comfandi.webp');
+        setLogoUrl(assetUrl('/logo-comfandi.webp'));
         setCompanyName('Comfandi');
         const mapped = jobs
           .filter((j) => !j.title?.toLowerCase().includes('supervisor de almac'))

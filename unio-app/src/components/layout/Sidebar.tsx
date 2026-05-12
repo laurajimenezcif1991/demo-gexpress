@@ -209,7 +209,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
               }
             }
             toRemove.forEach((k) => localStorage.removeItem(k));
-            window.location.href = '/';
+            window.location.href = import.meta.env.BASE_URL;
           }}
           style={{
             display: 'flex',
