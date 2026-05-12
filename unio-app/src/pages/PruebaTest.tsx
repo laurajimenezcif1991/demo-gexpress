@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import RadioCard from '../components/ui/RadioCard';
+import { assetUrl } from '../utils/assets';
 
 const COMPANY_LOGO = 'https://www.figma.com/api/mcp/asset/6f3ad322-1b47-491d-9c5e-ef9954b27a33';
-const UNIO_LOGO    = '/logo-unio.png';
+const UNIO_LOGO    = assetUrl('/logo-unio.png');
 const BG_BANNER    = 'https://www.figma.com/api/mcp/asset/1ca3ece4-fa35-4a9e-956d-716e2ddf18a8';
 
 interface Question {

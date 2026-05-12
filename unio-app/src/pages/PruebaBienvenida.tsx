@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { assetUrl } from '../utils/assets';
 
 const COMPANY_LOGO   = 'https://www.figma.com/api/mcp/asset/18f62815-f865-4f0d-bf73-b6bd1cac9a7e';
-const UNIO_LOGO      = '/logo-unio.png';
+const UNIO_LOGO      = assetUrl('/logo-unio.png');
 const CANDIDATE_AVATAR = 'https://www.figma.com/api/mcp/asset/5f48a710-bbc7-4c93-8f85-5f56681bb4d0';
 const BG_BANNER      = 'https://www.figma.com/api/mcp/asset/9315624d-5d7a-496f-bafa-357309ba3619';
 

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { assetUrl } from '../utils/assets';
 
 const COMPANY_LOGO = 'https://www.figma.com/api/mcp/asset/91d6a33e-b6e0-4f64-af85-b529e4649970';
-const UNIO_LOGO    = '/logo-unio.png';
+const UNIO_LOGO    = assetUrl('/logo-unio.png');
 const SUCCESS_ICON = 'https://www.figma.com/api/mcp/asset/115aa037-eac9-4693-a41d-12ad2d552762';
 const BG_BANNER    = 'https://www.figma.com/api/mcp/asset/372877cf-f504-428f-b640-b3db2f4c9dd6';
 

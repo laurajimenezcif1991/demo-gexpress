@@ -51,9 +51,9 @@ const statusLabel: Record<StageStatus, string> = {
 };
 
 const statusIcon: Record<StageStatus, string> = {
-  sin_iniciar: '/icons/lock.svg',
-  en_proceso:  '/icons/pencil.svg',
-  completado:  '/icons/check-circle.svg',
+  sin_iniciar: assetUrl('/icons/lock.svg'),
+  en_proceso:  assetUrl('/icons/pencil.svg'),
+  completado:  assetUrl('/icons/check-circle.svg'),
 };
 
 /* ─── IA chip ─────────────────────────────────────────────────────────────── */
@@ -260,7 +260,7 @@ export default function ValidationPipelineFilter({
           }}
         >
           <img
-            src={finalistaLocked ? '/icons/lock.svg' : '/icons/check-circle.svg'}
+            src={finalistaLocked ? assetUrl('/icons/lock.svg') : assetUrl('/icons/check-circle.svg')}
             alt={finalistaLocked ? 'Sin iniciar' : 'Completado'}
             width={12}
             height={12}

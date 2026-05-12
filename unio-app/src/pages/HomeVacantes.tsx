@@ -162,7 +162,7 @@ export default function HomeVacantes() {
       >
         {/* Left: Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img src={logoUrl || '/logo-comfandi.webp'} alt={companyName || 'Comfandi'} style={{ maxHeight: '52px', maxWidth: '200px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+          <img src={logoUrl || assetUrl('/logo-comfandi.webp')} alt={companyName || 'Comfandi'} style={{ maxHeight: '52px', maxWidth: '200px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
           <div style={{ width: '1px', height: '32px', background: 'var(--color-border-default)' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-muted)' }}>
             <span>Powered by</span>
