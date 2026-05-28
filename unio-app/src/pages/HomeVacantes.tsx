@@ -1,4 +1,3 @@
-import { assetUrl } from '../utils/assets';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -8,15 +7,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
-  LogOut,
 } from 'lucide-react';
 import { type Vacante } from '../data/mock';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import { Skeleton } from '../components/ui/Skeleton';
-import { useAuth } from '../context/AuthContext';
 import { useVacantes } from '../hooks/useVacantes';
 import { usePipeline } from '../context/PipelineContext';
+import MainSidebar from '../components/layout/MainSidebar';
 
 const statusLabel: Record<Vacante['status'], string> = {
   activa: 'Activa',
@@ -35,7 +33,6 @@ const NUEVA_VACANTE_UI_ENABLED = true;
 
 export default function HomeVacantes() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const { vacantes, loading, error, logoUrl, companyName } = useVacantes();
   const { setCompanyLogoUrl, setCompanyName } = usePipeline();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -138,57 +135,45 @@ export default function HomeVacantes() {
     });
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'transparent',
-        fontFamily: 'var(--font-display)',
-      }}
-    >
-      {/* Navbar */}
-      <header
-        style={{
-          background: '#ffffff',
-          borderBottom: '1px solid var(--color-border-default)',
-          padding: '0 40px',
-          height: '64px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          position: 'sticky',
-          top: 0,
-          zIndex: 30,
-        }}
-      >
-        {/* Left: Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img src={logoUrl || assetUrl('/logo-comfandi.webp')} alt={companyName || 'Comfandi'} style={{ maxHeight: '52px', maxWidth: '200px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
-          <div style={{ width: '1px', height: '32px', background: 'var(--color-border-default)' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-muted)' }}>
-            <span>Powered by</span>
-            <img src={assetUrl('/logo-unio.png')} alt="Unio" style={{ height: '14px', width: 'auto' }} />
-          </div>
-        </div>
+    <div style={{ minHeight: '100vh', background: 'transparent', fontFamily: 'var(--font-display)' }}>
+      <MainSidebar />
 
-        {/* Right */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {NUEVA_VACANTE_UI_ENABLED ? (
+      {/* Main content offset by sidebar width */}
+      <div style={{ marginLeft: '205px', minHeight: '100vh' }}>
+
+        {/* Page header */}
+        <div
+          style={{
+            background: '#ffffff',
+            borderBottom: '1px solid var(--color-border-default)',
+            padding: '0 40px',
+            height: '56px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            position: 'sticky',
+            top: 0,
+            zIndex: 30,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 700,
+              fontSize: '15px',
+              color: 'var(--color-text-primary)',
+              letterSpacing: '0.3px',
+            }}
+          >
+            Vacantes
+          </span>
+          {NUEVA_VACANTE_UI_ENABLED && (
             <Button variant="primary" size="md" onClick={() => navigate('/vacante/nueva')}>
               <Plus size={16} />
               Crear Vacante
             </Button>
-          ) : null}
-          <Button
-            variant="ghost"
-            size="md"
-            onClick={() => { logout(); navigate('/auth'); }}
-            style={{ color: 'var(--color-text-muted)', gap: '6px' }}
-          >
-            <LogOut size={15} />
-            Salir
-          </Button>
+          )}
         </div>
-      </header>
 
       <div style={{ padding: '24px 40px', maxWidth: '1400px', margin: '0 auto' }}>
         {/* Filters */}
@@ -538,6 +523,7 @@ export default function HomeVacantes() {
           </div>
         </div>
       </div>
+      </div>{/* /main content */}
     </div>
   );
 }

@@ -7,10 +7,18 @@
 
 ## [Sin commitear]
 
-- Crear `WhatsAppAgendarEntrevistaModal`: simulación interactiva de agendamiento por WhatsApp con selección AM/PM y franjas horarias
-- Reemplazar botón "Pasar a Entrevistas" en CandidateList y CandidateOnepage por "Agendar entrevista" con icono y UI de WhatsApp
-- Flujo de agendamiento: Alex IA envía felicitaciones, invita a elegir franja AM/PM y luego un horario específico
-- Confirmación avanza candidatos a la etapa Entrevistas en el pipeline
+---
+
+## [pending] — 28 May 2026
+
+### Analytics & Reportes
+
+- Crear `MainSidebar.tsx`: sidebar de navegación de primer nivel (Vacantes / Analytics) reutilizable en toda la app principal, con logout y "Reiniciar demo" en el footer
+- Refactorizar `HomeVacantes`: reemplazar navbar horizontal por `MainSidebar` fijo a la izquierda + page header con botón "Crear Vacante"
+- Crear `AnalyticsPage` (`/analytics`): vista interna completa con Filtros, Estado de Vacantes, Métricas Clave, Funnel de Candidatos (con tabs por canal + drop-off por no negociables), Eficiencia de Tiempo, KPI Hiring Manager y Detalle por Vacante
+- Agregar ruta protegida `/analytics` en `App.tsx`
+
+
 
 ---
 

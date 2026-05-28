@@ -13,6 +13,7 @@ import FinalistView from './pages/FinalistView';
 import Shortlist from './pages/Shortlist';
 import HMEvalForm from './pages/HMEvalForm';
 import Candidatos from './pages/Candidatos';
+import AnalyticsPage from './pages/AnalyticsPage';
 import PruebaBienvenida from './pages/PruebaBienvenida';
 import PruebaTest from './pages/PruebaTest';
 import PruebaExito from './pages/PruebaExito';
@@ -79,6 +80,9 @@ export default function App() {
 
             {/* /candidatos — backlog: pipeline unificado con ValidationPipelineFilter (solo URL directa) */}
             <Route path="/candidatos" element={<ProtectedRoute><Candidatos /></ProtectedRoute>} />
+
+            {/* Analytics & Reportes */}
+            <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
 
             {/* ── Public ── */}
             <Route path="/eval/:evalId" element={<HMEvalForm />} />
