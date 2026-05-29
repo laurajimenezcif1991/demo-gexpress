@@ -145,6 +145,34 @@ const STATUS_STYLE: Record<string, { bg: string; color: string; border: string }
   PAUSADA: { bg: '#FFF8E5', color: '#A37800', border: '#FFE59E' },
 };
 
+function StatusTag({
+  label,
+  variant,
+}: {
+  label: string;
+  variant: keyof typeof STATUS_STYLE;
+}) {
+  const s = STATUS_STYLE[variant];
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        background: s.bg,
+        color: s.color,
+        border: `1px solid ${s.border}`,
+        borderRadius: '4px',
+        padding: '2px 8px',
+        fontSize: '11px',
+        fontWeight: 700,
+        letterSpacing: '0.3px',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -181,6 +209,33 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
   );
 }
 
+// ─── Shared filter styles ─────────────────────────────────────────────────────
+
+const filterLabelStyle: React.CSSProperties = {
+  fontSize: '10px',
+  fontWeight: 700,
+  letterSpacing: '0.8px',
+  color: 'var(--color-text-muted)',
+  marginBottom: '5px',
+  textTransform: 'uppercase',
+};
+
+const chevronSvg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2368686a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`;
+
+const selectStyle: React.CSSProperties = {
+  height: '38px',
+  padding: '0 32px 0 10px',
+  borderRadius: 'var(--radius-sm)',
+  fontFamily: 'var(--font-display)',
+  fontSize: '13px',
+  cursor: 'pointer',
+  appearance: 'none',
+  backgroundImage: chevronSvg,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'right 10px center',
+  minWidth: '160px',
+};
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
@@ -188,6 +243,7 @@ export default function AnalyticsPage() {
   const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null });
   const [estadoFilter, setEstadoFilter] = useState<string>('Todas');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [tipoFilter, setTipoFilter] = useState<string>('todos');
 
   const sectionGap: React.CSSProperties = { marginBottom: '24px' };
 
@@ -197,136 +253,142 @@ export default function AnalyticsPage() {
 
       <div style={{ marginLeft: '205px', minHeight: '100vh' }}>
 
-        {/* Page header */}
+        {/* ── STICKY HEADER with filters ── */}
         <div
           style={{
             background: '#ffffff',
             borderBottom: '1px solid var(--color-border-default)',
             padding: '0 40px',
-            height: '56px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
             position: 'sticky',
             top: 0,
             zIndex: 30,
           }}
         >
-          <span
+          {/* Top row: title */}
+          <div
             style={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: '15px',
-              color: 'var(--color-text-primary)',
-              letterSpacing: '0.3px',
-            }}
-          >
-            Analytics &amp; Reportes
-          </span>
-          <button
-            style={{
+              height: '52px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              padding: '7px 14px',
-              background: 'transparent',
-              border: '1px solid var(--color-border-default)',
-              borderRadius: 'var(--radius-sm)',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 600,
-              color: 'var(--color-text-muted)',
             }}
           >
-            <Download size={13} />
-            Exportar informe
-          </button>
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                fontSize: '15px',
+                color: 'var(--color-text-primary)',
+                letterSpacing: '0.3px',
+              }}
+            >
+              Analytics &amp; Reportes
+            </span>
+          </div>
+
+          {/* Filter row */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              gap: '12px',
+              paddingBottom: '12px',
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* Período */}
+            <div>
+              <div style={filterLabelStyle}>PERÍODO</div>
+              <DateRangePicker value={dateRange} onChange={setDateRange} />
+            </div>
+
+            {/* Tipo de vacante — unified with Área, grouped by optgroup */}
+            <div>
+              <div style={filterLabelStyle}>TIPO DE VACANTE</div>
+              <select
+                value={tipoFilter}
+                onChange={(e) => setTipoFilter(e.target.value)}
+                style={{
+                  ...selectStyle,
+                  border: tipoFilter !== 'todos'
+                    ? '1px solid var(--color-brand-accent)'
+                    : '1px solid var(--color-border-default)',
+                  background: tipoFilter !== 'todos' ? 'var(--color-secondary-50)' : '#ffffff',
+                  color: tipoFilter !== 'todos'
+                    ? 'var(--color-brand-accent)'
+                    : 'var(--color-text-primary)',
+                  minWidth: '210px',
+                }}
+              >
+                <option value="todos">Todos los tipos</option>
+                <optgroup label="Operativa">
+                  <option value="operativa">Operativa (todas)</option>
+                  <option value="operaciones">Operaciones</option>
+                  <option value="logistica">Logística</option>
+                </optgroup>
+                <optgroup label="Administrativa">
+                  <option value="administrativa">Administrativa (todas)</option>
+                  <option value="finanzas">Finanzas</option>
+                  <option value="ventas">Ventas</option>
+                  <option value="compras">Compras</option>
+                </optgroup>
+                <optgroup label="Estratégica">
+                  <option value="estrategica">Estratégica (todas)</option>
+                  <option value="transformacion">Transformación Digital</option>
+                  <option value="expansion">Expansión Comercial</option>
+                  <option value="liderazgo">Liderazgo Organizacional</option>
+                </optgroup>
+              </select>
+            </div>
+
+            {/* Estado vacante — controlled, synced with cards */}
+            <div>
+              <div style={filterLabelStyle}>ESTADO VACANTE</div>
+              <select
+                value={estadoFilter}
+                onChange={(e) => setEstadoFilter(e.target.value)}
+                style={{
+                  ...selectStyle,
+                  border: estadoFilter !== 'Todas'
+                    ? '1px solid var(--color-brand-accent)'
+                    : '1px solid var(--color-border-default)',
+                  background: estadoFilter !== 'Todas' ? 'var(--color-secondary-50)' : '#ffffff',
+                  color: estadoFilter !== 'Todas'
+                    ? 'var(--color-brand-accent)'
+                    : 'var(--color-text-primary)',
+                }}
+              >
+                {['Todas', 'Abierta', 'Completada', 'Pausada', 'Desierta'].map((o) => (
+                  <option key={o}>{o}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
-        <div style={{ padding: '28px 40px', maxWidth: '1400px' }}>
+        <div style={{ padding: '24px 40px', maxWidth: '1400px' }}>
 
-          {/* ── FILTERS ── */}
-          <Card style={{ marginBottom: '24px' }}>
-            <SectionTitle>Filtros</SectionTitle>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', alignItems: 'end' }}>
-
-              {/* Período — date range picker */}
-              <div>
-                <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  PERÍODO
-                </div>
-                <DateRangePicker value={dateRange} onChange={setDateRange} />
-              </div>
-
-              {/* Área, Tipo de Vacante */}
-              {[
-                { label: 'ÁREA', options: ['Todas las áreas', 'Operaciones', 'Finanzas', 'Ventas', 'Logística', 'Compras'] },
-                { label: 'TIPO DE VACANTE', options: ['Todos los tipos', 'Operativa', 'Administrativa', 'Estratégica'] },
-              ].map(({ label, options }) => (
-                <div key={label}>
-                  <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                    {label}
-                  </div>
-                  <select
-                    style={{
-                      width: '100%',
-                      height: '38px',
-                      padding: '0 32px 0 10px',
-                      border: '1px solid var(--color-border-default)',
-                      borderRadius: 'var(--radius-sm)',
-                      background: '#ffffff',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '13px',
-                      color: 'var(--color-text-primary)',
-                      cursor: 'pointer',
-                      appearance: 'none',
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2368686a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'right 10px center',
-                    }}
-                  >
-                    {options.map((o) => <option key={o}>{o}</option>)}
-                  </select>
-                </div>
-              ))}
-
-              {/* Estado Vacante — controlled, synced with cards below */}
-              <div>
-                <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  ESTADO VACANTE
-                </div>
-                <select
-                  value={estadoFilter}
-                  onChange={(e) => setEstadoFilter(e.target.value)}
-                  style={{
-                    width: '100%',
-                    height: '38px',
-                    padding: '0 32px 0 10px',
-                    border: estadoFilter !== 'Todas'
-                      ? '1px solid var(--color-brand-accent)'
-                      : '1px solid var(--color-border-default)',
-                    borderRadius: 'var(--radius-sm)',
-                    background: estadoFilter !== 'Todas' ? 'var(--color-secondary-50)' : '#ffffff',
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '13px',
-                    color: estadoFilter !== 'Todas'
-                      ? 'var(--color-brand-accent)'
-                      : 'var(--color-text-primary)',
-                    cursor: 'pointer',
-                    appearance: 'none',
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2368686a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 10px center',
-                  }}
-                >
-                  {['Todas', 'Abierta', 'Completada', 'Pausada', 'Desierta'].map((o) => (
-                    <option key={o}>{o}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </Card>
+          {/* Exportar informe — not sticky */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+            <button
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '7px 14px',
+                background: 'transparent',
+                border: '1px solid var(--color-border-default)',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600,
+                color: 'var(--color-text-muted)',
+              }}
+            >
+              <Download size={13} />
+              Exportar informe
+            </button>
+          </div>
 
           {/* ── ESTADO DE VACANTES ── */}
           <Card style={sectionGap}>
@@ -618,20 +680,24 @@ export default function AnalyticsPage() {
                 <div
                   key={p.label}
                   style={{
-                    background: p.bottleneck ? 'var(--color-brand-primary)' : '#ffffff',
-                    border: `1px solid ${p.bottleneck ? 'var(--color-brand-primary)' : 'var(--color-border-default)'}`,
+                    background: '#ffffff',
+                    border: '1px solid var(--color-border-default)',
                     borderRadius: 'var(--radius-sm)',
                     padding: '14px',
                   }}
                 >
-                  <div style={{ fontSize: '11px', fontWeight: 600, color: p.bottleneck ? 'rgba(255,255,255,0.7)' : 'var(--color-text-muted)', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '6px' }}>
                     {p.label}
                   </div>
-                  <div style={{ fontSize: '28px', fontWeight: 800, color: p.bottleneck ? '#ffffff' : 'var(--color-text-primary)', lineHeight: 1 }}>
+                  <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--color-text-primary)', lineHeight: 1 }}>
                     {p.days}
                   </div>
-                  <div style={{ fontSize: '11px', color: p.bottleneck ? 'rgba(255,255,255,0.7)' : 'var(--color-text-muted)', marginTop: '4px' }}>
-                    {p.bottleneck ? 'días · CUELLO DE BOTELLA' : 'días promedio'}
+                  <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                    {p.bottleneck ? (
+                      <StatusTag label="CUELLO DE BOTELLA" variant="PAUSADA" />
+                    ) : (
+                      'días promedio'
+                    )}
                   </div>
                 </div>
               ))}
@@ -678,22 +744,10 @@ export default function AnalyticsPage() {
                     }}
                   >
                     <span style={{ color: 'var(--color-text-primary)' }}>{row.from}</span>
-                    <span
-                      style={{
-                        background: row.warning ? 'var(--color-warning-50)' : 'var(--color-surface-subtle)',
-                        border: `1px solid ${row.warning ? 'var(--color-warning-300)' : 'var(--color-border-default)'}`,
-                        color: row.warning ? 'var(--color-warning-600)' : 'var(--color-text-muted)',
-                        borderRadius: '4px',
-                        padding: '2px 10px',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
-                    >
-                      {row.days} días {row.warning && '⚠'}
-                    </span>
+                    <StatusTag
+                      label={`${row.days} días${row.warning ? ' ⚠' : ''}`}
+                      variant={row.warning ? 'PAUSADA' : 'COMPLETADA'}
+                    />
                   </div>
                 ))}
               </div>
@@ -740,18 +794,7 @@ export default function AnalyticsPage() {
                       <div style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{row.vacante}</div>
                       <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{row.area}</div>
                     </div>
-                    <span
-                      style={{
-                        background: 'var(--color-brand-primary)',
-                        color: '#ffffff',
-                        borderRadius: '4px',
-                        padding: '3px 10px',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                      }}
-                    >
-                      {row.days} días
-                    </span>
+                    <StatusTag label={`${row.days} días`} variant="DESIERTA" />
                   </div>
                 ))}
               </div>
