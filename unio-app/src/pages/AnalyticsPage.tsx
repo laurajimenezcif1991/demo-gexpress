@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Download, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
 import MainSidebar from '../components/layout/MainSidebar';
+import DateRangePicker, { type DateRange } from '../components/ui/DateRangePicker';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -191,8 +192,8 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
-  const [activeTab, setActiveTab] = useState<'funnel' | 'predictiva'>('funnel');
   const [activeChannel, setActiveChannel] = useState('general');
+  const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null });
 
   const sectionGap: React.CSSProperties = { marginBottom: '24px' };
 
@@ -249,54 +250,23 @@ export default function AnalyticsPage() {
           </button>
         </div>
 
-        {/* Tab bar */}
-        <div
-          style={{
-            background: '#ffffff',
-            borderBottom: '1px solid var(--color-border-default)',
-            padding: '0 40px',
-            display: 'flex',
-            gap: '0',
-          }}
-        >
-          {[
-            { id: 'funnel', label: 'Funnel & Eficiencia' },
-            { id: 'predictiva', label: 'Analítica Predictiva' },
-          ].map(({ id, label }) => {
-            const isActive = activeTab === id;
-            return (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id as 'funnel' | 'predictiva')}
-                style={{
-                  padding: '12px 20px',
-                  background: isActive ? 'var(--color-brand-primary)' : 'transparent',
-                  border: 'none',
-                  borderRight: '1px solid var(--color-border-default)',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  letterSpacing: '0.5px',
-                  color: isActive ? '#ffffff' : 'var(--color-text-muted)',
-                  textTransform: 'uppercase',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-
         <div style={{ padding: '28px 40px', maxWidth: '1400px' }}>
 
           {/* ── FILTERS ── */}
           <Card style={{ marginBottom: '24px' }}>
             <SectionTitle>Filtros</SectionTitle>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', alignItems: 'end' }}>
+
+              {/* Período — date range picker */}
+              <div>
+                <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', color: 'var(--color-text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
+                  PERÍODO
+                </div>
+                <DateRangePicker value={dateRange} onChange={setDateRange} />
+              </div>
+
+              {/* Área, Tipo de Vacante, Estado Vacante */}
               {[
-                { label: 'PERÍODO', options: ['Mes completo anterior', 'Último trimestre', 'Último semestre', 'Este año'] },
                 { label: 'ÁREA', options: ['Todas las áreas', 'Operaciones', 'Finanzas', 'Ventas', 'Logística', 'Compras'] },
                 { label: 'TIPO DE VACANTE', options: ['Todos los tipos', 'Operativa', 'Administrativa', 'Estratégica'] },
                 { label: 'ESTADO VACANTE', options: ['Todas', 'Abierta', 'Completada', 'Pausada', 'Desierta'] },
