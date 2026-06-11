@@ -578,11 +578,11 @@ export default function CandidateOnepage() {
 
         {/* Accordion sections */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* 1. Scoring AI */}
+          {/* 1. Scoring AI / Verificación RUNT */}
           <div ref={scoringSectionRef} style={{ scrollMarginTop: 24 }}>
             <AccordionSection
               number={1}
-              title="Scoring AI"
+              title={candidate.runtVerification ? 'Verificación (RUNT/RNDC)' : 'Scoring AI'}
               score={candidate.scoringAI.score}
               statusText={
                 candidate.scoringAI.status === 'rechazado'
@@ -1161,6 +1161,47 @@ function ScoringContent({ candidate }: { candidate: (typeof candidates)[0] }) {
           ))}
         </div>
       </div>
+
+      {/* Tarjeta RUNT (solo si el candidato tiene datos de verificación) */}
+      {candidate.runtVerification && (() => {
+        const runt = candidate.runtVerification!;
+        return (
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid #2a2a3a' }}>
+              {/* Header */}
+              <div style={{ background: '#1a1a2e', padding: '12px 20px' }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', color: '#e2e8f0', letterSpacing: '0.3px' }}>
+                  Verificación RUNT — Licencia Nro: {runt.cc}
+                </span>
+              </div>
+              {/* License categories table */}
+              {runt.licenseCategories.length > 0 && (
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: '#f8f8fa', borderBottom: '1px solid #e4e4e7' }}>
+                    {['Categoría', 'Fecha expedición', 'Fecha vencimiento'].map(h => (
+                      <div key={h} style={{ padding: '10px 20px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', color: '#363539', textAlign: 'center' }}>{h}</div>
+                    ))}
+                  </div>
+                  {runt.licenseCategories.map((cat, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < runt.licenseCategories.length - 1 ? '1px solid #e4e4e7' : 'none', background: '#fff' }}>
+                      <div style={{ padding: '10px 20px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', color: '#363539', textAlign: 'center' }}>{cat.categoria}</div>
+                      <div style={{ padding: '10px 20px', fontSize: '14px', color: '#6b6b6b', textAlign: 'center' }}>{cat.fechaExpedicion}</div>
+                      <div style={{ padding: '10px 20px', fontSize: '14px', color: '#6b6b6b', textAlign: 'center' }}>{cat.fechaVencimiento}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {/* Manifiestos footer */}
+              <div style={{ background: '#f0eeff', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 600, color: '#363539' }}>
+                  Total de manifiestos expedidos en el rango de fechas solicitado:
+                </span>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#6d4ef5' }}>{runt.totalManifiestos}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Logros + Señales */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>

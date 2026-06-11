@@ -2671,11 +2671,11 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
 
   // ── Pipeline estándar Transporte & Logística ──
   const transpPipeline = (scoring: number, pre: number, runt: number, doc: number) => [
-    s('scoring',      'Scoring IA',              'Scoring',       scoring > 0  ? (pre > 0 ? 'completed' : 'in_progress') : 'not_started', scoring, true),
-    s('prescreening', 'Pre-entrevista IA',        'Pre-entrevista', pre > 0    ? (runt > 0 ? 'completed' : 'in_progress') : 'not_started', pre,    true),
-    s('entrevistas',  'Validación RUNT',          'RUNT',           runt > 0   ? (doc > 0 ? 'completed' : 'in_progress') : 'not_started',  runt,   true),
-    s('evaluaciones', 'Validación Documental',    'Documental',     doc > 0    ? 'in_progress' : 'not_started',                            doc,    false),
-    s('finalistas',   'Shortlist',                'Shortlist',     'not_started', 0, false),
+    s('scoring',      'Verificación (RUNT/RNDC)', 'Verificación',  scoring > 0  ? (pre > 0 ? 'completed' : 'in_progress') : 'not_started', scoring, true),
+    s('prescreening', 'Pre-entrevista IA',         'Pre-entrevista', pre > 0   ? (runt > 0 ? 'completed' : 'in_progress') : 'not_started', pre,    true),
+    s('entrevistas',  'Validación Documental',     'Documental',     runt > 0  ? (doc > 0 ? 'completed' : 'in_progress') : 'not_started',  runt,   false),
+    s('evaluaciones', 'Prueba de Manejo',          'Prueba',         doc > 0   ? 'in_progress' : 'not_started',                            doc,    false),
+    s('finalistas',   'Shortlist',                 'Shortlist',      'not_started', 0, false),
   ];
 
   switch (jobId) {
