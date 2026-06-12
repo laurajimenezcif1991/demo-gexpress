@@ -2732,6 +2732,130 @@ const distribScoring      = distribCandidates.filter(c => c.currentStage === 'sc
 const distribPrescreening = distribCandidates.filter(c => c.currentStage === 'prescreening');
 const distribEntrevistas  = distribCandidates.filter(c => c.currentStage === 'entrevistas');
 
+// ── Candidatos EVALUACIONES — Distribución Urbana ───────────────────────────
+function _mkDistribEval(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string): Candidate {
+  const job     = _distribJobs[0]    ?? { c: 'DHL Express Colombia', r: 'Conductor C2 Última Milla', d: '2024' };
+  const prevJob = _distribExpPrev[0] ?? { c: 'Coordinadora S.A.', r: 'Conductor Urbano', periodo: '2020–2022', desc: 'Distribución urbana en zona norte de Bogotá.' };
+  const runt    = _distribRunt[0];
+  const trips   = Math.round(200 + (score - 75) * 12);
+  return {
+    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
+    years, location: `${city}, Colombia`,
+    bio: 'Conductor con licencia C2 y amplia experiencia en distribución urbana y reparto de mercancía. Experto en rutas de última milla, manejo de guías digitales y atención al cliente final.',
+    score, photo, avatarInitials: initials, avatarColor: color,
+    hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
+    superpoder: '"Eficiencia en rutas urbanas con cero pérdidas de mercancía"',
+    aspiration, budget: "$2'600.000", salaryRange: 'en_rango', currentStage: 'evaluaciones',
+    runtVerification: {
+      cc: runt?.cc ?? '11111111',
+      totalManifiestos: trips,
+      licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+    },
+    scoringAI: {
+      score: Math.round(score * 0.95), status: 'continua',
+      resumen: `${name} cumple todos los criterios. Licencia C2 vigente, ${trips} manifiestos de distribución registrados y sin comparendos activos.`,
+      noNegociables: [
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
+        { label: 'Sin comparendos activos (RUNT)', cumple: true },
+        { label: 'Residencia en Bogotá o área metropolitana', cumple: true },
+        { label: 'Expectativa salarial ≤ $2.800.000', cumple: true },
+      ],
+      logros: [`${trips} manifiestos de distribución verificados — supera umbral requerido`, `Licencia C2 vigente con más de 3 años de expedición`, 'Sin comparendos activos en RUNT'],
+      senales: ['Confirmar tipo de vehículo (NPR/NKR/NQR) para asignación de flota'],
+    },
+    prescreeningAI: {
+      score: Math.round(score * 0.97), status: 'continua',
+      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`,
+      noNegociables: [
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` } as EvalRow,
+        { label: 'Sin comparendos activos ni infracciones graves', score: score, evidencia: `Record limpio confirmado. Sin multas pendientes en RUNT.` } as EvalRow,
+        { label: 'Disponibilidad para cargue y descargue de mercancía', score: score - 2, evidencia: `Confirma disponibilidad total y ha realizado cargue/descargue en ${prevJob.c}.` } as EvalRow,
+        { label: 'Conocimiento de rutas urbanas en Bogotá y alrededores', score: score - 1, evidencia: `Conoce todas las zonas de Bogotá. Describe rutas específicas con naturalidad.` } as EvalRow,
+      ],
+      plusDetectados: [`Manejo de app de seguimiento de entregas y sistema de guías digital`, `Experiencia en distribución e-commerce — perfil alineado con tendencia del sector`, `Actitud de servicio al cliente final evidenciada en entrevista`],
+      senales: [`Confirmar si tiene experiencia con vehículo NKR o NPR específicamente`],
+      entornoPersonal: [
+        { label: 'Municipio', value: city, status: 'ok' },
+        { label: 'Disponibilidad inicio', value: 'Inmediata', status: 'ok' },
+        { label: 'Cargue y descargue', value: 'Sin restricciones', status: 'ok' },
+      ],
+      experienciaLaboral: [
+        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Distribución urbana con ${trips} entregas documentadas. Manejo de sistema de guías y relación directa con clientes comerciales.` },
+        { empresa: prevJob.c, rol: prevJob.r, periodo: prevJob.periodo, descripcion: prevJob.desc },
+      ],
+    },
+    psychTest: _psychTransp(score, name),
+  };
+}
+
+const distribEvaluaciones: Candidate[] = [
+  _mkDistribEval('d-e1', 'Andrés Morales',     92, _p(36, 'men'), 'AM', '#8750F6', 'Bogotá', '13 Años', "$2'600.000"),
+  _mkDistribEval('d-e2', 'Iván Herrera',        88, _p(37, 'men'), 'IH', '#27BE69', 'Bogotá', '10 Años', "$2'500.000"),
+  _mkDistribEval('d-e3', 'Jhon Mejía',          85, _p(38, 'men'), 'JM', '#295BFF', 'Soacha',  '8 Años', "$2'700.000"),
+];
+
+// ── Candidatos EVALUACIONES — Carga Refrigerada (Vigía) ──────────────────────
+function _mkVigiaEval(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string): Candidate {
+  const job     = _vigiaJobs[0]    ?? { c: 'Alfrío S.A.', r: 'Conductor C2 Carga Refrigerada', d: '2024' };
+  const prevJob = _vigiaExpPrev[0] ?? { c: 'Colfrigos', r: 'Conductor Isotérmico', periodo: '2020–2022', desc: 'Rutas intermunicipales con cadena de frío.' };
+  const runt    = _vigiaRunt[0];
+  const trips   = Math.round(150 + (score - 75) * 8);
+  return {
+    id, name, role: 'Conductor C2 – Carga Refrigerada', sector: 'Logística / Cadena de Frío',
+    years, location: `${city}, Colombia`,
+    bio: 'Conductor con licencia C2 y amplia experiencia en transporte de carga refrigerada y cadena de frío. Manejo de rutas intermunicipales, control de temperatura y registro de manifiestos en plataforma RNDC.',
+    score, photo, avatarInitials: initials, avatarColor: color,
+    hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
+    superpoder: '"Dominio de cadena de frío con cero incidentes de temperatura en más de 150 rutas"',
+    aspiration, budget: "$3'500.000", salaryRange: 'en_rango', currentStage: 'evaluaciones',
+    runtVerification: {
+      cc: runt?.cc ?? '22222222',
+      totalManifiestos: trips,
+      licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+    },
+    scoringAI: {
+      score: Math.round(score * 0.95), status: 'continua',
+      resumen: `${name} cumple todos los criterios de verificación. Licencia C2 vigente, ${trips} manifiestos de carga refrigerada registrados y sin comparendos activos en RUNT.`,
+      noNegociables: [
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
+        { label: 'Sin comparendos activos ni suspensiones (RUNT)', cumple: true },
+        { label: 'Experiencia en cadena de frío o carga perecedera', cumple: true },
+        { label: 'Disponibilidad para rutas intermunicipales', cumple: true },
+      ],
+      logros: [`${trips} manifiestos de carga refrigerada registrados en RNDC`, `Licencia C2 con más de 4 años de expedición, sin suspensiones en RUNT`, 'Cero comparendos activos ni multas pendientes'],
+      senales: ['Confirmar si tiene experiencia en vehículos NPR con termógrafo instalado'],
+    },
+    prescreeningAI: {
+      score: Math.round(score * 0.97), status: 'continua',
+      resumen: `${name} confirmó disponibilidad inmediata y motivación genuina por el cargo. Demostró conocimiento práctico de rutas nacionales y manejo de carga refrigerada. Corroboró experiencia documentada.`,
+      noNegociables: [
+        { label: 'Licencia C2 vigente con mínimo 4 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente con categorías adicionales. Renovación reciente sin observaciones.` } as EvalRow,
+        { label: 'Sin comparendos activos ni infracciones de tránsito graves', score: score, evidencia: `Record limpio en RUNT confirmado. Sin multas de tránsito pendientes.` } as EvalRow,
+        { label: 'Experiencia en cadena de frío y temperatura controlada', score: score - 2, evidencia: `Reporta ${trips} manifiestos con carga refrigerada. Conoce procedimiento de alarma de temperatura.` } as EvalRow,
+        { label: 'Disponibilidad para viajes intermunicipales (pernoctar fuera)', score: score - 3, evidencia: `Confirma disponibilidad total para viajes de 2–5 días con pernocte en destino.` } as EvalRow,
+      ],
+      plusDetectados: [`${trips} manifiestos de carga refrigerada registrados — supera umbral de 100`, `Experiencia en rutas Bogotá-Cali y Bogotá-Medellín con carga de alimentos`, `Conocimiento del procedimiento de alarma y registro de temperatura en trayecto`],
+      senales: [`Confirmar si cuenta con certificación en manejo de mercancías peligrosas (si aplica)`],
+      entornoPersonal: [
+        { label: 'Municipio', value: city, status: 'ok' },
+        { label: 'Disponibilidad inicio', value: 'Inmediata', status: 'ok' },
+        { label: 'Viajes intermunicipales', value: 'Disponibilidad total', status: 'ok' },
+      ],
+      experienciaLaboral: [
+        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Transporte de carga refrigerada con ${trips} manifiestos registrados en RNDC. Rutas intermunicipales con control de temperatura y entrega certificada.` },
+        { empresa: prevJob.c, rol: prevJob.r, periodo: prevJob.periodo, descripcion: prevJob.desc },
+      ],
+    },
+    psychTest: _psychTransp(score, name),
+  };
+}
+
+const vigiaEvaluaciones: Candidate[] = [
+  _mkVigiaEval('v-e1', 'Carlos Jiménez',         91, _p(1, 'men'), 'CJ', '#8750F6', 'Bogotá',   '12 Años', "$3'200.000"),
+  _mkVigiaEval('v-e2', 'Hernando Vargas',         88, _p(2, 'men'), 'HV', '#27BE69', 'Cota',     '10 Años', "$3'000.000"),
+  _mkVigiaEval('v-e3', 'Luis Fernando Moreno',    85, _p(3, 'men'), 'LM', '#295BFF', 'Mosquera', '8 Años',  "$3'400.000"),
+];
+
 export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record<string, string>>>> = {
   'mock-vigia': {
     scoring: {
@@ -2742,6 +2866,11 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
     prescreening: {
       'mvc-6': 'continua', 'mvc-7': 'continua',
       'mvc-8': 'por_validar', 'mvc-9': 'por_validar', 'mvc-10': 'descartado',
+    },
+    evaluaciones: {
+      'v-e1': 'continua',
+      'v-e2': 'continua',
+      'v-e3': 'por_validar',
     },
   },
   'mock-transp-pub': {
@@ -2769,6 +2898,11 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
     prescreening: {
       'd-6': 'continua', 'd-7': 'continua',
       'd-8': 'por_validar', 'd-9': 'por_validar', 'd-10': 'descartado',
+    },
+    evaluaciones: {
+      'd-e1': 'continua',
+      'd-e2': 'continua',
+      'd-e3': 'por_validar',
     },
   },
 };
@@ -2860,8 +2994,8 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
 
 export const mockCandidatesByStage: Record<string, Partial<Record<string, Candidate[]>>> = {
   'mock-transp-pub': { scoring: [...transpPubEvaluaciones, ...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEvaluaciones, ...transpPubEntrevistas, ...transpPubPrescreening], entrevistas: [...transpPubEvaluaciones, ...transpPubEntrevistas], evaluaciones: transpPubEvaluaciones },
-  'mock-vigia':      { scoring: [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEntrevistas, ...vigiaPrescreening], entrevistas: vigiaEntrevistas },
-  'mock-distrib':    { scoring: [...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEntrevistas, ...distribPrescreening], entrevistas: distribEntrevistas },
+  'mock-vigia':   { scoring: [...vigiaEvaluaciones, ...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEvaluaciones, ...vigiaEntrevistas, ...vigiaPrescreening], entrevistas: [...vigiaEvaluaciones, ...vigiaEntrevistas], evaluaciones: vigiaEvaluaciones },
+  'mock-distrib': { scoring: [...distribEvaluaciones, ...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEvaluaciones, ...distribEntrevistas, ...distribPrescreening], entrevistas: [...distribEvaluaciones, ...distribEntrevistas], evaluaciones: distribEvaluaciones },
   'mock-recep':    { scoring: recepCandidates },
   'mock-bodega':   { scoring: [...bodegaPreCandidates, ...bodegaScoreOnly], prescreening: bodegaPreCandidates },
   'mock-th':       { scoring: [...thEntrevistasCandidates, ...thPreCandidates, ...thScoreOnly], prescreening: [...thEntrevistasCandidates, ...thPreCandidates], entrevistas: thEntrevistasCandidates },
@@ -2873,7 +3007,9 @@ export const mockCandidatesByStage: Record<string, Partial<Record<string, Candid
 export const mockCandidatesById: Record<string, Candidate> = [
   ...transpPubEvaluaciones,
   ...transpPubCandidates,
+  ...vigiaEvaluaciones,
   ...vigiaCandidates,
+  ...distribEvaluaciones,
   ...distribCandidates,
   ...recepCandidates,
   ...bodegaPreCandidates, ...bodegaScoreOnly,
@@ -2890,6 +3026,14 @@ export const mockTechFeedback: Record<string, TechTestFeedback> = {
   'tp-e1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 5 }, destacados: 'Demostró dominio completo del protocolo de manejo defensivo en simulación de ruta urbana. Identificó correctamente los puntos críticos de la ruta 508 (Usme - Portal Sur) y respondió adecuadamente ante escenarios de cierre vial y accidente en vía.', senalAlerta: 'El tiempo de respuesta ante pasajero conflictivo fue ligeramente lento; reforzar protocolo de atención en la inducción operativa.', recomendacion: 'avanzar', files: [] },
   'tp-e2': { ratings: { dominio: 5, resolucion: 4, calidad: 4, comunicacion: 5, iniciativa: 4 }, destacados: 'Excelente conocimiento de nomenclatura vial y rutas troncales. Manejó el caso de desvío por obra de forma autónoma y comunicó al despachador correctamente. Actitud de servicio al usuario destacable en la simulación de abordaje masivo.', senalAlerta: 'La gestión documental de novedades de fin de turno tomó más tiempo del estándar; agilizar con práctica en el sistema del concesionario.', recomendacion: 'avanzar', files: [] },
   'tp-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buen dominio del protocolo de seguridad vial y manejo bajo condiciones de lluvia. Conocimiento correcto del sistema de recaudo electrónico y gestión de errores de tarjeta.', senalAlerta: 'Menor fluidez en el manejo del caso de avería mecánica en ruta; reforzar procedimiento de reporte y señalización de emergencia.', recomendacion: 'avanzar_reservas', files: [] },
+  // Distribución Urbana — Prueba técnica: simulación de ruta de entrega y manejo de guías
+  'd-e1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 5, iniciativa: 4 }, destacados: 'Planificó la ruta de 28 entregas en menos de 5 minutos optimizando por zonas geográficas. Manejó sin problemas el sistema de guías digitales y resolvió el caso de devolución con procedimiento correcto. Actitud de servicio al cliente final muy destacada.', senalAlerta: 'El tiempo de cargue del vehículo fue ligeramente superior al estándar; reforzar dinámica de cargue organizado en la inducción.', recomendacion: 'avanzar', files: [] },
+  'd-e2': { ratings: { dominio: 5, resolucion: 4, calidad: 4, comunicacion: 5, iniciativa: 4 }, destacados: 'Buen dominio de la aplicación de seguimiento de entregas. Resolvió el caso de cliente ausente siguiendo el protocolo correcto (foto de fachada + notificación). Conocimiento claro de las zonas de Bogotá norte y oriente.', senalAlerta: 'La gestión del caso de mercancía dañada fue reactiva; reforzar protocolo de evidencia fotográfica inmediata.', recomendacion: 'avanzar', files: [] },
+  'd-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buena orientación espacial y conocimiento de rutas en zona sur. Manejo correcto del proceso de liquidación de guías al final del turno. Disposición para el trabajo físico de cargue y descargue sin reservas.', senalAlerta: 'Menor fluidez en el manejo del caso de reclamación en destino; reforzar protocolo de atención al receptor en la inducción.', recomendacion: 'avanzar_reservas', files: [] },
+  // Carga Refrigerada (Vigía) — Prueba técnica: simulación de ruta intermunicipal con cadena de frío
+  'v-e1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 5 }, destacados: 'Identificó correctamente la alarma de temperatura del termógrafo en el caso simulado y siguió el protocolo: parada, verificación de la unidad refrigerante, contacto con despacho y registro en bitácora. Conocimiento preciso de la ruta Bogotá–Cali con puntos de control de temperatura en Buga y Palmira.', senalAlerta: 'El tiempo de decisión ante la alarma fue correcto pero podría ser más rápido; practicar protocolo hasta hacerlo automático.', recomendacion: 'avanzar', files: [] },
+  'v-e2': { ratings: { dominio: 5, resolucion: 4, calidad: 5, comunicacion: 4, iniciativa: 4 }, destacados: 'Muy buen dominio del proceso de precooling del furgón antes de cargue. Resolvió el caso de fallo de la unidad refrigerante en ruta con decisión correcta (estación de servicio certificada más cercana). Registro en RNDC sin errores en la simulación.', senalAlerta: 'La comunicación con el cliente receptor en el caso de retraso fue básica; reforzar el protocolo de notificación proactiva.', recomendacion: 'avanzar', files: [] },
+  'v-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buen conocimiento de la cadena de frío para alimentos perecederos. Manejo correcto del proceso de entrega con verificación de temperatura en recepción y firma de remisión refrigerada. Conoce las diferencias de manejo entre NPR con motor auxiliar y sin motor auxiliar.', senalAlerta: 'El caso de documentación de novedad en RNDC fue menos ágil; reforzar el proceso de registro digital durante la inducción.', recomendacion: 'avanzar_reservas', files: [] },
   // Finanzas: 3 de 6 respondieron la prueba técnica
   'mfin-1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 4 }, destacados: 'Dominio profundo de análisis financiero y costeo industrial. Resolvió el caso de presupuesto con precisión metodológica, identificando desviaciones clave y proponiendo acciones correctivas concretas con sustento cuantitativo.', senalAlerta: 'El análisis de escenarios fue conservador; en situaciones de alta incertidumbre podría limitarse a lo conocido.', recomendacion: 'avanzar', files: [] },
   'mfin-2': { ratings: { dominio: 5, resolucion: 4, calidad: 5, comunicacion: 5, iniciativa: 4 }, destacados: 'Solución financiera muy bien estructurada con foco en eficiencia operativa. Identificó con precisión los centros de costo con mayor desviación y propuso reducciones con fundamento técnico claro.', senalAlerta: 'La presentación del caso tomó más tiempo del estipulado; reforzar agilidad bajo presión de tiempo.', recomendacion: 'avanzar', files: [] },

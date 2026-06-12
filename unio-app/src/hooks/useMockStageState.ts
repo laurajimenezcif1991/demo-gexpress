@@ -5,7 +5,7 @@ export type MockStageKey = PipelineStageKey | 'finalistas';
 
 const STORAGE_KEY = 'unio-mock-stage';
 // Bump this whenever pre-seeded mock candidates change, to clear stale localStorage.
-const STORAGE_VERSION = 'v4';
+const STORAGE_VERSION = 'v5';
 
 const STAGE_ORDER: MockStageKey[] = [
   'scoring',
@@ -29,10 +29,10 @@ export const DEFAULT_MOCK_PROGRESS: Record<string, MockStageKey> = {
   'mock-comf-gca': 'evaluaciones',
   'mock-comf-gcv': 'evaluaciones',
   'mock-comf-cb':  'evaluaciones',
-  // Demo Transportes — Transporte & Logística
+  // Demo Transportes — Transporte & Logística (las 3 vacantes con pipeline completo hasta Pruebas)
   'mock-transp-pub': 'evaluaciones',
-  'mock-vigia':      'entrevistas',
-  'mock-distrib':    'prescreening',
+  'mock-vigia':      'evaluaciones',
+  'mock-distrib':    'evaluaciones',
 };
 
 interface MockStageData {
