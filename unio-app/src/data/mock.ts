@@ -2606,6 +2606,121 @@ const distribCandidates: Candidate[] = [
   _mkDistrib('d-20', 'Ricardo Álvarez',        35, _p(55, 'men'), 'RA', '#8750F6', 'Bogotá',       '1 Año',   "$2'300.000", 'en_rango'),
 ];
 
+// ── Prueba Psicológica: perfil conductor C2 transporte público ─────────────────
+function _psychTransp(score: number, name: string): PsychTestResult {
+  return {
+    score: Math.round(score * 0.95),
+    insight: `${name} presenta un perfil conductual con alta orientación a procedimientos y seguridad vial. Gestiona adecuadamente el estrés en ruta y opera con autonomía en contextos de alta demanda de pasajeros.`,
+    fitCards: [
+      {
+        axis: 'Seguridad vial y gestión del riesgo',
+        idealScore: 90, candidateScore: score,
+        summary: 'Alta conciencia del riesgo en operación urbana.',
+        detail: 'Respeta protocolos de seguridad, anticipa situaciones de riesgo en vía y actúa con prudencia en condiciones de tráfico adversas. Fundamental para operación de flota con alta exposición a accidentes.',
+      },
+      {
+        axis: 'Tolerancia al estrés en ruta',
+        idealScore: 82, candidateScore: score - 5,
+        summary: 'Manejo emocional estable en horarios exigentes.',
+        detail: 'Capacidad de mantener la calma ante congestión, usuarios conflictivos y condiciones climáticas adversas. El perfil demuestra resiliencia en jornadas extensas y turnos rotativos sin deterioro del rendimiento.',
+      },
+      {
+        axis: 'Orientación a procedimientos',
+        idealScore: 85, candidateScore: score - 3,
+        summary: 'Adherencia a rutas y protocolos operativos.',
+        detail: 'Cumple estrictamente con itinerarios, procedimientos de abordaje y protocolos de reporte de novedades. La adherencia a normas es crítica en operadores de transporte público concesionado.',
+      },
+      {
+        axis: 'Servicio al usuario',
+        idealScore: 75, candidateScore: score - 8,
+        summary: 'Trato respetuoso y orientación al pasajero.',
+        detail: 'Maneja situaciones de alta demanda de usuarios con cortesía y eficiencia. La orientación al servicio reduce quejas, mejora la percepción de calidad y contribuye a los indicadores del concesionario.',
+      },
+    ],
+    radarPoints: [
+      { label: 'Seg. vial',        value: score     },
+      { label: 'Estrés en ruta',   value: score - 5 },
+      { label: 'Procedimientos',   value: score - 3 },
+      { label: 'Autonomía',        value: score - 6 },
+      { label: 'Puntualidad',      value: score - 2 },
+      { label: 'Servicio usuario', value: score - 8 },
+      { label: 'Trabajo en equipo',value: score -10 },
+      { label: 'Adaptabilidad',    value: score - 4 },
+    ],
+    veredicto: [
+      { title: 'Quién es conductualmente', body: `Perfil estable, orientado a la norma y con alta tolerancia a la rutina operativa. Trabaja con disciplina en contextos altamente estructurados. Su fortaleza está en la adherencia a protocolos, no en la improvisación. La constancia y el control emocional lo hacen apto para operación de largo plazo.` },
+      { title: 'Fit con este rol', body: `El rol de conductor SITP/TM requiere exactamente las competencias más fuertes de este perfil: disciplina operativa, manejo del estrés en tráfico urbano y orientación al usuario. El eje de servicio al usuario puede afinarse en la inducción con el estándar de calidad del concesionario.` },
+    ],
+    preguntas: [
+      { tag: 'Para: Jefe de Operaciones', question: '"Cuéntame de una situación difícil en ruta — un usuario conflictivo, un cierre vial inesperado — y cómo lo manejaste."', validates: 'Tolerancia al estrés y toma de decisiones en ruta' },
+      { tag: 'Para: RRHH', question: '"¿Cómo te organizas cuando tienes turno nocturno y al día siguiente turno de madrugada? ¿Cómo cuidas tu descanso y rendimiento?"', validates: 'Autogestión y disciplina en turnos rotativos' },
+    ],
+  };
+}
+
+// ── Candidatos en EVALUACIONES (pipeline completo) ─────────────────────────────
+function _mkTranspPubEval(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string): Candidate {
+  const idx = Math.max(0, parseInt(id.split('-')[1]) - 1) || 0;
+  const job = _transpPubJobs[idx % _transpPubJobs.length] ?? _transpPubJobs[0];
+  const prevJob = _transpPubExpPrev[idx % _transpPubExpPrev.length] ?? _transpPubExpPrev[0];
+  const runt = _transpPubRunt[idx % _transpPubRunt.length];
+  const trips = Math.round(180 + (score - 75) * 10);
+  return {
+    id, name, role: 'Conductor C2 Transporte Público', sector: 'Transporte Público / SITP',
+    years, location: `${city}, Colombia`,
+    bio: 'Conductor de transporte público urbano con licencia C2 y amplia experiencia en operación de rutas SITP y TransMilenio. Servicio al usuario, cumplimiento de frecuencias y protocolos de seguridad vial.',
+    score, photo, avatarInitials: initials, avatarColor: color,
+    hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
+    superpoder: '"Servicio al usuario impecable y cero incidentes en operación urbana"',
+    aspiration, budget: "$2'800.000", salaryRange: 'en_rango', currentStage: 'evaluaciones',
+    runtVerification: {
+      cc: runt?.cc ?? '00000000',
+      totalManifiestos: trips,
+      licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+    },
+    scoringAI: {
+      score: Math.round(score * 0.95), status: 'continua',
+      resumen: `${name} cumple todos los criterios de verificación. Licencia C2 vigente, ${trips} servicios SITP registrados y sin comparendos activos en RUNT.`,
+      noNegociables: [
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
+        { label: 'Sin comparendos activos ni suspensiones (RUNT)', cumple: true },
+        { label: 'Disponibilidad para turnos rotativos (incluye festivos)', cumple: true },
+        { label: 'Residencia en Bogotá o municipios del área metropolitana', cumple: true },
+      ],
+      logros: [`${trips} servicios urbanos registrados en SITP — supera umbral mínimo de 100 servicios`, `Licencia C2 con más de 3 años de expedición, sin suspensiones en RUNT`, 'Cero comparendos activos ni multas pendientes'],
+      senales: ['Confirmar disponibilidad para turno nocturno si la ruta lo requiere'],
+    },
+    prescreeningAI: {
+      score: Math.round(score * 0.96), status: 'continua',
+      resumen: `${name} confirmó licencia C2 vigente y record vial limpio. Con ${years} de experiencia en transporte público, demostró conocimiento del protocolo de servicio al usuario y disponibilidad total para turnos rotativos.`,
+      noNegociables: [
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Sin suspensiones.` } as EvalRow,
+        { label: 'Sin comparendos activos ni suspensiones en RUNT', score: score, evidencia: `Declara record limpio verificado en RUNT.` } as EvalRow,
+        { label: 'Disponibilidad para turnos rotativos (incluye fines de semana y festivos)', score: score - 2, evidencia: `Confirma disponibilidad total, ha operado en turnos nocturnos y dominicales.` } as EvalRow,
+        { label: 'Experiencia mínima 2 años en transporte público o carga', score: score - 1, evidencia: `${years} de experiencia en transporte público urbano con múltiples operadores SITP.` } as EvalRow,
+      ],
+      plusDetectados: [`Conocimiento de rutas SITP en corredores norte y occidental de Bogotá`, `Manejo de articulados TransMilenio con certificación vigente`, `Actitud de servicio al usuario evidenciada durante la entrevista`],
+      senales: [`Confirmar si tiene experiencia específica en articulados o solo buses padrones`],
+      entornoPersonal: [
+        { label: 'Municipio', value: city, status: 'ok' },
+        { label: 'Disponibilidad', value: 'Inmediata', status: 'ok' },
+        { label: 'Turnos rotativos', value: 'Disponibilidad total', status: 'ok' },
+      ],
+      experienciaLaboral: [
+        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Operación de ruta ${job.r} con cumplimiento de frecuencias y atención al usuario. ${trips} servicios completados sin incidentes mayores.` },
+        { empresa: prevJob.c, rol: prevJob.r, periodo: prevJob.periodo, descripcion: prevJob.desc },
+      ],
+    },
+    psychTest: _psychTransp(score, name),
+  };
+}
+
+const transpPubEvaluaciones: Candidate[] = [
+  _mkTranspPubEval('tp-e1', 'Rodrigo Castellanos',  93, _p(16, 'men'), 'RC', '#8750F6', 'Bogotá',  '14 Años', "$2'800.000"),
+  _mkTranspPubEval('tp-e2', 'Camilo Reyes',          89, _p(17, 'men'), 'CR', '#27BE69', 'Soacha',  '11 Años', "$2'700.000"),
+  _mkTranspPubEval('tp-e3', 'Humberto Ávila',        86, _p(18, 'men'), 'HA', '#295BFF', 'Bogotá',  '9 Años',  "$2'900.000"),
+];
+
 const transpPubScoring      = transpPubCandidates.filter(c => c.currentStage === 'scoring');
 const transpPubPrescreening = transpPubCandidates.filter(c => c.currentStage === 'prescreening');
 const transpPubEntrevistas  = transpPubCandidates.filter(c => c.currentStage === 'entrevistas');
@@ -2635,6 +2750,11 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
     prescreening: {
       'tp-6': 'continua', 'tp-7': 'continua',
       'tp-8': 'por_validar', 'tp-9': 'por_validar', 'tp-10': 'descartado',
+    },
+    evaluaciones: {
+      'tp-e1': 'continua',
+      'tp-e2': 'continua',
+      'tp-e3': 'por_validar',
     },
   },
   'mock-distrib': {
@@ -2679,7 +2799,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
   ];
 
   switch (jobId) {
-    case 'mock-transp-pub': return transpPipeline(20, 10, 5, 0);
+    case 'mock-transp-pub': return transpPipeline(20, 10, 5, 3);
     case 'mock-vigia':      return transpPipeline(20, 10, 5, 0);
     case 'mock-distrib':    return transpPipeline(20, 10, 0, 0);
     case 'mock-recep':
@@ -2736,7 +2856,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
 }
 
 export const mockCandidatesByStage: Record<string, Partial<Record<string, Candidate[]>>> = {
-  'mock-transp-pub': { scoring: [...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEntrevistas, ...transpPubPrescreening], entrevistas: transpPubEntrevistas },
+  'mock-transp-pub': { scoring: [...transpPubEvaluaciones, ...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEvaluaciones, ...transpPubEntrevistas, ...transpPubPrescreening], entrevistas: [...transpPubEvaluaciones, ...transpPubEntrevistas], evaluaciones: transpPubEvaluaciones },
   'mock-vigia':      { scoring: [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEntrevistas, ...vigiaPrescreening], entrevistas: vigiaEntrevistas },
   'mock-distrib':    { scoring: [...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEntrevistas, ...distribPrescreening], entrevistas: distribEntrevistas },
   'mock-recep':    { scoring: recepCandidates },
@@ -2748,6 +2868,7 @@ export const mockCandidatesByStage: Record<string, Partial<Record<string, Candid
 };
 
 export const mockCandidatesById: Record<string, Candidate> = [
+  ...transpPubEvaluaciones,
   ...transpPubCandidates,
   ...vigiaCandidates,
   ...distribCandidates,
@@ -2762,6 +2883,10 @@ export const mockCandidatesById: Record<string, Candidate> = [
 // ─── Mock Tech Test Feedback ──────────────────────────────────────────────────
 // Pre-seeded into localStorage by useCandidateDetail when candidate is loaded.
 export const mockTechFeedback: Record<string, TechTestFeedback> = {
+  // Transporte Público — Prueba técnica: simulación de manejo defensivo + conocimiento de rutas
+  'tp-e1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 5 }, destacados: 'Demostró dominio completo del protocolo de manejo defensivo en simulación de ruta urbana. Identificó correctamente los puntos críticos de la ruta 508 (Usme - Portal Sur) y respondió adecuadamente ante escenarios de cierre vial y accidente en vía.', senalAlerta: 'El tiempo de respuesta ante pasajero conflictivo fue ligeramente lento; reforzar protocolo de atención en la inducción operativa.', recomendacion: 'avanzar', files: [] },
+  'tp-e2': { ratings: { dominio: 5, resolucion: 4, calidad: 4, comunicacion: 5, iniciativa: 4 }, destacados: 'Excelente conocimiento de nomenclatura vial y rutas troncales. Manejó el caso de desvío por obra de forma autónoma y comunicó al despachador correctamente. Actitud de servicio al usuario destacable en la simulación de abordaje masivo.', senalAlerta: 'La gestión documental de novedades de fin de turno tomó más tiempo del estándar; agilizar con práctica en el sistema del concesionario.', recomendacion: 'avanzar', files: [] },
+  'tp-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buen dominio del protocolo de seguridad vial y manejo bajo condiciones de lluvia. Conocimiento correcto del sistema de recaudo electrónico y gestión de errores de tarjeta.', senalAlerta: 'Menor fluidez en el manejo del caso de avería mecánica en ruta; reforzar procedimiento de reporte y señalización de emergencia.', recomendacion: 'avanzar_reservas', files: [] },
   // Finanzas: 3 de 6 respondieron la prueba técnica
   'mfin-1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 4 }, destacados: 'Dominio profundo de análisis financiero y costeo industrial. Resolvió el caso de presupuesto con precisión metodológica, identificando desviaciones clave y proponiendo acciones correctivas concretas con sustento cuantitativo.', senalAlerta: 'El análisis de escenarios fue conservador; en situaciones de alta incertidumbre podría limitarse a lo conocido.', recomendacion: 'avanzar', files: [] },
   'mfin-2': { ratings: { dominio: 5, resolucion: 4, calidad: 5, comunicacion: 5, iniciativa: 4 }, destacados: 'Solución financiera muy bien estructurada con foco en eficiencia operativa. Identificó con precisión los centros de costo con mayor desviación y propuso reducciones con fundamento técnico claro.', senalAlerta: 'La presentación del caso tomó más tiempo del estipulado; reforzar agilidad bajo presión de tiempo.', recomendacion: 'avanzar', files: [] },

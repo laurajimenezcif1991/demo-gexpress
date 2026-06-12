@@ -28,7 +28,7 @@ export const DEFAULT_MOCK_PROGRESS: Record<string, MockStageKey> = {
   'mock-comf-gcv': 'evaluaciones',
   'mock-comf-cb':  'evaluaciones',
   // Demo Transportes — Transporte & Logística
-  'mock-transp-pub': 'entrevistas',
+  'mock-transp-pub': 'evaluaciones',
   'mock-vigia':      'entrevistas',
   'mock-distrib':    'prescreening',
 };
