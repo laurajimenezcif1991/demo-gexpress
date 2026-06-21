@@ -75,6 +75,7 @@ export interface Candidate {
     experienciaLaboral?: { empresa: string; rol: string; periodo: string; descripcion: string }[];
   };
   psychTest?: PsychTestResult;
+  hasCV?: boolean;
   applicationHistory?: { count: number; lastDate?: string; status: 'recurrente' | 'primera_vez' };
   rejectionType?: 'definitivo' | 'circunstancial' | null;
   runtVerification?: {
@@ -2457,9 +2458,9 @@ const transpPubCandidates: Candidate[] = [
   _mkTranspPub('tp-3',  'Humberto Ávila',          86, _p(18, 'men'), 'HA', '#295BFF', 'Bogotá',      '9 Años',  "$2'900.000", 'en_rango',       'entrevistas', { applicationHistory: { count: 1, status: 'primera_vez' }, rejectionType: 'circunstancial' }),
   _mkTranspPub('tp-4',  'Mauricio Soto',           83, _p(19, 'men'), 'MS', '#F6A350', 'Bogotá',      '8 Años',  "$2'800.000", 'en_rango',       'entrevistas', { applicationHistory: { count: 2, lastDate: '2024-11', status: 'recurrente' }, rejectionType: 'definitivo' }),
   _mkTranspPub('tp-5',  'Libardo Pinzón',          80, _p(20, 'men'), 'LP', '#8750F6', 'Chía',        '7 Años',  "$2'700.000", 'en_rango',       'entrevistas'),
-  _mkTranspPub('tp-6',  'Julián Méndez',           77, _p(21, 'men'), 'JM', '#27BE69', 'Bogotá',      '6 Años',  "$2'800.000", 'en_rango',       'prescreening'),
-  _mkTranspPub('tp-7',  'Ernesto Vásquez',         73, _p(22, 'men'), 'EV', '#295BFF', 'Bogotá',      '5 Años',  "$2'600.000", 'en_rango',       'prescreening'),
-  _mkTranspPub('tp-8',  'Samuel Giraldo',          68, _p(23, 'men'), 'SG', '#F6A350', 'Soacha',      '5 Años',  "$2'700.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-6',  'Julián Méndez',           77, _p(21, 'men'), 'JM', '#27BE69', 'Bogotá',      '6 Años',  "$2'800.000", 'en_rango',       'prescreening', { hasCV: false }),
+  _mkTranspPub('tp-7',  'Ernesto Vásquez',         73, _p(22, 'men'), 'EV', '#295BFF', 'Bogotá',      '5 Años',  "$2'600.000", 'en_rango',       'prescreening', { hasCV: false }),
+  _mkTranspPub('tp-8',  'Samuel Giraldo',          68, _p(23, 'men'), 'SG', '#F6A350', 'Soacha',      '5 Años',  "$2'700.000", 'en_rango',       'prescreening', { hasCV: false }),
   _mkTranspPub('tp-9',  'Alberto Pedraza',         55, _p(24, 'men'), 'AP', '#8750F6', 'Bogotá',      '4 Años',  "$2'500.000", 'en_rango',       'prescreening'),
   _mkTranspPub('tp-10', 'Ignacio Forero',          48, _p(25, 'men'), 'IF', '#27BE69', 'Bogotá',      '3 Años',  "$2'600.000", 'en_rango',       'prescreening'),
   _mkTranspPub('tp-11', 'Diego Cárdenas',          84, _p(26, 'men'), 'DC', '#295BFF', 'Bogotá',      '7 Años',  "$2'800.000", 'en_rango'),

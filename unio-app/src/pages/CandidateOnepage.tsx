@@ -633,7 +633,7 @@ export default function CandidateOnepage() {
                 >
                   {(hasPrescreening || waCompleted) && (
                     prescreeningData ? (
-                      <PrescreeningContent prescreening={prescreeningData} />
+                      <PrescreeningContent prescreening={prescreeningData} hasCV={candidate.hasCV} />
                     ) : (
                       <div style={{ padding: '8px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
                         Pendiente: la pre-entrevista IA aún no ha sido procesada para este candidato.
@@ -1253,9 +1253,33 @@ function ScoringContent({ candidate }: { candidate: (typeof candidates)[0] }) {
 
 // ─── Prescreening content ─────────────────────────────────────────────────────
 
-function PrescreeningContent({ prescreening }: { prescreening: NonNullable<typeof candidates[0]['prescreeningAI']> }) {
+function PrescreeningContent({ prescreening, hasCV }: { prescreening: NonNullable<typeof candidates[0]['prescreeningAI']>; hasCV?: boolean }) {
   return (
     <div style={{ paddingTop: '20px' }}>
+      {/* WhatsApp profile pill — shown only when candidate has no CV */}
+      {hasCV === false && (
+        <div style={{ marginBottom: '16px' }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '5px 12px',
+              borderRadius: '999px',
+              background: '#E8F8EF',
+              border: '1px solid #25D366',
+              fontSize: '12px',
+              fontWeight: 600,
+              color: '#1a7a42',
+              fontFamily: 'var(--font-display)',
+            }}
+          >
+            <WaIcon size={14} color="#25D366" />
+            Perfil construido vía WhatsApp
+          </span>
+        </div>
+      )}
+
       {/* Resumen candidato */}
       <div style={{ marginBottom: '24px' }}>
         <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 8px', color: 'var(--color-text-primary)' }}>
