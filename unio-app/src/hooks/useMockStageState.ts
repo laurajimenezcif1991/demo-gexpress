@@ -5,7 +5,7 @@ export type MockStageKey = PipelineStageKey | 'finalistas';
 
 const STORAGE_KEY = 'unio-mock-stage';
 // Bump this whenever pre-seeded mock candidates change, to clear stale localStorage.
-const STORAGE_VERSION = 'v5';
+const STORAGE_VERSION = 'v6';
 
 const STAGE_ORDER: MockStageKey[] = [
   'scoring',

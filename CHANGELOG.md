@@ -9,6 +9,18 @@
 
 ---
 
+## [pendiente] — 21 Jun 2026
+
+### Fix: Duplicados y estado "Pendiente" en módulo Pruebas
+
+- Eliminar candidatos de evaluaciones (d-e*, tp-e*, v-e*) de los arrays de scoring/prescreening/entrevistas — evita que aparezcan dos veces la misma persona en cada etapa
+- Corregir `getMockPipelineStages` para mock-distrib y mock-vigia: usar `transpPipeline(20,10,5,3)` para que el pipeline muestre todas las etapas completadas correctamente
+- Agregar método `seedStatuses` al `CandidateStatusContext` para aplicar statuses iniciales en un solo setState
+- Importar y aplicar `MOCK_INITIAL_STATUSES` en `CandidateList.tsx` via `useEffect` — candidatos en Pruebas ahora muestran "Continúa" o "Por validar" en lugar de "Pendiente"
+- Bump `STORAGE_VERSION` a v6 para limpiar localStorage desactualizado
+
+---
+
 ## [b2ad114] — 28 May 2026
 
 ### Analytics & Reportes

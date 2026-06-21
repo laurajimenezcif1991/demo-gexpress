@@ -2937,8 +2937,8 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
 
   switch (jobId) {
     case 'mock-transp-pub': return transpPipeline(20, 10, 5, 3);
-    case 'mock-vigia':      return transpPipeline(20, 10, 5, 0);
-    case 'mock-distrib':    return transpPipeline(20, 10, 0, 0);
+    case 'mock-vigia':      return transpPipeline(20, 10, 5, 3);
+    case 'mock-distrib':    return transpPipeline(20, 10, 5, 3);
     case 'mock-recep':
       return [
         s('scoring',      'Scoring IA',        'Scoring',       'in_progress', 15, true),
@@ -2993,9 +2993,11 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
 }
 
 export const mockCandidatesByStage: Record<string, Partial<Record<string, Candidate[]>>> = {
-  'mock-transp-pub': { scoring: [...transpPubEvaluaciones, ...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEvaluaciones, ...transpPubEntrevistas, ...transpPubPrescreening], entrevistas: [...transpPubEvaluaciones, ...transpPubEntrevistas], evaluaciones: transpPubEvaluaciones },
-  'mock-vigia':   { scoring: [...vigiaEvaluaciones, ...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEvaluaciones, ...vigiaEntrevistas, ...vigiaPrescreening], entrevistas: [...vigiaEvaluaciones, ...vigiaEntrevistas], evaluaciones: vigiaEvaluaciones },
-  'mock-distrib': { scoring: [...distribEvaluaciones, ...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEvaluaciones, ...distribEntrevistas, ...distribPrescreening], entrevistas: [...distribEvaluaciones, ...distribEntrevistas], evaluaciones: distribEvaluaciones },
+  // evaluaciones candidates (tp-e*, v-e*, d-e*) only appear in their own stage —
+  // keeping them out of scoring/prescreening/entrevistas prevents duplicate cards.
+  'mock-transp-pub': { scoring: [...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEntrevistas, ...transpPubPrescreening], entrevistas: transpPubEntrevistas, evaluaciones: transpPubEvaluaciones },
+  'mock-vigia':   { scoring: [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEntrevistas, ...vigiaPrescreening], entrevistas: vigiaEntrevistas, evaluaciones: vigiaEvaluaciones },
+  'mock-distrib': { scoring: [...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEntrevistas, ...distribPrescreening], entrevistas: distribEntrevistas, evaluaciones: distribEvaluaciones },
   'mock-recep':    { scoring: recepCandidates },
   'mock-bodega':   { scoring: [...bodegaPreCandidates, ...bodegaScoreOnly], prescreening: bodegaPreCandidates },
   'mock-th':       { scoring: [...thEntrevistasCandidates, ...thPreCandidates, ...thScoreOnly], prescreening: [...thEntrevistasCandidates, ...thPreCandidates], entrevistas: thEntrevistasCandidates },

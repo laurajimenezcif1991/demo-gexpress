@@ -11,7 +11,7 @@ import { useCandidateStatus } from '../context/CandidateStatusContext';
 import { usePipeline } from '../context/PipelineContext';
 import { useCandidates } from '../hooks/useCandidates';
 import { useVacantes } from '../hooks/useVacantes';
-import { mockCandidatesByStage, mockCandidatesById } from '../data/mock';
+import { mockCandidatesByStage, mockCandidatesById, MOCK_INITIAL_STATUSES } from '../data/mock';
 import { useMockStageState } from '../hooks/useMockStageState';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import WhatsAppAgendarEntrevistaModal from '../components/ui/WhatsAppAgendarEntrevistaModal';
@@ -31,7 +31,7 @@ export default function CandidateList() {
   const { jobId = 'v1', processId, stage = 'scoring' } = useParams<{ jobId: string; processId?: string; stage?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const { setStatuses, getStatus } = useCandidateStatus();
+  const { setStatuses, getStatus, seedStatuses } = useCandidateStatus();
 
   const STAGE_ORDER = ['scoring', 'prescreening', 'entrevistas', 'evaluaciones'] as const;
 
@@ -67,6 +67,13 @@ export default function CandidateList() {
 
   // For mock flows, use local mock data instead of API results
   const isMock = jobId.startsWith('mock-');
+
+  // Seed pre-defined statuses for mock vacancies (runs once per stage/vacancy change)
+  useEffect(() => {
+    if (!isMock) return;
+    const stageRecord = MOCK_INITIAL_STATUSES[jobId]?.[currentStage];
+    if (stageRecord) seedStatuses(stageRecord, currentStage);
+  }, [jobId, currentStage, isMock]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Advance progressStage when navigating to a later stage — never go backwards.
   // Also seed from DEFAULT_MOCK_PROGRESS on first load so pre-seeded demo vacancies

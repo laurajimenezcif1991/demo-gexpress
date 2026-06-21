@@ -7,6 +7,8 @@ interface CandidateStatusContextValue {
   setStatus: (id: string, stage: string, status: CandidateStatus) => void;
   setStatuses: (ids: string[], stage: string, status: CandidateStatus) => void;
   getStatus: (id: string, stage: string) => CandidateStatus | undefined;
+  /** Bulk-seed initial statuses from a record keyed by candidateId → status. Single state update. */
+  seedStatuses: (record: Record<string, string>, stage: string) => void;
 }
 
 const CandidateStatusContext = createContext<CandidateStatusContextValue | null>(null);
@@ -30,12 +32,25 @@ export function CandidateStatusProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const seedStatuses = (record: Record<string, string>, stage: string) => {
+    setStatusesState((prev) => {
+      const next = new Map(prev);
+      Object.entries(record).forEach(([id, status]) => {
+        const k = key(id, stage);
+        if (!prev.has(k)) {
+          next.set(k, status as CandidateStatus);
+        }
+      });
+      return next;
+    });
+  };
+
   const getStatus = (id: string, stage: string): CandidateStatus | undefined => {
     return statuses.get(key(id, stage));
   };
 
   return (
-    <CandidateStatusContext.Provider value={{ statuses, setStatus, setStatuses, getStatus }}>
+    <CandidateStatusContext.Provider value={{ statuses, setStatus, setStatuses, getStatus, seedStatuses }}>
       {children}
     </CandidateStatusContext.Provider>
   );
