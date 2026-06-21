@@ -2,7 +2,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Users,
   Filter,
-  Search,
   AlignLeft,
   MessageSquare,
   CheckSquare,
@@ -11,7 +10,7 @@ import {
 } from 'lucide-react';
 import { usePipeline } from '../../context/PipelineContext';
 import { useMockStageState } from '../../hooks/useMockStageState';
-import { mockFinalistCards, getMockPipelineStages } from '../../data/mock';
+import { mockFinalistCards } from '../../data/mock';
 import { assetUrl } from '../../utils/assets';
 
 /** Finalistas está habilitado — la ruta /pipeline/:jobId/finalistas apunta a Shortlist. */
@@ -82,43 +81,31 @@ export default function Sidebar({ activeItem }: SidebarProps) {
     },
   ];
 
-  // Use dynamic labels from getMockPipelineStages when inside a mock job
-  const pipelineStages = isMockJob ? getMockPipelineStages(jobId) : null;
-  const stageLabel = (stageId: string, fallback: string) =>
-    pipelineStages?.find(s => s.id === stageId)?.label ?? fallback;
-
   const stageItems = [
     {
-      id: 'scoring',
-      label: stageLabel('scoring', 'Scoring IA'),
-      Icon: Search,
-      path: `${stageBase}/scoring`,
-      locked: false,
-    },
-    {
       id: 'prescreening',
-      label: stageLabel('prescreening', 'Pre screening IA'),
+      label: 'Prescreening IA',
       Icon: AlignLeft,
       path: `${stageBase}/prescreening`,
       locked: false,
     },
     {
       id: 'entrevistas',
-      label: stageLabel('entrevistas', 'Entrevistas'),
+      label: 'Entrevistas',
       Icon: MessageSquare,
       path: `${stageBase}/entrevistas`,
       locked: false,
     },
     {
       id: 'evaluaciones',
-      label: stageLabel('evaluaciones', 'Pruebas'),
+      label: 'Pruebas',
       Icon: CheckSquare,
       path: `${stageBase}/evaluaciones`,
       locked: false,
     },
     {
       id: 'finalistas',
-      label: stageLabel('finalistas', 'Finalistas'),
+      label: 'Candidatos Finales',
       Icon: CheckCheck,
       path: `${stageBase}/finalistas`,
       locked: false,
