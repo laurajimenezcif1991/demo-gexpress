@@ -29,6 +29,8 @@ export interface PipelineStage {
   candidateCount: number;
   isAI: boolean;
   route: string;
+  /** When true the action button is enabled regardless of status (overrides not_started lock) */
+  forceEnabled?: boolean;
 }
 
 export interface Candidate {

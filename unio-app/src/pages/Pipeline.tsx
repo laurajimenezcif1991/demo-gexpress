@@ -26,6 +26,7 @@ const stageColors: Record<string, { bg: string; fg: string }> = {
   entrevistas: { bg: 'var(--color-stage-3-bg)', fg: 'var(--color-stage-3-fg)' },
   evaluaciones: { bg: 'var(--color-stage-4-bg)', fg: 'var(--color-stage-4-fg)' },
   finalistas: { bg: '#FFE5F2', fg: '#990032' },
+  estudios: { bg: 'var(--color-surface-muted)', fg: 'var(--color-text-muted)' },
 };
 
 const stageBadgeVariants: Record<string, 'scoring' | 'prescreening' | 'entrevistas' | 'evaluaciones' | 'finalistas'> = {
@@ -43,7 +44,8 @@ const STAGE_META: Record<string, { label: string; stageBadge: string }> = {
   prescreening: { label: 'Prescreening IA',   stageBadge: 'Prescreening' },
   entrevistas:  { label: 'Entrevistas',       stageBadge: 'Entrevistas' },
   evaluaciones: { label: 'Pruebas',           stageBadge: 'Pruebas' },
-  finalistas:   { label: 'Finalistas',        stageBadge: 'Finalistas' },
+  finalistas:   { label: 'Aprobados',         stageBadge: 'Aprobados' },
+  estudios:     { label: 'Validaciones',      stageBadge: 'Validaciones' },
 };
 
 function mapPhaseStatus(label?: string): 'completed' | 'in_progress' | 'not_started' {
@@ -54,7 +56,7 @@ function mapPhaseStatus(label?: string): 'completed' | 'in_progress' | 'not_star
   return 'not_started';
 }
 
-const STAGE_ORDER = ['scoring', 'prescreening', 'entrevistas', 'evaluaciones', 'finalistas'];
+const STAGE_ORDER = ['scoring', 'prescreening', 'entrevistas', 'evaluaciones', 'finalistas', 'estudios'];
 
 // Normalize API phase type keys to internal stage IDs
 function normalizePhaseType(raw: string): string {
@@ -94,9 +96,9 @@ function mapPhasesToStages(phases: Phase[], jobId: string, processId: string): P
 
   const scoringCount = phaseMap.get('scoring')?.phase_candidates_count ?? 0;
 
-  // Render all stages except scoring (merged into prescreening); use API data where available
+  // Render all stages except scoring (merged into prescreening) and estudios (appended separately)
   return STAGE_ORDER
-    .filter((id) => id !== 'scoring')
+    .filter((id) => id !== 'scoring' && id !== 'estudios')
     .map((id) => {
       const phase = phaseMap.get(id);
       const meta = STAGE_META[id];
@@ -128,7 +130,7 @@ function StageCard({ stage }: { stage: PipelineStage }) {
   const colors = stageColors[stage.id] || stageColors.scoring;
   const isCompleted = stage.status === 'completed';
   const isInProgress = stage.status === 'in_progress';
-  const isNotStarted = stage.status === 'not_started';
+  const isNotStarted = stage.status === 'not_started' && !stage.forceEnabled;
 
   const statusDotColor = isCompleted
     ? 'var(--color-positive-500)'
@@ -243,7 +245,7 @@ function StageCard({ stage }: { stage: PipelineStage }) {
 export default function Pipeline() {
   const navigate = useNavigate();
   const { jobId = '', processId } = useParams<{ jobId: string; processId?: string }>();
-  const { setJobId, setSelectionProcessId, setProgressStage } = usePipeline();
+  const { setJobId, setSelectionProcessId, setProgressStage, finalistaLocked } = usePipeline();
   const { getMockProgressStage, getPendingCandidates } = useMockStageState();
   const { vacantes, rawJobs, loading } = useVacantes();
 
@@ -266,26 +268,47 @@ export default function Pipeline() {
 
   // Build stages — memoized so reference is stable and doesn't cause effect loops
   const stages = useMemo((): PipelineStage[] => {
+    const stageBase = processId
+      ? `/pipeline/${jobId}/process/${processId}`
+      : `/pipeline/${jobId}`;
+
+    const estudiosCard: PipelineStage = {
+      id: 'estudios',
+      label: STAGE_META.estudios.label,
+      stageBadge: STAGE_META.estudios.stageBadge,
+      status: 'not_started',
+      candidateCount: 0,
+      isAI: false,
+      route: `${stageBase}/estudios`,
+      forceEnabled: !finalistaLocked,
+    };
+
     if (jobId.startsWith('mock-')) {
       const base = mergeScoring(getMockPipelineStages(jobId));
       // Lock Finalistas card if no finalists exist yet
       const hasFinalists =
         getPendingCandidates(jobId, 'finalistas').length > 0 ||
         (mockFinalistCards[jobId]?.length ?? 0) > 0;
-      return base.map((s) =>
+      const withFinalistas = base.map((s) =>
         s.id === 'finalistas' && !hasFinalists
           ? { ...s, status: 'not_started' as const }
           : s,
       );
+      return [...withFinalistas, estudiosCard];
     }
-    if (selectionProcess?.phases) return mapPhasesToStages(selectionProcess.phases, jobId, processId ?? '');
-    return mergeScoring(
-      getPipelineStages(jobId).map((s) => ({
-        ...s,
-        route: processId ? `/pipeline/${jobId}/process/${processId}/${s.id}` : s.route,
-      })),
-    );
-  }, [jobId, processId, selectionProcess]);
+    if (selectionProcess?.phases) {
+      return [...mapPhasesToStages(selectionProcess.phases, jobId, processId ?? ''), estudiosCard];
+    }
+    return [
+      ...mergeScoring(
+        getPipelineStages(jobId).map((s) => ({
+          ...s,
+          route: processId ? `/pipeline/${jobId}/process/${processId}/${s.id}` : s.route,
+        })),
+      ),
+      estudiosCard,
+    ];
+  }, [jobId, processId, selectionProcess, finalistaLocked]);
 
   // Derive progressStage from the highest active/completed phase and sync to context
   useEffect(() => {
@@ -420,7 +443,7 @@ export default function Pipeline() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(5, 1fr)',
             gap: '16px',
           }}
         >

@@ -6,6 +6,7 @@ import {
   MessageSquare,
   CheckSquare,
   CheckCheck,
+  ClipboardCheck,
   RotateCcw,
 } from 'lucide-react';
 import { usePipeline } from '../../context/PipelineContext';
@@ -48,6 +49,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       return 'pipeline';
     }
 
+    if (path.includes('/estudios')) return 'estudios';
     if (path === '/finalistas') return 'finalistas';
     if (path.includes('/finalistas')) return 'finalistas';
     if (path.includes('/evaluaciones')) return 'evaluaciones';
@@ -109,6 +111,13 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       Icon: CheckCheck,
       path: `${stageBase}/finalistas`,
       locked: false,
+    },
+    {
+      id: 'estudios',
+      label: 'Validaciones',
+      Icon: ClipboardCheck,
+      path: `${stageBase}/estudios`,
+      locked: finalistasLocked,
     },
   ];
 
