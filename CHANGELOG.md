@@ -11,6 +11,17 @@
 
 ## [pendiente] — 21 Jun 2026
 
+### Refactor: Fusionar tarjeta Scoring con Prescreening en Pipeline
+
+- Actualizar `STAGE_META.prescreening` con label "Prescreening IA" y stageBadge "Prescreening"
+- Añadir función helper `mergeScoring` que suma el candidateCount de scoring en prescreening y elimina scoring como tarjeta visible
+- Aplicar `mergeScoring` en los tres paths de construcción de stages: API (`mapPhasesToStages`), mock (`getMockPipelineStages`) y fallback (`getPipelineStages`)
+- `STAGE_ORDER` mantiene 'scoring' internamente para lógica de progreso; solo se filtra del render
+
+---
+
+## [2a02a2a] — 21 Jun 2026
+
 ### Fix: Duplicados y estado "Pendiente" en módulo Pruebas
 
 - Eliminar candidatos de evaluaciones (d-e*, tp-e*, v-e*) de los arrays de scoring/prescreening/entrevistas — evita que aparezcan dos veces la misma persona en cada etapa

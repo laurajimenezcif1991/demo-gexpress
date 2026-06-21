@@ -40,9 +40,9 @@ const AI_STAGES = new Set(['scoring', 'prescreening']);
 
 const STAGE_META: Record<string, { label: string; stageBadge: string }> = {
   scoring:      { label: 'Scoring IA',        stageBadge: 'Scoring' },
-  prescreening: { label: 'Pre-entrevista IA', stageBadge: 'Pre screening' },
+  prescreening: { label: 'Prescreening IA',   stageBadge: 'Prescreening' },
   entrevistas:  { label: 'Entrevistas',       stageBadge: 'Entrevistas' },
-  evaluaciones: { label: 'Pruebas',            stageBadge: 'Pruebas' },
+  evaluaciones: { label: 'Pruebas',           stageBadge: 'Pruebas' },
   finalistas:   { label: 'Finalistas',        stageBadge: 'Finalistas' },
 };
 
@@ -67,26 +67,51 @@ function normalizePhaseType(raw: string): string {
   return s;
 }
 
+// Merges the scoring card into prescreening (summing candidateCounts) and removes
+// scoring as a visible card. STAGE_ORDER keeps 'scoring' for internal logic only.
+function mergeScoring(stages: PipelineStage[]): PipelineStage[] {
+  const scoringCount = stages.find((s) => s.id === 'scoring')?.candidateCount ?? 0;
+  return stages
+    .map((s) => {
+      if (s.id === 'prescreening') {
+        return {
+          ...s,
+          label: STAGE_META.prescreening.label,
+          stageBadge: STAGE_META.prescreening.stageBadge,
+          candidateCount: s.candidateCount + scoringCount,
+        };
+      }
+      return s;
+    })
+    .filter((s) => s.id !== 'scoring');
+}
+
 function mapPhasesToStages(phases: Phase[], jobId: string, processId: string): PipelineStage[] {
   // Build a map of phases from the API using normalized keys
   const phaseMap = new Map(
     phases.map((p) => [normalizePhaseType(p.process_phase_type), p])
   );
 
-  // Always render all 5 stages; use API data where available, otherwise not_started
-  return STAGE_ORDER.map((id) => {
-    const phase = phaseMap.get(id);
-    const meta = STAGE_META[id];
-    return {
-      id,
-      label: meta.label,
-      stageBadge: meta.stageBadge,
-      status: mapPhaseStatus(phase?.phase_status_label),
-      candidateCount: phase?.phase_candidates_count ?? 0,
-      isAI: AI_STAGES.has(id),
-      route: `/pipeline/${jobId}/process/${processId}/${id}`,
-    };
-  });
+  const scoringCount = phaseMap.get('scoring')?.phase_candidates_count ?? 0;
+
+  // Render all stages except scoring (merged into prescreening); use API data where available
+  return STAGE_ORDER
+    .filter((id) => id !== 'scoring')
+    .map((id) => {
+      const phase = phaseMap.get(id);
+      const meta = STAGE_META[id];
+      const candidateCount =
+        (phase?.phase_candidates_count ?? 0) + (id === 'prescreening' ? scoringCount : 0);
+      return {
+        id,
+        label: meta.label,
+        stageBadge: meta.stageBadge,
+        status: mapPhaseStatus(phase?.phase_status_label),
+        candidateCount,
+        isAI: AI_STAGES.has(id),
+        route: `/pipeline/${jobId}/process/${processId}/${id}`,
+      };
+    });
 }
 
 function formatDate(iso: string): string {
@@ -242,7 +267,7 @@ export default function Pipeline() {
   // Build stages — memoized so reference is stable and doesn't cause effect loops
   const stages = useMemo((): PipelineStage[] => {
     if (jobId.startsWith('mock-')) {
-      const base = getMockPipelineStages(jobId);
+      const base = mergeScoring(getMockPipelineStages(jobId));
       // Lock Finalistas card if no finalists exist yet
       const hasFinalists =
         getPendingCandidates(jobId, 'finalistas').length > 0 ||
@@ -254,10 +279,12 @@ export default function Pipeline() {
       );
     }
     if (selectionProcess?.phases) return mapPhasesToStages(selectionProcess.phases, jobId, processId ?? '');
-    return getPipelineStages(jobId).map((s) => ({
-      ...s,
-      route: processId ? `/pipeline/${jobId}/process/${processId}/${s.id}` : s.route,
-    }));
+    return mergeScoring(
+      getPipelineStages(jobId).map((s) => ({
+        ...s,
+        route: processId ? `/pipeline/${jobId}/process/${processId}/${s.id}` : s.route,
+      })),
+    );
   }, [jobId, processId, selectionProcess]);
 
   // Derive progressStage from the highest active/completed phase and sync to context
