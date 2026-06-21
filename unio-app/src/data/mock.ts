@@ -75,10 +75,16 @@ export interface Candidate {
     experienciaLaboral?: { empresa: string; rol: string; periodo: string; descripcion: string }[];
   };
   psychTest?: PsychTestResult;
+  applicationHistory?: { count: number; lastDate?: string; status: 'recurrente' | 'primera_vez' };
+  rejectionType?: 'definitivo' | 'circunstancial' | null;
   runtVerification?: {
     cc: string;
     totalManifiestos: number;
     licenseCategories: { categoria: string; fechaExpedicion: string; fechaVencimiento: string }[];
+    tipoLicencia?: string;
+    vigencia?: string;
+    vehiculosExperiencia?: string[];
+    anosExperiencia?: number;
   };
   pruebaManejo?: { status: 'agendada'; fecha: string; hora: string; lugar: string } | { status: 'pendiente' };
 }
@@ -2167,7 +2173,7 @@ const _vigiaTestSlots = [
   { fecha: 'Dom 22 Jun 2026', hora: '08:00 AM', lugar: 'Patio de maniobras Demo Transportes — Cota' },
 ];
 
-function _mkVigia(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring'): Candidate {
+function _mkVigia(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring', extras?: Partial<Candidate>): Candidate {
   const hi = score >= 75; const md = score >= 58;
   const idx = parseInt(id.split('-')[1]) - 1;
   const job = _vigiaJobs[idx] ?? _vigiaJobs[0];
@@ -2226,6 +2232,10 @@ function _mkVigia(id: string, name: string, score: number, photo: string, initia
       cc: _vigiaRunt[idx]?.cc ?? '00000000',
       totalManifiestos: trips,
       licenseCategories: (_vigiaRunt[idx]?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+      tipoLicencia: 'C2',
+      vigencia: (() => { const v = (_vigiaRunt[idx]?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
+      vehiculosExperiencia: ['Tractocamión', 'Camión rígido 2 ejes', 'Furgón refrigerado (unidad de frío)'],
+      anosExperiencia: parseInt(years) || 1,
     },
     ...(stage === 'entrevistas'
       ? { pruebaManejo: idx < _vigiaTestSlots.length ? { status: 'agendada' as const, ..._vigiaTestSlots[idx] } : { status: 'pendiente' as const } }
@@ -2275,6 +2285,7 @@ function _mkVigia(id: string, name: string, score: number, photo: string, initia
               : 'Período de expedición de licencia inferior al mínimo requerido de 2 años',
           ],
     },
+    ...extras,
   };
 }
 
@@ -2348,7 +2359,7 @@ const _transpPubExpPrev = [
   { c: 'SOI S.A.S.',                r: 'Conductor Articulado',   periodo: '2020–2022', desc: 'Operación articulado en corredor NQS. Turno nocturno, gestión de incidentes en vía y mantenimiento básico preventivo.' },
 ];
 
-function _mkTranspPub(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring'): Candidate {
+function _mkTranspPub(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring', extras?: Partial<Candidate>): Candidate {
   const hi = score >= 75; const md = score >= 58;
   const idx = Math.max(0, parseInt(id.split('-')[1]) - 1) || 0;
   const job = _transpPubJobs[idx % _transpPubJobs.length] ?? _transpPubJobs[0];
@@ -2405,6 +2416,10 @@ function _mkTranspPub(id: string, name: string, score: number, photo: string, in
       cc: runt?.cc ?? '00000000',
       totalManifiestos: trips,
       licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+      tipoLicencia: 'C2',
+      vigencia: (() => { const v = (runt?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
+      vehiculosExperiencia: ['Bus articulado TransMilenio', 'Bus padrón SITP', 'Bus urbano'],
+      anosExperiencia: parseInt(years) || 1,
     },
     ...(pre ? { prescreeningAI: pre } : {}),
     scoringAI: {
@@ -2432,14 +2447,15 @@ function _mkTranspPub(id: string, name: string, score: number, photo: string, in
         ? ['Validar historial completo de servicios en plataforma SITP', 'Confirmar disponibilidad en festivos directamente en entrevista']
         : [wrongCity ? `Candidato residente en ${city} — fuera del área metropolitana de Bogotá` : 'Historial de servicios insuficiente o comparendos sin regularizar'],
     },
+    ...extras,
   };
 }
 
 const transpPubCandidates: Candidate[] = [
-  _mkTranspPub('tp-1',  'Rodrigo Castellanos',    93, _p(16, 'men'), 'RC', '#8750F6', 'Bogotá',      '14 Años', "$2'800.000", 'en_rango',       'entrevistas'),
-  _mkTranspPub('tp-2',  'Camilo Reyes',            89, _p(17, 'men'), 'CR', '#27BE69', 'Soacha',      '11 Años', "$2'700.000", 'en_rango',       'entrevistas'),
-  _mkTranspPub('tp-3',  'Humberto Ávila',          86, _p(18, 'men'), 'HA', '#295BFF', 'Bogotá',      '9 Años',  "$2'900.000", 'en_rango',       'entrevistas'),
-  _mkTranspPub('tp-4',  'Mauricio Soto',           83, _p(19, 'men'), 'MS', '#F6A350', 'Bogotá',      '8 Años',  "$2'800.000", 'en_rango',       'entrevistas'),
+  _mkTranspPub('tp-1',  'Rodrigo Castellanos',    93, _p(16, 'men'), 'RC', '#8750F6', 'Bogotá',      '14 Años', "$2'800.000", 'en_rango',       'entrevistas', { applicationHistory: { count: 3, lastDate: '2024-08', status: 'recurrente' } }),
+  _mkTranspPub('tp-2',  'Camilo Reyes',            89, _p(17, 'men'), 'CR', '#27BE69', 'Soacha',      '11 Años', "$2'700.000", 'en_rango',       'entrevistas', { applicationHistory: { count: 2, lastDate: '2025-01', status: 'recurrente' } }),
+  _mkTranspPub('tp-3',  'Humberto Ávila',          86, _p(18, 'men'), 'HA', '#295BFF', 'Bogotá',      '9 Años',  "$2'900.000", 'en_rango',       'entrevistas', { applicationHistory: { count: 1, status: 'primera_vez' }, rejectionType: 'circunstancial' }),
+  _mkTranspPub('tp-4',  'Mauricio Soto',           83, _p(19, 'men'), 'MS', '#F6A350', 'Bogotá',      '8 Años',  "$2'800.000", 'en_rango',       'entrevistas', { applicationHistory: { count: 2, lastDate: '2024-11', status: 'recurrente' }, rejectionType: 'definitivo' }),
   _mkTranspPub('tp-5',  'Libardo Pinzón',          80, _p(20, 'men'), 'LP', '#8750F6', 'Chía',        '7 Años',  "$2'700.000", 'en_rango',       'entrevistas'),
   _mkTranspPub('tp-6',  'Julián Méndez',           77, _p(21, 'men'), 'JM', '#27BE69', 'Bogotá',      '6 Años',  "$2'800.000", 'en_rango',       'prescreening'),
   _mkTranspPub('tp-7',  'Ernesto Vásquez',         73, _p(22, 'men'), 'EV', '#295BFF', 'Bogotá',      '5 Años',  "$2'600.000", 'en_rango',       'prescreening'),
@@ -2501,7 +2517,7 @@ const _distribExpPrev = [
   { c: 'TuEnvío Colombia',        r: 'Conductor Mensajería',    periodo: '2020–2022', desc: 'Entrega de paquetes e-commerce en Bogotá. Uso de app de seguimiento de entregas, gestión de cliente y recolección de devoluciones.' },
 ];
 
-function _mkDistrib(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring'): Candidate {
+function _mkDistrib(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring', extras?: Partial<Candidate>): Candidate {
   const hi = score >= 75; const md = score >= 58;
   const idx = Math.max(0, parseInt(id.split('-')[1]) - 1) || 0;
   const job = _distribJobs[idx % _distribJobs.length] ?? _distribJobs[0];
@@ -2558,6 +2574,10 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
       cc: runt?.cc ?? '00000000',
       totalManifiestos: trips,
       licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+      tipoLicencia: 'C2',
+      vigencia: (() => { const v = (runt?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
+      vehiculosExperiencia: ['Camión NKR', 'Camión NPR', 'Camión NQR', 'Furgoneta de reparto'],
+      anosExperiencia: parseInt(years) || 1,
     },
     ...(pre ? { prescreeningAI: pre } : {}),
     scoringAI: {
@@ -2585,6 +2605,7 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
         ? ['Validar manifiestos faltantes', 'Confirmar disponibilidad para cargue físico']
         : [wrongCity ? `Candidato en ${city} — fuera del área de operación de Bogotá` : 'Historial insuficiente o aspiración salarial fuera de rango'],
     },
+    ...extras,
   };
 }
 
@@ -2682,6 +2703,10 @@ function _mkTranspPubEval(id: string, name: string, score: number, photo: string
       cc: runt?.cc ?? '00000000',
       totalManifiestos: trips,
       licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+      tipoLicencia: 'C2',
+      vigencia: (() => { const v = (runt?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
+      vehiculosExperiencia: ['Bus articulado TransMilenio', 'Bus padrón SITP', 'Bus urbano'],
+      anosExperiencia: parseInt(years) || 1,
     },
     scoringAI: {
       score: Math.round(score * 0.95), status: 'continua',
@@ -2752,6 +2777,10 @@ function _mkDistribEval(id: string, name: string, score: number, photo: string, 
       cc: runt?.cc ?? '11111111',
       totalManifiestos: trips,
       licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+      tipoLicencia: 'C2',
+      vigencia: (() => { const v = (runt?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
+      vehiculosExperiencia: ['Camión NKR', 'Camión NPR', 'Camión NQR', 'Furgoneta de reparto'],
+      anosExperiencia: parseInt(years) || 1,
     },
     scoringAI: {
       score: Math.round(score * 0.95), status: 'continua',
@@ -2814,6 +2843,10 @@ function _mkVigiaEval(id: string, name: string, score: number, photo: string, in
       cc: runt?.cc ?? '22222222',
       totalManifiestos: trips,
       licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
+      tipoLicencia: 'C2',
+      vigencia: (() => { const v = (runt?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
+      vehiculosExperiencia: ['Tractocamión', 'Camión rígido 2 ejes', 'Furgón refrigerado (unidad de frío)'],
+      anosExperiencia: parseInt(years) || 1,
     },
     scoringAI: {
       score: Math.round(score * 0.95), status: 'continua',
