@@ -21,15 +21,16 @@ type ChatPhase =
 
 const PHASES_PANEL = [
   { label: 'Felicitaciones' },
-  { label: 'Lista de documentos' },
-  { label: 'Confirmación del candidato' },
-  { label: 'Cierre' },
+  { label: 'Documentos seguridad social' },
+  { label: 'Documentos de identidad' },
+  { label: 'Confirmación y cierre' },
 ];
 
 function phaseIndex(phase: ChatPhase): number {
   if (phase === 'opening') return 0;
   if (phase === 'docs_list') return 1;
-  if (phase === 'awaiting_ack' || phase === 'confirming') return 2;
+  if (phase === 'awaiting_ack') return 2;
+  if (phase === 'confirming' || phase === 'done') return 3;
   return 3;
 }
 
@@ -44,8 +45,8 @@ function buildOpening(firstName: string, jobTitle: string): WaMsg[] {
   const base = new Date();
   return [
     { from: 'alex', time: fmt(base, 0), text: `¡Hola ${firstName}! 👋 Soy *Alex*, asistente de selección de *Demo Transportes*.` },
-    { from: 'alex', time: fmt(base, 1), text: `🎉 ¡Felicitaciones! Has completado exitosamente todas las etapas del proceso de selección para el cargo de *${jobTitle}*. Queremos darte la bienvenida al equipo.` },
-    { from: 'alex', time: fmt(base, 2), text: `📋 Para continuar con tu proceso de *vinculación*, necesitamos que nos envíes algunos documentos de ingreso. ¿Puedes ayudarnos con eso? 🙏` },
+    { from: 'alex', time: fmt(base, 1), text: `🎉 ¡Felicitaciones! Has completado exitosamente todas las etapas del proceso de selección para el cargo de *${jobTitle}*. ¡El equipo está muy emocionado de que te unas! 🚛` },
+    { from: 'alex', time: fmt(base, 2), text: `Para iniciar tu proceso de *vinculación*, necesitamos reunir algunos documentos. Te los comparto a continuación 📋` },
   ];
 }
 
@@ -54,17 +55,23 @@ function buildDocsList(firstName: string): WaMsg[] {
   return [
     {
       from: 'alex', time: fmt(base, 3),
-      text: `Estos son los documentos que necesitamos, ${firstName}:\n\n` +
-        `1️⃣ *Examen médico ocupacional* – Resultado de aptitud para conducción de vehículos pesados (vigente, expedido por IPS autorizada)\n\n` +
-        `2️⃣ *Cédula de ciudadanía* – Copia de ambas caras\n\n` +
-        `3️⃣ *Licencia de conducción* – Copia legible y vigente\n\n` +
-        `4️⃣ *Cuenta bancaria* – Certificación bancaria no mayor a 30 días\n\n` +
-        `5️⃣ *RUT* – Registro Único Tributario actualizado\n\n` +
-        `Puedes enviarnos los documentos directamente aquí por WhatsApp 📲`,
+      text: `📌 *Documentos de Seguridad Social*\n\n` +
+        `1️⃣ *Afiliación EPS* – Certificado de afiliación vigente\n` +
+        `2️⃣ *Afiliación Pensiones* – Certificado de fondo de pensiones\n` +
+        `3️⃣ *Fondo de Cesantías* – Certificado de afiliación\n` +
+        `4️⃣ *Cuenta Bancaria* – Certificación bancaria no mayor a 30 días`,
     },
     {
       from: 'alex', time: fmt(base, 4),
-      text: `⏰ Tienes *5 días hábiles* para enviarlos. ¿Tienes alguna pregunta sobre alguno de estos documentos?`,
+      text: `🪪 *Documentos de Identidad*\n\n` +
+        `✅ *Cédula de ciudadanía* – Ya la tenemos registrada en el sistema desde las validaciones anteriores.\n\n` +
+        `5️⃣ *Libreta militar* (si aplica)\n` +
+        `6️⃣ *Licencia de conducción C2 vigente* – Copia legible por ambas caras\n` +
+        `7️⃣ *Certificado CRC* – Certificado de aptitud para conducir, expedido por un Centro de Reconocimiento de Conductores autorizado`,
+    },
+    {
+      from: 'alex', time: fmt(base, 5),
+      text: `⏰ Tienes *5 días hábiles* para enviarlos aquí por WhatsApp 📲 El equipo de RR.HH. los revisará y te confirmará en máximo 2 días hábiles. ¿Tienes alguna duda sobre alguno de estos documentos, ${firstName}?`,
     },
   ];
 }
@@ -72,20 +79,20 @@ function buildDocsList(firstName: string): WaMsg[] {
 function buildConfirmation(firstName: string): WaMsg[] {
   const base = new Date();
   return [
-    { from: 'alex', time: fmt(base, 6), text: `¡Perfecto, ${firstName}! ✅ Hemos recibido tu confirmación.` },
-    { from: 'alex', time: fmt(base, 7), text: `📬 Cuando tengas los documentos listos, envíalos aquí uno por uno. El equipo de RR.HH. los revisará y te confirmará en un máximo de 2 días hábiles.` },
-    { from: 'alex', time: fmt(base, 8), text: `¡Bienvenido/a al equipo de Demo Transportes! 🚛 Si necesitas cualquier ayuda, estamos aquí. ¡Mucho éxito! 😊` },
+    { from: 'alex', time: fmt(base, 7), text: `¡Perfecto, ${firstName}! ✅ Recibido. Estaremos atentos a la llegada de los documentos.` },
+    { from: 'alex', time: fmt(base, 8), text: `📬 Envíalos uno por uno directamente aquí. Si tienes algún inconveniente con alguno de ellos, cuéntanos y te ayudamos a gestionarlo.` },
+    { from: 'alex', time: fmt(base, 9), text: `¡Bienvenido/a al equipo de Demo Transportes! 🚛 ¡Mucho éxito en este nuevo camino! 😊` },
   ];
 }
 
 const ACK_OPTIONS = [
-  '¡Claro! Tengo casi todos listos 📎',
-  'Entendido, los reúno esta semana ✅',
-  '¿Puedo preguntar sobre el examen médico?',
+  '¡Listo! Tengo casi todos, los envío esta semana 📎',
+  'Entendido, los reúno y los mando 👍',
+  '¿El CRC lo puedo sacar en cualquier centro?',
 ];
 
-const TYPING_DELAYS_OPENING = [1500, 2000, 1800];
-const TYPING_DELAYS_DOCS = [2200, 1600];
+const TYPING_DELAYS_OPENING = [1500, 2200, 1600];
+const TYPING_DELAYS_DOCS = [2400, 2200, 1800];
 const TYPING_DELAYS_CONFIRM = [1600, 2000, 1800];
 const PAUSE = 220;
 

@@ -231,7 +231,25 @@ export default function CandidateOnepage() {
   const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(84);
   const [voiceInterviewDone, setVoiceInterviewDone] = useState(true);
   const [validacionesOpen, setValidacionesOpen] = useState(false);
-  const [validacionesState, setValidacionesState] = useState<ValidacionesState>({ examenMedico: null, estudioSeguridad: null, visitaDomiciliaria: null });
+
+  // Mock: documentos pre-cargados para demo de transporte
+  const mockValidaciones: ValidacionesState = {
+    examenMedico: {
+      name: 'Informe_Medico_Ocupacional_ConductorC2.pdf',
+      size: 0,
+      uploadedAt: new Date('2026-06-18T10:30:00'),
+      url: '/demo-transportes/Informe_Medico_Ocupacional_ConductorC2.pdf',
+    },
+    estudioSeguridad: {
+      name: 'Estudio_Seguridad_Personal_ConductorC2.pdf',
+      size: 0,
+      uploadedAt: new Date('2026-06-19T14:15:00'),
+      url: '/demo-transportes/Estudio_Seguridad_Personal_ConductorC2.pdf',
+    },
+    visitaDomiciliaria: null,
+  };
+
+  const [validacionesState, setValidacionesState] = useState<ValidacionesState>(mockValidaciones);
   const [waDoctosOpen, setWaDoctosOpen] = useState(false);
   const [entrevistasOpen, setEntrevistasOpen] = useState(() => stage === 'entrevistas');
   const [evaluacionesOpen, setEvaluacionesOpen] = useState(() => stage === 'evaluaciones');
@@ -718,7 +736,7 @@ export default function CandidateOnepage() {
                     Solicitar docs. de ingreso
                   </button>
                 </div>
-                <ValidacionesContent onChange={setValidacionesState} />
+                <ValidacionesContent defaultState={mockValidaciones} onChange={setValidacionesState} />
               </AccordionSection>
             </div>
           )}

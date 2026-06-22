@@ -1,12 +1,14 @@
 import { useState, useRef } from 'react';
-import { Upload, FileText, CheckCircle, AlertCircle, X, Clock } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertCircle, X, Clock, ExternalLink } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface UploadedFile {
+export interface UploadedFile {
   name: string;
   size: number;
   uploadedAt: Date;
+  /** URL para abrir el documento en una pestaña nueva (mock o blob) */
+  url?: string;
 }
 
 interface DocSlot {
@@ -25,6 +27,7 @@ export interface ValidacionesState {
 }
 
 interface Props {
+  defaultState?: Partial<ValidacionesState>;
   onChange?: (state: ValidacionesState) => void;
 }
 
@@ -78,7 +81,8 @@ function UploadZone({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (raw: File) => {
-    onUpload({ name: raw.name, size: raw.size, uploadedAt: new Date() });
+    const url = URL.createObjectURL(raw);
+    onUpload({ name: raw.name, size: raw.size, uploadedAt: new Date(), url });
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -109,11 +113,29 @@ function UploadZone({
             {file.name}
           </p>
           <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--color-positive-600, #1F9854)' }}>
-            {formatBytes(file.size)} · Cargado {formatDate(file.uploadedAt)}
+            {file.size > 0 ? `${formatBytes(file.size)} · ` : ''}Cargado {formatDate(file.uploadedAt)}
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           <CheckCircle size={16} color="var(--color-positive-600, #1F9854)" />
+          {file.url && (
+            <a
+              href={file.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Ver documento en nueva pestaña"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '4px',
+                padding: '4px 10px', borderRadius: 999,
+                background: '#fff', border: '1px solid #BBF7D0',
+                color: 'var(--color-positive-600, #1F9854)',
+                fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 600,
+                textDecoration: 'none', cursor: 'pointer',
+              }}
+            >
+              <ExternalLink size={11} /> Ver
+            </a>
+          )}
           <button
             onClick={onRemove}
             title="Eliminar documento"
@@ -201,11 +223,11 @@ function StatusBadge({ state }: { state: ValidacionesState }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function ValidacionesContent({ onChange }: Props) {
+export default function ValidacionesContent({ defaultState, onChange }: Props) {
   const [docs, setDocs] = useState<ValidacionesState>({
-    examenMedico: null,
-    estudioSeguridad: null,
-    visitaDomiciliaria: null,
+    examenMedico: defaultState?.examenMedico ?? null,
+    estudioSeguridad: defaultState?.estudioSeguridad ?? null,
+    visitaDomiciliaria: defaultState?.visitaDomiciliaria ?? null,
   });
 
   const update = (id: string, file: UploadedFile | null) => {
