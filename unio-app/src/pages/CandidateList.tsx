@@ -15,6 +15,7 @@ import { mockCandidatesByStage, mockCandidatesById, MOCK_INITIAL_STATUSES } from
 import { useMockStageState } from '../hooks/useMockStageState';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import WhatsAppAgendarEntrevistaModal from '../components/ui/WhatsAppAgendarEntrevistaModal';
+import WhatsAppDocumentosModal from '../components/ui/WhatsAppDocumentosModal';
 import { useWaPrescreening } from '../context/WaPrescreeningContext';
 
 type FilterTab = 'todos' | 'high' | 'mid' | 'low';
@@ -142,6 +143,8 @@ export default function CandidateList() {
   // WhatsApp agendar entrevista modal
   const [waAgendarOpen, setWaAgendarOpen] = useState(false);
   const [waAgendarCandidates, setWaAgendarCandidates] = useState<typeof candidates>([]);
+  const [waDoctosOpen, setWaDoctosOpen] = useState(false);
+  const [waDoctosCandidates, setWaDoctosCandidates] = useState<typeof candidates>([]);
 
   const statusPriority = (id: string) => {
     const s = getStatus(id, currentStage);
@@ -500,7 +503,7 @@ export default function CandidateList() {
               color: 'var(--color-text-primary)',
             }}
           >
-            Mueve estos perfiles a la siguiente fase de evaluaci\u00f3n
+            Mueve estos perfiles a la siguiente fase de evaluación
           </span>
           <span
             style={{
@@ -540,6 +543,26 @@ export default function CandidateList() {
             >
               <WaIcon size={22} color="white" />
               Iniciar pre-entrevista IA
+            </button>
+          )}
+          {/* Solicitar docs. de ingreso: en etapa estudios/Validaciones */}
+          {currentStage === 'estudios' && (
+            <button
+              onClick={() => {
+                const sel = filteredCandidates.filter(c => selected.has(c.id));
+                setWaDoctosCandidates(sel);
+                setWaDoctosOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '10px 18px', borderRadius: '10px',
+                background: '#25D366', border: 'none', cursor: 'pointer',
+                fontWeight: 700, fontSize: '14px', color: '#fff',
+                boxShadow: '0 2px 8px rgba(37,211,102,0.35)',
+              }}
+            >
+              <WaIcon size={22} color="white" />
+              Solicitar docs. de ingreso
             </button>
           )}
           {currentStage === 'prescreening' && (
@@ -610,6 +633,18 @@ export default function CandidateList() {
           if (nextStage) setProgressStage(nextStage as Parameters<typeof setProgressStage>[0]);
           setSelected(new Set());
           setToastMessage(`${ids.length} candidato${ids.length !== 1 ? 's' : ''} agendado${ids.length !== 1 ? 's' : ''} para Prueba de manejo`);
+          setToastVisible(true);
+        }}
+      />
+
+      <WhatsAppDocumentosModal
+        isOpen={waDoctosOpen}
+        onClose={() => setWaDoctosOpen(false)}
+        candidates={waDoctosCandidates}
+        jobTitle={vacante?.title ?? 'la vacante'}
+        onConfirmSend={(cands) => {
+          setSelected(new Set());
+          setToastMessage(`Solicitud de documentos enviada a ${cands.length} candidato${cands.length !== 1 ? 's' : ''}`);
           setToastVisible(true);
         }}
       />

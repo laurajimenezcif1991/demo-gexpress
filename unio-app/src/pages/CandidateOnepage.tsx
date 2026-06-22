@@ -41,6 +41,9 @@ import VoiceInterviewSection from '../components/ui/VoiceInterviewSection';
 import PruebaManejoContent from '../components/ui/PruebaManejoContent';
 import ValidacionAntecedentes from '../components/ui/ValidacionAntecedentes';
 import type { VariantKey } from '../components/ui/ValidacionAntecedentes';
+import ValidacionesContent, { getValidacionesStatus } from '../components/ui/ValidacionesContent';
+import type { ValidacionesState } from '../components/ui/ValidacionesContent';
+import WhatsAppDocumentosModal from '../components/ui/WhatsAppDocumentosModal';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import WhatsAppAgendarEntrevistaModal from '../components/ui/WhatsAppAgendarEntrevistaModal';
 import { useWaPrescreening } from '../context/WaPrescreeningContext';
@@ -227,6 +230,9 @@ export default function CandidateOnepage() {
   // 84 = score calculado desde los ratings PREFILLED de PruebaManejoContent (promedio 4.2/5 × 100)
   const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(84);
   const [voiceInterviewDone, setVoiceInterviewDone] = useState(true);
+  const [validacionesOpen, setValidacionesOpen] = useState(false);
+  const [validacionesState, setValidacionesState] = useState<ValidacionesState>({ examenMedico: null, estudioSeguridad: null, visitaDomiciliaria: null });
+  const [waDoctosOpen, setWaDoctosOpen] = useState(false);
   const [entrevistasOpen, setEntrevistasOpen] = useState(() => stage === 'entrevistas');
   const [evaluacionesOpen, setEvaluacionesOpen] = useState(() => stage === 'evaluaciones');
   const [waModalOpen, setWaModalOpen] = useState(false);
@@ -677,6 +683,45 @@ export default function CandidateOnepage() {
               <VoiceInterviewSection onDoneChange={setVoiceInterviewDone} />
             </AccordionSection>
           </div>
+
+          {/* 5. Validaciones */}
+          {voiceInterviewDone && (
+            <div style={{ scrollMarginTop: 24 }}>
+              <AccordionSection
+                number={5}
+                title="Validaciones"
+                statusText={
+                  getValidacionesStatus(validacionesState) === 'completado' ? 'Completado'
+                  : getValidacionesStatus(validacionesState) === 'en_proceso' ? 'En proceso'
+                  : 'Sin iniciar'
+                }
+                statusOk={getValidacionesStatus(validacionesState) === 'completado'}
+                isOpen={validacionesOpen}
+                onToggle={() => setValidacionesOpen(!validacionesOpen)}
+                isLocked={false}
+              >
+                <div style={{ marginBottom: '16px' }}>
+                  <p style={{ margin: '0 0 12px', fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.55 }}>
+                    Carga los resultados de los documentos de validación. Incluye examen médico ocupacional, estudio de seguridad y visita domiciliaria cuando aplique.
+                  </p>
+                  <button
+                    onClick={() => setWaDoctosOpen(true)}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '8px',
+                      padding: '9px 16px', borderRadius: '10px',
+                      background: '#25D366', border: 'none', cursor: 'pointer',
+                      fontWeight: 700, fontSize: '13px', color: '#fff',
+                      boxShadow: '0 2px 8px rgba(37,211,102,0.3)',
+                    }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M5.655 0h13.69C22.537 0 24 1.464 24 3.656v16.688C24 22.536 22.536 24 20.344 24H3.656C1.464 24 0 22.536 0 20.344V3.656C0 1.464 1.464 0 3.656 0h2zm6.345 4.5C8.414 4.5 5.5 7.414 5.5 11s2.914 6.5 6.5 6.5c1.124 0 2.182-.295 3.097-.817L18 18l-1.317-2.903A6.467 6.467 0 0 0 18.5 11c0-3.586-2.914-6.5-6.5-6.5z" fillRule="evenodd" clipRule="evenodd" opacity="0"/></svg>
+                    Solicitar docs. de ingreso
+                  </button>
+                </div>
+                <ValidacionesContent onChange={setValidacionesState} />
+              </AccordionSection>
+            </div>
+          )}
         </div>
         </div>
       </main>
@@ -724,7 +769,23 @@ export default function CandidateOnepage() {
               Agendar prueba de manejo
             </button>
           )}
-          {stage !== 'scoring' && stage !== 'prescreening' && (
+          {/* Solicitar docs de ingreso: visible en etapa finalistas */}
+          {stage === 'finalistas' && (
+            <button
+              onClick={() => setWaDoctosOpen(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '9px 16px', borderRadius: '10px',
+                background: '#25D366', border: 'none', cursor: 'pointer',
+                fontWeight: 700, fontSize: '13px', color: '#fff',
+                boxShadow: '0 2px 8px rgba(37,211,102,0.35)',
+              }}
+            >
+              <WaIcon size={20} color="white" />
+              Solicitar docs. de ingreso
+            </button>
+          )}
+          {stage !== 'scoring' && stage !== 'prescreening' && stage !== 'finalistas' && (
             <Button
                 variant="primary"
                 size="md"
@@ -791,6 +852,16 @@ export default function CandidateOnepage() {
             navigate(`/pipeline/${jobId}/candidate/${candidateId}?stage=${next}`, { replace: true });
           }
           showToast('Entrevista agendada · Candidato pasado a Entrevistas');
+        }}
+      />
+
+      <WhatsAppDocumentosModal
+        isOpen={waDoctosOpen}
+        onClose={() => setWaDoctosOpen(false)}
+        candidates={candidate ? [candidate] : []}
+        jobTitle={candidate?.role}
+        onConfirmSend={() => {
+          showToast('Solicitud de documentos enviada por WhatsApp');
         }}
       />
 
