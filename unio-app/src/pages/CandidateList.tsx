@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Search, ArrowUpDown, CheckCircle2, X, Users, Trophy } from 'lucide-react';
+import { Search, ArrowUpDown, CheckCircle2, X, Users, Trophy, AlertTriangle } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import WizardBar from '../components/layout/WizardBar';
 import { Skeleton, SkeletonCircle } from '../components/ui/Skeleton';
@@ -16,6 +16,7 @@ import { useMockStageState } from '../hooks/useMockStageState';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import WhatsAppAgendarEntrevistaModal from '../components/ui/WhatsAppAgendarEntrevistaModal';
 import WhatsAppDocumentosModal from '../components/ui/WhatsAppDocumentosModal';
+import ConfirmAprobadosModal from '../components/ui/ConfirmAprobadosModal';
 import { useWaPrescreening } from '../context/WaPrescreeningContext';
 
 type FilterTab = 'todos' | 'high' | 'mid' | 'low';
@@ -56,9 +57,10 @@ export default function CandidateList() {
     if (path.includes('/prueba_manejo')) return 'prueba_manejo';
     if (path.includes('/evaluaciones')) return 'evaluaciones';
     if (path.includes('/entrevistas')) return 'entrevistas';
+    if (path.includes('/estudios')) return 'estudios';
     if (path.includes('/finalistas')) return 'finalistas';
     return stage;
-  })() as 'scoring' | 'prescreening' | 'prueba_manejo' | 'evaluaciones' | 'entrevistas' | 'finalistas';
+  })() as 'scoring' | 'prescreening' | 'prueba_manejo' | 'evaluaciones' | 'entrevistas' | 'estudios' | 'finalistas';
 
   useEffect(() => {
     setJobId(jobId);
@@ -146,6 +148,9 @@ export default function CandidateList() {
   const [waAgendarCandidates, setWaAgendarCandidates] = useState<typeof candidates>([]);
   const [waDoctosOpen, setWaDoctosOpen] = useState(false);
   const [waDoctosCandidates, setWaDoctosCandidates] = useState<typeof candidates>([]);
+
+  // Confirm approval modal (estudios → finalistas)
+  const [approveConfirmOpen, setApproveConfirmOpen] = useState(false);
 
   const statusPriority = (id: string) => {
     const s = getStatus(id, currentStage);
@@ -546,8 +551,8 @@ export default function CandidateList() {
               Iniciar pre-entrevista IA
             </button>
           )}
-          {/* Solicitar docs. de ingreso: en etapa finalistas (Aprobados) y estudios (Validaciones) */}
-          {(currentStage === 'finalistas' || currentStage === 'estudios') && (
+          {/* Solicitar docs. de ingreso: solo en etapa finalistas (Aprobados) */}
+          {currentStage === 'finalistas' && (
             <button
               onClick={() => {
                 const sel = filteredCandidates.filter(c => selected.has(c.id));
@@ -585,7 +590,7 @@ export default function CandidateList() {
               Agendar prueba de manejo
             </button>
           )}
-          {currentStage !== 'scoring' && currentStage !== 'prescreening' && currentStage !== 'finalistas' && currentStage !== 'estudios' && (
+          {currentStage !== 'scoring' && currentStage !== 'prescreening' && currentStage !== 'finalistas' && currentStage !== 'estudios' && currentStage !== 'entrevistas' && (
             <Button
               variant="primary"
               size="lg"
@@ -594,11 +599,10 @@ export default function CandidateList() {
               <CheckCircle2 size={18} />
               {currentStage === 'prueba_manejo' ? 'Pasar a Prueba Psicotécnica'
                 : currentStage === 'evaluaciones' ? 'Pasar a Entrevista'
-                : currentStage === 'entrevistas' ? 'Aprobar candidato'
                 : 'Pasar etapa'}
             </Button>
           )}
-          {currentStage === 'finalistas' && (
+          {currentStage === 'entrevistas' && (
             <Button
               variant="primary"
               size="lg"
@@ -606,6 +610,16 @@ export default function CandidateList() {
             >
               <CheckCircle2 size={18} />
               Pasar a Validaciones
+            </Button>
+          )}
+          {currentStage === 'estudios' && (
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => setApproveConfirmOpen(true)}
+            >
+              <CheckCircle2 size={18} />
+              {selected.size === 1 ? 'Aprobar candidato' : `Aprobar ${selected.size} candidatos`}
             </Button>
           )}
           <Button
@@ -657,6 +671,16 @@ export default function CandidateList() {
           setSelected(new Set());
           setToastMessage(`Solicitud de documentos enviada a ${cands.length} candidato${cands.length !== 1 ? 's' : ''}`);
           setToastVisible(true);
+        }}
+      />
+
+      {/* Confirm approval modal: estudios → finalistas */}
+      <ConfirmAprobadosModal
+        isOpen={approveConfirmOpen}
+        onClose={() => setApproveConfirmOpen(false)}
+        count={selected.size}
+        onConfirm={() => {
+          handleBulkAction('pasar');
         }}
       />
 
@@ -794,6 +818,98 @@ export default function CandidateList() {
             >
               Entendido
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: confirmar aprobación (estudios → finalistas) */}
+      {approveConfirmOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(15,8,36,0.55)', backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onClick={() => setApproveConfirmOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#ffffff', borderRadius: '20px',
+              padding: '40px 36px', maxWidth: '440px', width: '90%',
+              boxShadow: '0 20px 60px rgba(15,8,36,0.18)',
+              position: 'relative',
+            }}
+          >
+            <button
+              onClick={() => setApproveConfirmOpen(false)}
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'var(--color-text-muted)', padding: '4px',
+                borderRadius: '8px', display: 'flex', alignItems: 'center',
+              }}
+            >
+              <X size={18} />
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+              <div style={{
+                width: '56px', height: '56px', borderRadius: '50%',
+                background: 'var(--color-surface-muted)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <AlertTriangle size={26} color="var(--color-text-primary)" />
+              </div>
+            </div>
+
+            <h2 style={{
+              fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '22px',
+              color: 'var(--color-text-primary)', textAlign: 'center', margin: '0 0 10px',
+            }}>
+              {selected.size === 1 ? '¿Aprobar este candidato?' : `¿Aprobar ${selected.size} candidatos?`}
+            </h2>
+            <p style={{
+              fontSize: '14px', color: 'var(--color-text-muted)',
+              textAlign: 'center', margin: '0 0 8px', lineHeight: '1.55',
+            }}>
+              {selected.size === 1
+                ? 'El candidato pasará a la etapa de Aprobados.'
+                : `Los ${selected.size} candidatos pasarán a la etapa de Aprobados.`}
+            </p>
+            <p style={{
+              fontSize: '13px', color: 'var(--color-text-muted)',
+              textAlign: 'center', margin: '0 0 28px', lineHeight: '1.5',
+              fontWeight: 500,
+            }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => setApproveConfirmOpen(false)}
+                style={{
+                  flex: 1, padding: '11px', borderRadius: '10px',
+                  border: '1px solid var(--color-border-default)',
+                  background: '#ffffff', cursor: 'pointer',
+                  fontWeight: 600, fontSize: '14px', color: 'var(--color-text-primary)',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setApproveConfirmOpen(false);
+                  handleBulkAction('pasar');
+                }}
+                style={{
+                  flex: 1, padding: '11px', borderRadius: '10px',
+                  border: 'none', background: 'var(--color-brand-primary)',
+                  cursor: 'pointer', fontWeight: 700, fontSize: '14px', color: '#fff',
+                }}
+              >
+                {selected.size === 1 ? 'Aprobar candidato' : 'Aprobar candidatos'}
+              </button>
+            </div>
           </div>
         </div>
       )}

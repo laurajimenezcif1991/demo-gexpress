@@ -44,6 +44,7 @@ import type { VariantKey } from '../components/ui/ValidacionAntecedentes';
 import ValidacionesContent, { getValidacionesStatus } from '../components/ui/ValidacionesContent';
 import type { ValidacionesState } from '../components/ui/ValidacionesContent';
 import WhatsAppDocumentosModal from '../components/ui/WhatsAppDocumentosModal';
+import ConfirmAprobadosModal from '../components/ui/ConfirmAprobadosModal';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import WhatsAppAgendarEntrevistaModal from '../components/ui/WhatsAppAgendarEntrevistaModal';
 import { useWaPrescreening } from '../context/WaPrescreeningContext';
@@ -68,6 +69,8 @@ const ONEPAGE_PIPELINE_STAGES: PipelineStageKey[] = [
   'prueba_manejo',
   'evaluaciones',
   'entrevistas',
+  'estudios',
+  'finalistas',
 ];
 
 function normalizeOnepageStage(raw: string | null): PipelineStageKey {
@@ -251,6 +254,7 @@ export default function CandidateOnepage() {
 
   const [validacionesState, setValidacionesState] = useState<ValidacionesState>(mockValidaciones);
   const [waDoctosOpen, setWaDoctosOpen] = useState(false);
+  const [approveConfirmOpen, setApproveConfirmOpen] = useState(false);
   const [entrevistasOpen, setEntrevistasOpen] = useState(() => stage === 'entrevistas');
   const [evaluacionesOpen, setEvaluacionesOpen] = useState(() => stage === 'evaluaciones');
   const [waModalOpen, setWaModalOpen] = useState(false);
@@ -803,7 +807,7 @@ export default function CandidateOnepage() {
               Solicitar docs. de ingreso
             </button>
           )}
-          {stage !== 'scoring' && stage !== 'prescreening' && stage !== 'finalistas' && (
+          {stage !== 'scoring' && stage !== 'prescreening' && stage !== 'finalistas' && stage !== 'estudios' && (
             <Button
                 variant="primary"
                 size="md"
@@ -814,15 +818,25 @@ export default function CandidateOnepage() {
                     const next = ONEPAGE_PIPELINE_STAGES[idx + 1];
                     navigate(`/pipeline/${jobId}/candidate/${candidateId}?stage=${next}`, { replace: true });
                   }
-                  showToast('¡Candidato marcado como Continúa!');
+                  showToast('¡Candidato avanzado a la siguiente etapa!');
                 }}
               >
                 <CheckCircle2 size={16} />
                 {stage === 'prueba_manejo' ? 'Pasar a Prueba Psicotécnica'
                   : stage === 'evaluaciones' ? 'Pasar a Entrevista'
-                  : stage === 'entrevistas' ? 'Aprobar candidato'
+                  : stage === 'entrevistas' ? 'Pasar a Validaciones'
                   : 'Pasar etapa'}
               </Button>
+          )}
+          {stage === 'estudios' && (
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => setApproveConfirmOpen(true)}
+            >
+              <CheckCircle2 size={16} />
+              Aprobar candidato
+            </Button>
           )}
           <Button
             variant="danger-outline"
@@ -882,6 +896,102 @@ export default function CandidateOnepage() {
           showToast('Solicitud de documentos enviada por WhatsApp');
         }}
       />
+
+      {/* Modal: confirmar aprobación (estudios → finalistas) */}
+      {approveConfirmOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(15,8,36,0.55)', backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onClick={() => setApproveConfirmOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#ffffff', borderRadius: '20px',
+              padding: '40px 36px', maxWidth: '440px', width: '90%',
+              boxShadow: '0 20px 60px rgba(15,8,36,0.18)',
+              position: 'relative',
+            }}
+          >
+            <button
+              onClick={() => setApproveConfirmOpen(false)}
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'var(--color-text-muted)', padding: '4px',
+                borderRadius: '8px', display: 'flex', alignItems: 'center',
+              }}
+            >
+              <X size={18} />
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+              <div style={{
+                width: '56px', height: '56px', borderRadius: '50%',
+                background: 'var(--color-surface-muted)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <AlertTriangle size={26} color="var(--color-text-primary)" />
+              </div>
+            </div>
+
+            <h2 style={{
+              fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '22px',
+              color: 'var(--color-text-primary)', textAlign: 'center', margin: '0 0 10px',
+            }}>
+              ¿Aprobar a {candidate?.name}?
+            </h2>
+            <p style={{
+              fontSize: '14px', color: 'var(--color-text-muted)',
+              textAlign: 'center', margin: '0 0 8px', lineHeight: '1.55',
+            }}>
+              El candidato pasará a la etapa de Aprobados.
+            </p>
+            <p style={{
+              fontSize: '13px', color: 'var(--color-text-muted)',
+              textAlign: 'center', margin: '0 0 28px', lineHeight: '1.5',
+              fontWeight: 500,
+            }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => setApproveConfirmOpen(false)}
+                style={{
+                  flex: 1, padding: '11px', borderRadius: '10px',
+                  border: '1px solid var(--color-border-default)',
+                  background: '#ffffff', cursor: 'pointer',
+                  fontWeight: 600, fontSize: '14px', color: 'var(--color-text-primary)',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setApproveConfirmOpen(false);
+                  setStatus(candidateId, stage, 'continua');
+                  const idx = ONEPAGE_PIPELINE_STAGES.indexOf(stage);
+                  if (idx >= 0 && idx < ONEPAGE_PIPELINE_STAGES.length - 1) {
+                    const next = ONEPAGE_PIPELINE_STAGES[idx + 1];
+                    navigate(`/pipeline/${jobId}/candidate/${candidateId}?stage=${next}`, { replace: true });
+                  }
+                  showToast(`${candidate?.name} aprobado/a ✓`);
+                }}
+                style={{
+                  flex: 1, padding: '11px', borderRadius: '10px',
+                  border: 'none', background: 'var(--color-brand-primary)',
+                  cursor: 'pointer', fontWeight: 700, fontSize: '14px', color: '#fff',
+                }}
+              >
+                Aprobar candidato
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

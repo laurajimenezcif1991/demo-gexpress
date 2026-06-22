@@ -9,6 +9,21 @@
 
 ---
 
+## [feat: flujo entrevistas→validaciones→aprobados + modal de confirmación] — 22 Jun 2026
+
+### CandidateList.tsx
+- Etapa `entrevistas`: CTA cambiado de "Aprobar candidato" → "Pasar a Validaciones"
+- Etapa `estudios`: nuevo botón primario "Aprobar candidato" (singular) / "Aprobar N candidatos" (plural) que abre modal de confirmación
+- Modal de confirmación con ícono `AlertTriangle` (sin semánticos de color), texto "Esta acción no se puede deshacer", y botones Cancelar / Aprobar
+
+### CandidateOnepage.tsx
+- Añadir `estudios` y `finalistas` a `ONEPAGE_PIPELINE_STAGES` para que la navegación por etapas funcione correctamente
+- Etapa `entrevistas`: CTA "Aprobar candidato" → "Pasar a Validaciones"
+- Etapa `estudios`: nuevo botón "Aprobar candidato" con modal de confirmación personalizado con el nombre del candidato
+- Toast de confirmación tras aprobar: "{nombre} aprobado/a ✓"
+
+---
+
 ## [feat: mover Aprobados al final del pipeline + vista vertical] — 22 Jun 2026
 
 ### Pipeline y Sidebar — "Aprobados" al final
