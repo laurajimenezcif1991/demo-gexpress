@@ -37,6 +37,7 @@ import Button from '../components/ui/Button';
 import Gauge from '../components/ui/Gauge';
 import StarRating from '../components/ui/StarRating';
 import PruebaPsicologicaContent from '../components/ui/PruebaPsicologicaContent';
+import VoiceInterviewSection from '../components/ui/VoiceInterviewSection';
 import PruebaManejoContent from '../components/ui/PruebaManejoContent';
 import ValidacionAntecedentes from '../components/ui/ValidacionAntecedentes';
 import type { VariantKey } from '../components/ui/ValidacionAntecedentes';
@@ -670,6 +671,7 @@ export default function CandidateOnepage() {
                 interview={isPendingEntrevistas ? undefined : interview}
                 savedFeedback={savedFeedback}
               />
+              <VoiceInterviewSection />
             </AccordionSection>
           </div>
         </div>
