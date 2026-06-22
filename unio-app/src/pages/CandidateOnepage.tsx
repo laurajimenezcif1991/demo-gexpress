@@ -224,7 +224,8 @@ export default function CandidateOnepage() {
 
   const [prescreeningOpen, setPrescreeningOpen] = useState(() => stage === 'prescreening');
   const [pruebaManejoOpen, setPruebaManejoOpen] = useState(() => stage === 'prueba_manejo');
-  const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(undefined);
+  // 84 = score calculado desde los ratings PREFILLED de PruebaManejoContent (promedio 4.2/5 × 100)
+  const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(84);
   const [entrevistasOpen, setEntrevistasOpen] = useState(() => stage === 'entrevistas');
   const [evaluacionesOpen, setEvaluacionesOpen] = useState(() => stage === 'evaluaciones');
   const [waModalOpen, setWaModalOpen] = useState(false);
@@ -566,15 +567,12 @@ export default function CandidateOnepage() {
                   title="Pre-entrevista IA"
                   score={prescreeningScore}
                   statusText={
-                    isPendingPrescreening && !waCompleted
-                      ? 'En proceso'
-                      : hasPrescreeningData
-                      ? prescreeningStatus === 'rechazado' ? 'Descartado'
-                        : prescreeningStatus === 'continua' ? 'Continúa'
-                        : 'Pendiente'
-                      : hasPrescreening ? 'En proceso' : 'Por iniciar'
+                    hasPrescreeningData
+                      ? prescreeningStatus === 'rechazado' ? 'Descartado' : 'Completado'
+                      : (isPendingPrescreening || waCompleted || hasPrescreening) ? 'En proceso'
+                      : 'Sin iniciar'
                   }
-                  statusOk={hasPrescreeningData && prescreeningStatus === 'continua'}
+                  statusOk={hasPrescreeningData && prescreeningStatus !== 'rechazado'}
                   isOpen={prescreeningOpen}
                   onToggle={() => (hasPrescreening || waCompleted) && setPrescreeningOpen(!prescreeningOpen)}
                   isLocked={!hasPrescreening && !waCompleted}
@@ -600,38 +598,39 @@ export default function CandidateOnepage() {
           })()}
 
           {/* 2. Prueba de manejo */}
-          {(() => {
-            // Data is available once the candidate has passed prueba_manejo
-            const hasManejoData = stage === 'evaluaciones' || stage === 'entrevistas';
-            const manejoStatusText = pruebaManejoScore !== undefined
-              ? 'Continúa'
-              : stage === 'prueba_manejo' ? 'En proceso' : 'Por iniciar';
-            return (
-              <div style={{ scrollMarginTop: 24 }}>
-                <AccordionSection
-                  number={2}
-                  title="Prueba de manejo"
-                  score={pruebaManejoScore}
-                  statusText={manejoStatusText}
-                  statusOk={pruebaManejoScore !== undefined}
-                  isOpen={pruebaManejoOpen}
-                  onToggle={() => setPruebaManejoOpen(o => !o)}
-                  isLocked={stage !== 'prueba_manejo' && !hasManejoData}
-                >
-                  {hasManejoData ? (
-                    <PruebaManejoContent
-                      candidateId={candidateId}
-                      onScoreChange={setPruebaManejoScore}
-                    />
-                  ) : (
-                    <div style={{ padding: '8px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
-                      Pendiente: la prueba de manejo aún no ha sido completada.
-                    </div>
-                  )}
-                </AccordionSection>
-              </div>
-            );
-          })()}
+          <div style={{ scrollMarginTop: 24 }}>
+            <AccordionSection
+              number={2}
+              title="Prueba de manejo"
+              score={pruebaManejoScore}
+              statusText={
+                pruebaManejoScore !== undefined ? 'Completado'
+                : stage === 'prueba_manejo' ? 'En proceso'
+                : 'Sin iniciar'
+              }
+              statusOk={pruebaManejoScore !== undefined}
+              isOpen={pruebaManejoOpen}
+              onToggle={() => setPruebaManejoOpen(o => !o)}
+              isLocked={stage !== 'prueba_manejo' && stage !== 'evaluaciones' && stage !== 'entrevistas'}
+            >
+              {pruebaManejoScore !== undefined || stage === 'prueba_manejo' ? (
+                pruebaManejoScore !== undefined ? (
+                  <PruebaManejoContent
+                    candidateId={candidateId}
+                    onScoreChange={setPruebaManejoScore}
+                  />
+                ) : (
+                  <div style={{ padding: '16px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
+                    La prueba de manejo está en proceso de ser registrada.
+                  </div>
+                )
+              ) : (
+                <div style={{ padding: '16px 0', color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
+                  La prueba de manejo aún no ha sido programada para este candidato.
+                </div>
+              )}
+            </AccordionSection>
+          </div>
 
           {/* 3. Prueba Psicotécnica (PRIMA) */}
           <div ref={evaluacionesSectionRef} style={{ scrollMarginTop: 24 }}>
@@ -640,8 +639,9 @@ export default function CandidateOnepage() {
               title="Prueba Psicotécnica"
               score={candidate.psychTest?.score}
               statusText={
-                isPendingEvaluaciones ? 'En proceso'
-                  : candidate.psychTest ? 'Continúa' : 'Por iniciar'
+                candidate.psychTest && !isPendingEvaluaciones ? 'Completado'
+                : isPendingEvaluaciones ? 'En proceso'
+                : 'Sin iniciar'
               }
               statusOk={!!candidate.psychTest && !isPendingEvaluaciones}
               isOpen={evaluacionesOpen}
@@ -663,13 +663,12 @@ export default function CandidateOnepage() {
             <AccordionSection
               number={4}
               title="Entrevista"
-              score={isPendingEntrevistas ? undefined : entrevistaScore}
+              score={isPendingEntrevistas ? undefined : entrevistaScore ?? undefined}
               statusText={
-                isPendingEntrevistas
-                  ? 'En proceso'
-                  : entrevistasDescarta ? 'Descartado' :
-                  entrevistasDone     ? 'Continúa'   :
-                  entrevistaScore !== null ? 'En proceso' : 'Por iniciar'
+                !isPendingEntrevistas && entrevistasDone && !entrevistasDescarta ? 'Completado'
+                : entrevistasDescarta ? 'Descartado'
+                : isPendingEntrevistas || entrevistaScore !== null ? 'En proceso'
+                : 'Sin iniciar'
               }
               statusOk={!isPendingEntrevistas && entrevistasDone && !entrevistasDescarta}
               isOpen={entrevistasOpen}
