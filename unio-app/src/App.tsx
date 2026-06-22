@@ -65,7 +65,7 @@ export default function App() {
             <Route path="/pipeline/:jobId/process/:processId/entrevistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/process/:processId/evaluaciones" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/process/:processId/candidate/:candidateId" element={<ProtectedRoute><CandidateOnepage /></ProtectedRoute>} />
-            <Route path="/pipeline/:jobId/process/:processId/finalistas" element={<ProtectedRoute><Shortlist /></ProtectedRoute>} />
+            <Route path="/pipeline/:jobId/process/:processId/finalistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
 
             {/* Rutas legacy sin processId (fallback para back-nav y rutas existentes) */}
             <Route path="/pipeline/:jobId/scoring" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
@@ -73,9 +73,9 @@ export default function App() {
             <Route path="/pipeline/:jobId/prueba_manejo" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/entrevistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/evaluaciones" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
-            <Route path="/pipeline/:jobId/finalistas" element={<ProtectedRoute><Shortlist /></ProtectedRoute>} />
+            <Route path="/pipeline/:jobId/finalistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/estudios" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
-            <Route path="/finalistas" element={<ProtectedRoute><Shortlist /></ProtectedRoute>} />
+            <Route path="/finalistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
 
             {/* Deep-link routes for candidate & finalist detail (keep for back-nav) */}
             <Route path="/pipeline/:jobId/candidate/:candidateId" element={<ProtectedRoute><CandidateOnepage /></ProtectedRoute>} />

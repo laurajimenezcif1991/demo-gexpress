@@ -14,6 +14,7 @@ const STAGE_ORDER: MockStageKey[] = [
   'evaluaciones',
   'entrevistas',
   'finalistas',
+  'estudios',
 ];
 
 /**
@@ -77,7 +78,7 @@ export function useMockStageState() {
 
   /**
    * Advance candidateIds FROM fromStage TO the next stage.
-   * Returns the destination stage key, or null if already at finalistas.
+   * Returns the destination stage key, or null if already at the last stage.
    */
   const advanceCandidates = useCallback(
     (jobId: string, fromStage: MockStageKey, candidateIds: string[]): MockStageKey | null => {

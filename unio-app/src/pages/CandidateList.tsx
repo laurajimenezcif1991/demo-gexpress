@@ -34,7 +34,7 @@ export default function CandidateList() {
   const navigate = useNavigate();
   const { setStatuses, getStatus, seedStatuses } = useCandidateStatus();
 
-  const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas'] as const;
+  const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas', 'finalistas'] as const;
 
   const priorStages = (stage: string) => {
     const idx = STAGE_ORDER.indexOf(stage as typeof STAGE_ORDER[number]);
@@ -56,8 +56,9 @@ export default function CandidateList() {
     if (path.includes('/prueba_manejo')) return 'prueba_manejo';
     if (path.includes('/evaluaciones')) return 'evaluaciones';
     if (path.includes('/entrevistas')) return 'entrevistas';
+    if (path.includes('/finalistas')) return 'finalistas';
     return stage;
-  })() as 'scoring' | 'prescreening' | 'prueba_manejo' | 'evaluaciones' | 'entrevistas';
+  })() as 'scoring' | 'prescreening' | 'prueba_manejo' | 'evaluaciones' | 'entrevistas' | 'finalistas';
 
   useEffect(() => {
     setJobId(jobId);
@@ -194,7 +195,7 @@ export default function CandidateList() {
     if (next.has(id)) {
       next.delete(id);
     } else {
-      // Hard limit: max 3 for finalistas selection in evaluaciones
+      // Hard limit: max 3 when advancing from evaluaciones to finalistas
       if (isMock && currentStage === 'evaluaciones' && next.size >= 3) {
         setManyFinalistsModal(true);
         return;
@@ -545,8 +546,8 @@ export default function CandidateList() {
               Iniciar pre-entrevista IA
             </button>
           )}
-          {/* Solicitar docs. de ingreso: en etapa estudios/Validaciones */}
-          {currentStage === 'estudios' && (
+          {/* Solicitar docs. de ingreso: en etapa finalistas (Aprobados) y estudios (Validaciones) */}
+          {(currentStage === 'finalistas' || currentStage === 'estudios') && (
             <button
               onClick={() => {
                 const sel = filteredCandidates.filter(c => selected.has(c.id));
@@ -584,7 +585,7 @@ export default function CandidateList() {
               Agendar prueba de manejo
             </button>
           )}
-          {currentStage !== 'scoring' && currentStage !== 'prescreening' && (
+          {currentStage !== 'scoring' && currentStage !== 'prescreening' && currentStage !== 'finalistas' && currentStage !== 'estudios' && (
             <Button
               variant="primary"
               size="lg"
@@ -595,6 +596,16 @@ export default function CandidateList() {
                 : currentStage === 'evaluaciones' ? 'Pasar a Entrevista'
                 : currentStage === 'entrevistas' ? 'Aprobar candidato'
                 : 'Pasar etapa'}
+            </Button>
+          )}
+          {currentStage === 'finalistas' && (
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => handleBulkAction('pasar')}
+            >
+              <CheckCircle2 size={18} />
+              Pasar a Validaciones
             </Button>
           )}
           <Button

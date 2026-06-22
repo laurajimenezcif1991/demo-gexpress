@@ -9,6 +9,30 @@
 
 ---
 
+## [feat: mover Aprobados al final del pipeline + vista vertical] — 22 Jun 2026
+
+### Pipeline y Sidebar — "Aprobados" al final
+
+- Reordenar `STAGE_ORDER` en `Pipeline.tsx`: `estudios` (Validaciones) queda antes de `finalistas` (Aprobados)
+- Refactorizar construcción de `stages` en `useMemo`: `finalistasCard` se extrae del array base y se reinserta al final, después de `estudiosCard`, para los tres paths (mock, API y fallback)
+- Ampliar `gridTemplateColumns` a `repeat(6, 1fr)` y `maxWidth` a `1400px` para acomodar 6 tarjetas en una fila
+- Reordenar `stageItems` en `Sidebar.tsx`: `estudios` antes de `finalistas`
+- Agregar `estudios` al `STAGE_ORDER` en `useMockStageState.ts` para que `advanceCandidates` pueda avanzar desde `finalistas` → `estudios`
+
+### CandidateList — Ruta finalistas → vista vertical
+
+- Cambiar rutas `/pipeline/:jobId/finalistas`, `/pipeline/:jobId/process/:processId/finalistas` y `/finalistas` de `Shortlist` a `CandidateList` en `App.tsx`
+- Añadir `'finalistas'` al `STAGE_ORDER` local de `CandidateList`
+- Detectar etapa `finalistas` en `currentStage` desde `location.pathname`
+- Agregar botón "Pasar a Validaciones" en WizardBar cuando `currentStage === 'finalistas'`
+- Extender el botón "Solicitar docs. de ingreso" para que aparezca tanto en `finalistas` como en `estudios`
+
+### Mock data
+
+- Pre-seed 2 candidatos en `finalistas` para las vacantes `mock-transp-pub`, `mock-vigia` y `mock-distrib`
+
+---
+
 ## [pendiente] — 21 Jun 2026
 
 ### Refactor: Fusionar tarjeta Scoring con Prescreening en Pipeline

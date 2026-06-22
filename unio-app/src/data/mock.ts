@@ -3033,9 +3033,9 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
 export const mockCandidatesByStage: Record<string, Partial<Record<string, Candidate[]>>> = {
   // evaluaciones candidates (tp-e*, v-e*, d-e*) only appear in their own stage —
   // keeping them out of scoring/prescreening/entrevistas prevents duplicate cards.
-  'mock-transp-pub': { scoring: [...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEntrevistas, ...transpPubPrescreening], prueba_manejo: transpPubEntrevistas, evaluaciones: transpPubEvaluaciones, entrevistas: transpPubEntrevistas },
-  'mock-vigia':   { scoring: [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEntrevistas, ...vigiaPrescreening], prueba_manejo: vigiaEntrevistas, evaluaciones: vigiaEvaluaciones, entrevistas: vigiaEntrevistas },
-  'mock-distrib': { scoring: [...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEntrevistas, ...distribPrescreening], prueba_manejo: distribEntrevistas, evaluaciones: distribEvaluaciones, entrevistas: distribEntrevistas },
+  'mock-transp-pub': { scoring: [...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEntrevistas, ...transpPubPrescreening], prueba_manejo: transpPubEntrevistas, evaluaciones: transpPubEvaluaciones, entrevistas: transpPubEntrevistas, finalistas: transpPubEntrevistas.slice(0, 2) },
+  'mock-vigia':   { scoring: [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEntrevistas, ...vigiaPrescreening], prueba_manejo: vigiaEntrevistas, evaluaciones: vigiaEvaluaciones, entrevistas: vigiaEntrevistas, finalistas: vigiaEntrevistas.slice(0, 2) },
+  'mock-distrib': { scoring: [...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEntrevistas, ...distribPrescreening], prueba_manejo: distribEntrevistas, evaluaciones: distribEvaluaciones, entrevistas: distribEntrevistas, finalistas: distribEntrevistas.slice(0, 2) },
   'mock-recep':    { scoring: recepCandidates },
   'mock-bodega':   { scoring: [...bodegaPreCandidates, ...bodegaScoreOnly], prescreening: bodegaPreCandidates },
   'mock-th':       { scoring: [...thEntrevistasCandidates, ...thPreCandidates, ...thScoreOnly], prescreening: [...thEntrevistasCandidates, ...thPreCandidates], entrevistas: thEntrevistasCandidates },

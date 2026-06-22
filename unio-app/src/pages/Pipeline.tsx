@@ -58,7 +58,7 @@ function mapPhaseStatus(label?: string): 'completed' | 'in_progress' | 'not_star
   return 'not_started';
 }
 
-const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas', 'finalistas', 'estudios'];
+const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas', 'estudios', 'finalistas'];
 
 // Normalize API phase type keys to internal stage IDs
 function normalizePhaseType(raw: string): string {
@@ -99,9 +99,9 @@ function mapPhasesToStages(phases: Phase[], jobId: string, processId: string): P
 
   const scoringCount = phaseMap.get('scoring')?.phase_candidates_count ?? 0;
 
-  // Render all stages except scoring (merged into prescreening) and estudios (appended separately)
+  // Render all stages except scoring (merged into prescreening), estudios and finalistas (appended separately)
   return STAGE_ORDER
-    .filter((id) => id !== 'scoring' && id !== 'estudios')
+    .filter((id) => id !== 'scoring' && id !== 'estudios' && id !== 'finalistas')
     .map((id) => {
       const phase = phaseMap.get(id);
       const meta = STAGE_META[id];
@@ -288,29 +288,62 @@ export default function Pipeline() {
 
     if (jobId.startsWith('mock-')) {
       const base = mergeScoring(getMockPipelineStages(jobId));
-      // Lock Finalistas card if no finalists exist yet
+      // Remove finalistas from the base list so we can append it last
+      const withoutFinalistas = base.filter((s) => s.id !== 'finalistas');
+      const finalistasBase = base.find((s) => s.id === 'finalistas');
       const hasFinalists =
         getPendingCandidates(jobId, 'finalistas').length > 0 ||
         (mockFinalistCards[jobId]?.length ?? 0) > 0;
-      const withFinalistas = base.map((s) =>
-        s.id === 'finalistas' && !hasFinalists
-          ? { ...s, status: 'not_started' as const }
-          : s,
-      );
-      return [...withFinalistas, estudiosCard];
+      const finalistasCard: PipelineStage = {
+        ...(finalistasBase ?? {
+          id: 'finalistas',
+          label: STAGE_META.finalistas.label,
+          stageBadge: STAGE_META.finalistas.stageBadge,
+          status: 'not_started' as const,
+          candidateCount: 0,
+          isAI: false,
+          route: `${stageBase}/finalistas`,
+        }),
+        status: hasFinalists ? (finalistasBase?.status ?? 'not_started') : 'not_started',
+        forceEnabled: true,
+      };
+      return [...withoutFinalistas, estudiosCard, finalistasCard];
     }
     if (selectionProcess?.phases) {
-      return [...mapPhasesToStages(selectionProcess.phases, jobId, processId ?? ''), estudiosCard];
+      const mapped = mapPhasesToStages(selectionProcess.phases, jobId, processId ?? '');
+      const withoutFinalistas = mapped.filter((s) => s.id !== 'finalistas');
+      const finalistasPhase = mapped.find((s) => s.id === 'finalistas');
+      const finalistasCard: PipelineStage = finalistasPhase ?? {
+        id: 'finalistas',
+        label: STAGE_META.finalistas.label,
+        stageBadge: STAGE_META.finalistas.stageBadge,
+        status: 'not_started',
+        candidateCount: 0,
+        isAI: false,
+        route: `${stageBase}/finalistas`,
+        forceEnabled: true,
+      };
+      return [...withoutFinalistas, estudiosCard, finalistasCard];
     }
-    return [
-      ...mergeScoring(
-        getPipelineStages(jobId).map((s) => ({
-          ...s,
-          route: processId ? `/pipeline/${jobId}/process/${processId}/${s.id}` : s.route,
-        })),
-      ),
-      estudiosCard,
-    ];
+    const base = mergeScoring(
+      getPipelineStages(jobId).map((s) => ({
+        ...s,
+        route: processId ? `/pipeline/${jobId}/process/${processId}/${s.id}` : s.route,
+      })),
+    );
+    const withoutFinalistas = base.filter((s) => s.id !== 'finalistas');
+    const finalistasBase = base.find((s) => s.id === 'finalistas');
+    const finalistasCard: PipelineStage = finalistasBase ?? {
+      id: 'finalistas',
+      label: STAGE_META.finalistas.label,
+      stageBadge: STAGE_META.finalistas.stageBadge,
+      status: 'not_started',
+      candidateCount: 0,
+      isAI: false,
+      route: `${stageBase}/finalistas`,
+      forceEnabled: true,
+    };
+    return [...withoutFinalistas, estudiosCard, finalistasCard];
   }, [jobId, processId, selectionProcess, finalistaLocked]);
 
   // Derive progressStage from the highest active/completed phase and sync to context
@@ -348,7 +381,7 @@ export default function Pipeline() {
           marginLeft: '205px',
           flex: 1,
           padding: '40px',
-          maxWidth: '1200px',
+                maxWidth: '1400px',
         }}
       >
         {/* Back */}
@@ -446,7 +479,7 @@ export default function Pipeline() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
+                gridTemplateColumns: 'repeat(6, 1fr)',
             gap: '16px',
           }}
         >

@@ -116,17 +116,17 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       locked: false,
     },
     {
-      id: 'finalistas',
-      label: 'Aprobados',
-      Icon: CheckCheck,
-      path: `${stageBase}/finalistas`,
-      locked: false,
-    },
-    {
       id: 'estudios',
       label: 'Validaciones',
       Icon: ClipboardCheck,
       path: `${stageBase}/estudios`,
+      locked: false,
+    },
+    {
+      id: 'finalistas',
+      label: 'Aprobados',
+      Icon: CheckCheck,
+      path: `${stageBase}/finalistas`,
       locked: false,
     },
   ];
