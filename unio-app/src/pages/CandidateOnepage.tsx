@@ -221,7 +221,6 @@ export default function CandidateOnepage() {
   const entrevistasDescarta =
     entrevistasDone && (hrRecomendacion === 'no_recomiendo' || hmRecomendacion === 'no_recomiendo');
 
-  const [scoringOpen, setScoringOpen] = useState(() => stage === 'scoring');
   const [prescreeningOpen, setPrescreeningOpen] = useState(() => stage === 'prescreening');
   const [entrevistasOpen, setEntrevistasOpen] = useState(() => stage === 'entrevistas');
   const [evaluacionesOpen, setEvaluacionesOpen] = useState(() => stage === 'evaluaciones');
@@ -229,26 +228,23 @@ export default function CandidateOnepage() {
   const [waModalOpen, setWaModalOpen] = useState(false);
   const [waAgendarOpen, setWaAgendarOpen] = useState(false);
 
-  const scoringSectionRef = useRef<HTMLDivElement>(null);
+
   const prescreeningSectionRef = useRef<HTMLDivElement>(null);
   const entrevistasSectionRef = useRef<HTMLDivElement>(null);
   const evaluacionesSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setScoringOpen(stage === 'scoring');
     setPrescreeningOpen(stage === 'prescreening');
     setEntrevistasOpen(stage === 'entrevistas');
     setEvaluacionesOpen(stage === 'evaluaciones');
     setPruebaTecnicaOpen(false);
 
     const sectionEl: HTMLElement | null =
-      stage === 'scoring'
-        ? scoringSectionRef.current
-        : stage === 'prescreening'
-          ? prescreeningSectionRef.current
-          : stage === 'entrevistas'
-            ? entrevistasSectionRef.current
-            : evaluacionesSectionRef.current;
+      stage === 'prescreening'
+        ? prescreeningSectionRef.current
+        : stage === 'entrevistas'
+          ? entrevistasSectionRef.current
+          : evaluacionesSectionRef.current;
 
     const t = window.setTimeout(() => {
       sectionEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -577,31 +573,7 @@ export default function CandidateOnepage() {
 
         {/* Accordion sections */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* 1. Scoring AI / Verificación RUNT */}
-          <div ref={scoringSectionRef} style={{ scrollMarginTop: 24 }}>
-            <AccordionSection
-              number={1}
-              title={candidate.runtVerification ? 'Verificación (RUNT/RNDC)' : 'Scoring AI'}
-              score={candidate.scoringAI.score}
-              statusText={
-                candidate.scoringAI.status === 'rechazado'
-                  ? 'Descartado'
-                  : stage !== 'scoring'
-                  ? 'Continúa'
-                  : candidate.scoringAI.status === 'continua'
-                  ? 'Continúa'
-                  : 'Pendiente'
-              }
-              statusOk={stage !== 'scoring' || candidate.scoringAI.status === 'continua'}
-              isOpen={scoringOpen}
-              onToggle={() => setScoringOpen(!scoringOpen)}
-              isLocked={false}
-            >
-              <ScoringContent candidate={candidate} />
-            </AccordionSection>
-          </div>
-
-          {/* 2. Pre-entrevista IA */}
+          {/* 1. Pre-entrevista IA */}
           {(() => {
             const waResult = getWaResult(candidateId);
             const waCompleted = isWaCompleted(candidateId);
@@ -613,7 +585,7 @@ export default function CandidateOnepage() {
             return (
               <div ref={prescreeningSectionRef} style={{ scrollMarginTop: 24 }}>
                 <AccordionSection
-                  number={2}
+                  number={1}
                   title="Pre-entrevista IA"
                   score={prescreeningScore}
                   statusText={
@@ -653,7 +625,7 @@ export default function CandidateOnepage() {
           {/* 3. Entrevistas */}
           <div ref={entrevistasSectionRef} style={{ scrollMarginTop: 24 }}>
             <AccordionSection
-              number={3}
+              number={2}
               title="Entrevistas"
               score={isPendingEntrevistas ? undefined : entrevistaScore}
               statusText={
@@ -681,7 +653,7 @@ export default function CandidateOnepage() {
           {/* 4–5. Evaluaciones (scroll target: primera sub-etapa) */}
           <div ref={evaluacionesSectionRef} style={{ scrollMarginTop: 24 }}>
             <AccordionSection
-              number={4}
+              number={3}
               title="Prueba Psicológica"
               score={candidate.psychTest?.score}
               statusText={
@@ -704,7 +676,7 @@ export default function CandidateOnepage() {
 
             <div style={{ marginTop: 12 }}>
               <AccordionSection
-                number={5}
+                number={4}
                 title="Prueba Técnica"
                 score={techTestScore ?? undefined}
                 statusText={
@@ -1043,184 +1015,6 @@ function AccordionSection({
           {children}
         </div>
       )}
-    </div>
-  );
-}
-
-// ─── Scoring content ──────────────────────────────────────────────────────────
-
-function ScoringContent({ candidate }: { candidate: (typeof candidates)[0] }) {
-  const ai = candidate.scoringAI;
-
-  return (
-    <div style={{ paddingTop: '20px' }}>
-      {/* Resumen */}
-      <div style={{ marginBottom: '24px' }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 8px', color: 'var(--color-text-primary)' }}>
-          Resumen
-        </h3>
-        <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-          "{ai.resumen}"
-        </p>
-      </div>
-
-      {/* No negociables */}
-      <div style={{ marginBottom: '24px' }}>
-        <div
-          style={{
-            border: '1.5px solid #d4d4d5',
-            borderRadius: '26px',
-            overflow: 'hidden',
-            background: 'rgba(255,255,255,0.43)',
-          }}
-        >
-          {/* Header row */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 245px',
-              background: '#f7f7f8',
-              borderBottom: '1px solid #d4d4d5',
-            }}
-          >
-            <div style={{ padding: '11px 24px', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '14px', lineHeight: '20px', color: '#363539' }}>
-              No negociables
-            </div>
-            <div style={{ padding: '11px 8px', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '14px', lineHeight: '20px', color: '#363539', textAlign: 'center', borderLeft: '1px solid #d4d4d5' }}>
-              ¿Cumple?
-            </div>
-          </div>
-
-          {/* Data rows */}
-          {ai.noNegociables.map((item, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 245px',
-                borderBottom: i < ai.noNegociables.length - 1 ? '1px solid #d4d4d5' : 'none',
-              }}
-            >
-              <div style={{ padding: '12px 24px', fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#363539', display: 'flex', alignItems: 'center' }}>
-                {item.label}
-              </div>
-              <div style={{ borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {item.cumple ? (
-                  <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
-                      <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                ) : (
-                  <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
-                      <path d="M3.5 3.5L10.5 10.5M10.5 3.5L3.5 10.5" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                    </svg>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Tarjeta RUNT (solo si el candidato tiene datos de verificación) */}
-      {candidate.runtVerification && (() => {
-        const runt = candidate.runtVerification!;
-        return (
-          <div style={{ marginBottom: '24px' }}>
-            <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid #2a2a3a' }}>
-              {/* Header */}
-              <div style={{ background: '#1a1a2e', padding: '12px 20px' }}>
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', color: '#e2e8f0', letterSpacing: '0.3px' }}>
-                  Verificación RUNT — Licencia Nro: {runt.cc}
-                </span>
-              </div>
-              {/* License categories table */}
-              {runt.licenseCategories.length > 0 && (
-                <div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: '#f8f8fa', borderBottom: '1px solid #e4e4e7' }}>
-                    {['Categoría', 'Fecha expedición', 'Fecha vencimiento'].map(h => (
-                      <div key={h} style={{ padding: '10px 20px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', color: '#363539', textAlign: 'center' }}>{h}</div>
-                    ))}
-                  </div>
-                  {runt.licenseCategories.map((cat, i) => (
-                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < runt.licenseCategories.length - 1 ? '1px solid #e4e4e7' : 'none', background: '#fff' }}>
-                      <div style={{ padding: '10px 20px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', color: '#363539', textAlign: 'center' }}>{cat.categoria}</div>
-                      <div style={{ padding: '10px 20px', fontSize: '14px', color: '#6b6b6b', textAlign: 'center' }}>{cat.fechaExpedicion}</div>
-                      <div style={{ padding: '10px 20px', fontSize: '14px', color: '#6b6b6b', textAlign: 'center' }}>{cat.fechaVencimiento}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* Manifiestos footer */}
-              <div style={{ background: '#f0eeff', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: '#363539' }}>
-                  Total de manifiestos expedidos en el rango de fechas solicitado:
-                </span>
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#6d4ef5' }}>{runt.totalManifiestos}</span>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Logros + Señales */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <div>
-          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 12px', color: 'var(--color-text-primary)' }}>
-            Logros relevantes
-          </h3>
-          {ai.logros.map((raw, i) => {
-            let label = '';
-            let description = typeof raw === 'string' ? raw : '';
-            try {
-              const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-              if (parsed && typeof parsed === 'object') {
-                label = parsed.label ?? '';
-                description = parsed.description ?? '';
-              }
-            } catch { /* keep raw as description */ }
-            return (
-              <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-                <Trophy size={18} color="var(--color-warning-600)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
-                  {label && <strong style={{ color: 'var(--color-text-primary)', display: 'block', marginBottom: '2px' }}>{label}</strong>}
-                  {description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-        <div>
-          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 12px', color: 'var(--color-text-primary)' }}>
-            Señales para validar
-          </h3>
-          {ai.senales.map((raw, i) => {
-            let type = 'warning';
-            let description = typeof raw === 'string' ? raw : '';
-            try {
-              const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-              if (parsed && typeof parsed === 'object') {
-                type = parsed.type ?? 'warning';
-                description = parsed.description ?? '';
-              }
-            } catch { /* keep raw as description */ }
-            const iconMap: Record<string, React.ReactNode> = {
-              warning:   <AlertTriangle size={16} color="var(--color-warning-600)" style={{ flexShrink: 0, marginTop: '2px' }} />,
-              lightbulb: <Lightbulb size={16} color="var(--color-brand-accent)" style={{ flexShrink: 0, marginTop: '2px' }} />,
-              target:    <Target size={16} color="var(--color-info-600, #0ea5e9)" style={{ flexShrink: 0, marginTop: '2px' }} />,
-            };
-            const icon = iconMap[type] ?? <MessageSquare size={16} color="var(--color-info-600)" style={{ flexShrink: 0, marginTop: '2px' }} />;
-            return (
-              <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-                {icon}
-                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
