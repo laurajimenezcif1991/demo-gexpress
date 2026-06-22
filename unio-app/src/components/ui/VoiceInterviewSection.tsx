@@ -326,10 +326,9 @@ export default function VoiceInterviewSection() {
   };
 
   return (
-    <div style={{
+    <div     style={{
       marginTop: '24px',
-      paddingTop: '20px',
-      borderTop: '1px solid var(--color-border-default)',
+      paddingTop: '4px',
     }}>
       <SectionHeader />
 
