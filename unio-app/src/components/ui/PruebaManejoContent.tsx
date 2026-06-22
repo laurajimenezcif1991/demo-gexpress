@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Check, Pencil, Upload, X as XIcon, Calendar, Clock, User, MapPin, Truck } from 'lucide-react';
 import StarRating from './StarRating';
 import Button from './Button';
@@ -431,7 +431,7 @@ function EditView({
         <label style={labelStyle}>
           Resultado <span style={{ color: 'var(--color-danger, #ef4444)' }}>*</span>
         </label>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
           {RESULTADO_OPTIONS.map((opt) => {
             const isSelected = form.resultado === opt.value;
             return (
@@ -440,23 +440,23 @@ function EditView({
                 type="button"
                 onClick={() => setForm((prev) => ({ ...prev, resultado: opt.value }))}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '10px',
-                  padding: '12px 16px', borderRadius: 'var(--radius-md)',
+                  display: 'inline-flex', alignItems: 'center', gap: '7px',
+                  padding: '7px 16px', borderRadius: 999,
                   border: `1.5px solid ${isSelected ? opt.color : 'var(--color-border-default)'}`,
                   background: isSelected ? opt.bg : '#ffffff',
                   cursor: 'pointer', fontFamily: 'var(--font-display)',
-                  fontSize: '14px', fontWeight: isSelected ? 600 : 400,
+                  fontSize: '13px', fontWeight: isSelected ? 700 : 400,
                   color: isSelected ? opt.color : 'var(--color-text-primary)',
-                  transition: 'all 0.15s ease', textAlign: 'left' as const,
+                  transition: 'all 0.15s ease',
                 }}
               >
                 <div style={{
-                  width: '16px', height: '16px', borderRadius: '50%',
+                  width: 12, height: 12, borderRadius: '50%',
                   border: `2px solid ${isSelected ? opt.color : 'var(--color-border-default)'}`,
                   background: isSelected ? opt.color : 'transparent',
                   flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {isSelected && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />}
+                  {isSelected && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#fff' }} />}
                 </div>
                 {opt.label}
               </button>
@@ -570,12 +570,6 @@ export default function PruebaManejoContent({
   const [form, setForm] = useState<PruebaManejoFeedback>(initial);
   const [isEditing, setIsEditing] = useState(false);
   const [saved, setSaved] = useState(false);
-
-  // Notify parent of initial score on mount so accordion header reflects it immediately
-  useEffect(() => {
-    onScoreChange?.(calcScore(initial.ratings));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleSave = () => {
     setSaved(true);

@@ -226,6 +226,7 @@ export default function CandidateOnepage() {
   const [pruebaManejoOpen, setPruebaManejoOpen] = useState(() => stage === 'prueba_manejo');
   // 84 = score calculado desde los ratings PREFILLED de PruebaManejoContent (promedio 4.2/5 × 100)
   const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(84);
+  const [voiceInterviewDone, setVoiceInterviewDone] = useState(true);
   const [entrevistasOpen, setEntrevistasOpen] = useState(() => stage === 'entrevistas');
   const [evaluacionesOpen, setEvaluacionesOpen] = useState(() => stage === 'evaluaciones');
   const [waModalOpen, setWaModalOpen] = useState(false);
@@ -663,19 +664,17 @@ export default function CandidateOnepage() {
             <AccordionSection
               number={4}
               title="Entrevista"
-              score={isPendingEntrevistas ? undefined : entrevistaScore ?? undefined}
               statusText={
-                !isPendingEntrevistas && entrevistasDone && !entrevistasDescarta ? 'Completado'
-                : entrevistasDescarta ? 'Descartado'
-                : isPendingEntrevistas || entrevistaScore !== null ? 'En proceso'
+                voiceInterviewDone ? 'Completado'
+                : stage === 'entrevistas' ? 'En proceso'
                 : 'Sin iniciar'
               }
-              statusOk={!isPendingEntrevistas && entrevistasDone && !entrevistasDescarta}
+              statusOk={voiceInterviewDone}
               isOpen={entrevistasOpen}
               onToggle={() => setEntrevistasOpen(!entrevistasOpen)}
               isLocked={false}
             >
-              <VoiceInterviewSection />
+              <VoiceInterviewSection onDoneChange={setVoiceInterviewDone} />
             </AccordionSection>
           </div>
         </div>

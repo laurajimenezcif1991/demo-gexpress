@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, CheckCircle } from 'lucide-react';
+import { Mic, MicOff, Play, Pause, CheckCircle, RotateCcw } from 'lucide-react';
 import Button from './Button';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type VoiceState = 'pending' | 'processing' | 'done';
+type ResultadoVoz = 'apto' | 'apto_reservas' | 'no_apto';
+
+interface VoiceInterviewSectionProps {
+  onDoneChange?: (isDone: boolean) => void;
+}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -18,7 +23,7 @@ const GUIDE_QUESTIONS = [
   '¿Cómo describió su relación con figuras de autoridad o supervisores?',
 ];
 
-const WAVEFORM_HEIGHTS = [8, 14, 22, 18, 28, 12, 24, 10, 20, 26, 8, 16, 22, 28, 14, 6, 18, 24, 10, 20, 28, 16, 8, 22, 14, 26, 10, 18, 24, 12, 20, 8];
+const WAVEFORM_HEIGHTS = [8,14,22,18,28,12,24,10,20,26,8,16,22,28,14,6,18,24,10,20,28,16,8,22,14,26,10,18,24,12,20,8];
 
 const VEREDICTO_DEFAULT =
   'El candidato muestra estabilidad emocional general y disposición positiva. Sin embargo, reporta episodios de conflicto con figuras de autoridad en dos empleos anteriores. Entorno familiar estable. No reporta consumo activo de sustancias. Se recomienda avanzar con seguimiento en las primeras semanas de operación.';
@@ -26,10 +31,16 @@ const VEREDICTO_DEFAULT =
 const POSITIVO = ['Estabilidad familiar reportada', 'Sin consumo activo de sustancias', 'Actitud colaborativa durante la entrevista'];
 const A_MONITOREAR = ['Conflictos previos con autoridad (2 empleos)', 'Estrés económico moderado', 'Reacción defensiva ante pregunta de mercancía'];
 
+const RESULTADO_OPTIONS: { value: ResultadoVoz; label: string; color: string; bg: string; border: string }[] = [
+  { value: 'apto',          label: 'Apto',               color: 'var(--color-positive-600, #1F9854)', bg: 'var(--color-positive-50, #E6FAEE)',  border: '#BBF7D0' },
+  { value: 'apto_reservas', label: 'Avanzar con reservas', color: 'var(--color-warning-700, #A37800)', bg: 'var(--color-warning-50, #FFF8E5)',   border: '#FFE59E' },
+  { value: 'no_apto',       label: 'No apto',            color: 'var(--color-negative-600, #A82424)', bg: 'var(--color-negative-50, #FBEAEA)', border: '#FECACA' },
+];
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatTime(secs: number) {
-  const m = Math.floor(secs / 60).toString().padStart(1, '0');
+  const m = Math.floor(secs / 60);
   const s = (secs % 60).toString().padStart(2, '0');
   return `${m}:${s}`;
 }
@@ -66,12 +77,7 @@ function GuideCard() {
       borderRadius: 'var(--radius-md)',
       padding: '16px 20px',
     }}>
-      <p style={{
-        margin: '0 0 4px',
-        fontFamily: 'var(--font-display)', fontWeight: 700,
-        fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em',
-        color: 'var(--color-text-muted)',
-      }}>
+      <p style={{ margin: '0 0 4px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-muted)' }}>
         Guía de entrevista
       </p>
       <p style={{ margin: '0 0 12px', fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
@@ -109,25 +115,33 @@ function Spinner() {
   );
 }
 
-function Waveform() {
+// ─── Audio player (WhatsApp-style) ────────────────────────────────────────────
+
+function AudioPlayer({ onReset }: { onReset: () => void }) {
+  const [playing, setPlaying] = useState(false);
+  const playTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handlePlay = () => {
+    if (playing) {
+      setPlaying(false);
+      if (playTimerRef.current) clearTimeout(playTimerRef.current);
+    } else {
+      setPlaying(true);
+      playTimerRef.current = setTimeout(() => setPlaying(false), 3800);
+    }
+  };
+
+  useEffect(() => () => { if (playTimerRef.current) clearTimeout(playTimerRef.current); }, []);
+
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: '12px',
       background: 'var(--color-secondary-50)',
       border: '1px solid var(--color-border-default)',
       borderRadius: 'var(--radius-md)',
       padding: '12px 16px',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flex: 1 }}>
-        {WAVEFORM_HEIGHTS.map((h, i) => (
-          <div key={i} style={{
-            width: 4, height: h,
-            background: 'var(--color-brand-accent)',
-            borderRadius: 999, flexShrink: 0, opacity: 0.75,
-          }} />
-        ))}
-      </div>
-      <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
+      {/* File info */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: 'var(--color-text-primary)' }}>
           entrevista_psicologica.ogg
         </span>
@@ -144,6 +158,103 @@ function Waveform() {
           </span>
         </div>
       </div>
+
+      {/* Waveform */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: '12px' }}>
+        {WAVEFORM_HEIGHTS.map((h, i) => (
+          <div key={i} style={{
+            width: 4, height: h,
+            background: playing && i < Math.floor(WAVEFORM_HEIGHTS.length * 0.4)
+              ? 'var(--color-brand-accent)'
+              : 'var(--color-brand-accent)',
+            borderRadius: 999, flexShrink: 0,
+            opacity: playing && i < Math.floor(WAVEFORM_HEIGHTS.length * 0.4) ? 1 : 0.5,
+            transition: 'opacity 0.1s',
+          }} />
+        ))}
+      </div>
+
+      {/* Controls */}
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <button
+          onClick={handlePlay}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            padding: '7px 14px', borderRadius: 999,
+            background: playing ? 'var(--color-brand-accent)' : '#fff',
+            border: `1.5px solid ${playing ? 'var(--color-brand-accent)' : 'var(--color-border-default)'}`,
+            cursor: 'pointer', fontFamily: 'var(--font-display)',
+            fontWeight: 600, fontSize: '13px',
+            color: playing ? '#fff' : 'var(--color-text-primary)',
+            transition: 'all 0.15s',
+          }}
+        >
+          {playing ? <Pause size={13} /> : <Play size={13} />}
+          {playing ? 'Reproduciendo...' : 'Reproducir'}
+        </button>
+
+        <button
+          onClick={onReset}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            padding: '7px 14px', borderRadius: 999,
+            background: '#fff',
+            border: '1.5px solid var(--color-border-default)',
+            cursor: 'pointer', fontFamily: 'var(--font-display)',
+            fontWeight: 600, fontSize: '13px',
+            color: 'var(--color-text-muted)',
+            transition: 'all 0.15s',
+          }}
+        >
+          <RotateCcw size={12} />
+          Grabar de nuevo
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Horizontal resultado selector ───────────────────────────────────────────
+
+function ResultadoSelector({
+  value,
+  onChange,
+}: {
+  value: ResultadoVoz;
+  onChange: (v: ResultadoVoz) => void;
+}) {
+  return (
+    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' as const }}>
+      {RESULTADO_OPTIONS.map((opt) => {
+        const isSelected = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '7px',
+              padding: '6px 14px', borderRadius: 999,
+              border: `1.5px solid ${isSelected ? opt.color : 'var(--color-border-default)'}`,
+              background: isSelected ? opt.bg : '#fff',
+              cursor: 'pointer', fontFamily: 'var(--font-display)',
+              fontSize: '13px', fontWeight: isSelected ? 700 : 400,
+              color: isSelected ? opt.color : 'var(--color-text-secondary)',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <div style={{
+              width: 12, height: 12, borderRadius: '50%', flexShrink: 0,
+              border: `2px solid ${isSelected ? opt.color : 'var(--color-border-default)'}`,
+              background: isSelected ? opt.color : 'transparent',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {isSelected && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#fff' }} />}
+            </div>
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -151,6 +262,7 @@ function Waveform() {
 // ─── Done view ────────────────────────────────────────────────────────────────
 
 function DoneView({ onReset }: { onReset: () => void }) {
+  const [resultado, setResultado] = useState<ResultadoVoz>('apto_reservas');
   const [editMode, setEditMode] = useState(false);
   const [veredicto, setVeredicto] = useState(VEREDICTO_DEFAULT);
   const [draft, setDraft] = useState(veredicto);
@@ -163,16 +275,23 @@ function DoneView({ onReset }: { onReset: () => void }) {
     setTimeout(() => setToastVisible(false), 2500);
   };
 
+  const opt = RESULTADO_OPTIONS.find(o => o.value === resultado)!;
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <Waveform />
+      {/* Audio player with WhatsApp-style controls */}
+      <AudioPlayer onReset={onReset} />
+
+      {/* Resultado selector */}
+      <div>
+        <p style={{ margin: '0 0 8px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.08em', color: 'var(--color-text-muted)' }}>
+          Resultado
+        </p>
+        <ResultadoSelector value={resultado} onChange={setResultado} />
+      </div>
 
       {/* Result card */}
-      <div style={{
-        border: '1px solid var(--color-border-default)',
-        borderRadius: 'var(--radius-md)',
-        overflow: 'hidden',
-      }}>
+      <div style={{ border: '1px solid var(--color-border-default)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
         {/* Veredicto */}
         <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--color-border-default)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
@@ -181,12 +300,11 @@ function DoneView({ onReset }: { onReset: () => void }) {
             </span>
             <span style={{
               fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px',
-              color: 'var(--color-warning-700, #A37800)',
-              background: 'var(--color-warning-50, #FFF8E5)',
-              border: '1px solid #FFE59E',
+              color: opt.color, background: opt.bg,
+              border: `1px solid ${opt.border}`,
               padding: '2px 12px', borderRadius: 999,
             }}>
-              Avanzar con reservas
+              {opt.label}
             </span>
           </div>
           {editMode ? (
@@ -247,18 +365,14 @@ function DoneView({ onReset }: { onReset: () => void }) {
         </div>
       </div>
 
-      {/* Actions */}
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <Button variant="secondary" size="sm" onClick={onReset}>
-          <Mic size={13} style={{ marginRight: 4 }} />
-          Grabar de nuevo
-        </Button>
-        {!editMode && (
+      {/* Edit resumen */}
+      {!editMode && (
+        <div>
           <Button variant="secondary" size="sm" onClick={() => { setDraft(veredicto); setEditMode(true); }}>
             Editar resumen
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       {toastVisible && (
         <div style={{
@@ -278,20 +392,22 @@ function DoneView({ onReset }: { onReset: () => void }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function VoiceInterviewSection() {
+export default function VoiceInterviewSection({ onDoneChange }: VoiceInterviewSectionProps) {
   const [voiceState, setVoiceState] = useState<VoiceState>('done');
   const [recording, setRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Auto-transition from processing → done after 3s
+  useEffect(() => {
+    onDoneChange?.(voiceState === 'done');
+  }, [voiceState]);
+
   useEffect(() => {
     if (voiceState !== 'processing') return;
     const t = setTimeout(() => setVoiceState('done'), 3000);
     return () => clearTimeout(t);
   }, [voiceState]);
 
-  // Cleanup interval on unmount
   useEffect(() => {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
@@ -303,7 +419,6 @@ export default function VoiceInterviewSection() {
       intervalRef.current = setInterval(() => {
         setElapsed(prev => {
           if (prev >= 299) {
-            // auto-stop at 5:00
             clearInterval(intervalRef.current!);
             setRecording(false);
             setVoiceState('processing');
@@ -326,17 +441,13 @@ export default function VoiceInterviewSection() {
   };
 
   return (
-    <div     style={{
-      marginTop: '24px',
-      paddingTop: '4px',
-    }}>
+    <div style={{ marginTop: '24px', paddingTop: '4px' }}>
       <SectionHeader />
 
       <div style={{ marginTop: '16px' }}>
         {voiceState === 'pending' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <GuideCard />
-
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <button
                 onClick={handleRecordToggle}
@@ -352,26 +463,11 @@ export default function VoiceInterviewSection() {
                   transition: 'background 0.2s, box-shadow 0.2s',
                 }}
               >
-                <style>{`
-                  @keyframes pulse-rec {
-                    0%, 100% { box-shadow: 0 0 0 4px rgba(220,38,38,0.2); }
-                    50%       { box-shadow: 0 0 0 8px rgba(220,38,38,0.08); }
-                  }
-                `}</style>
-                {recording ? (
-                  <>
-                    <MicOff size={16} />
-                    Grabando... {formatTime(elapsed)}
-                  </>
-                ) : (
-                  <>
-                    <Mic size={16} />
-                    ● Grabar nota de voz
-                  </>
-                )}
+                <style>{`@keyframes pulse-rec { 0%,100%{box-shadow:0 0 0 4px rgba(220,38,38,0.2)} 50%{box-shadow:0 0 0 8px rgba(220,38,38,0.08)} }`}</style>
+                {recording ? <MicOff size={16} /> : <Mic size={16} />}
+                {recording ? `Grabando... ${formatTime(elapsed)}` : '● Grabar nota de voz'}
               </button>
             </div>
-
             {recording && (
               <p style={{ textAlign: 'center', margin: 0, fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--color-text-muted)' }}>
                 Haz click en el botón para detener la grabación
