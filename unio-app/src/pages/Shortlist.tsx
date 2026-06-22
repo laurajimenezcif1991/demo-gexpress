@@ -101,13 +101,13 @@ export default function Shortlist() {
                 margin: 0,
               }}
             >
-              Aún no hay finalistas
+              Aún no hay aprobados
             </h2>
             <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0, maxWidth: '380px', lineHeight: '1.6' }}>
-              Selecciona exactamente <strong>3 candidatos</strong> desde la etapa de Pruebas y usa "Pasar etapa" para definir a tus finalistas.
+              Selecciona exactamente <strong>3 candidatos</strong> desde la etapa de Entrevista y usa "Aprobar candidato" para moverlos a Aprobados.
             </p>
-            <Button variant="outline" size="md" onClick={() => navigate(`/pipeline/${jobId}/evaluaciones`)}>
-              Ir a Pruebas
+            <Button variant="outline" size="md" onClick={() => navigate(`/pipeline/${jobId}/entrevistas`)}>
+              Ir a Entrevista
             </Button>
           </div>
         )}

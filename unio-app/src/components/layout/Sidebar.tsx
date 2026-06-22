@@ -117,7 +117,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
     },
     {
       id: 'finalistas',
-      label: 'Candidatos Finales',
+      label: 'Aprobados',
       Icon: CheckCheck,
       path: `${stageBase}/finalistas`,
       locked: false,
@@ -127,7 +127,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       label: 'Validaciones',
       Icon: ClipboardCheck,
       path: `${stageBase}/estudios`,
-      locked: finalistasLocked,
+      locked: false,
     },
   ];
 

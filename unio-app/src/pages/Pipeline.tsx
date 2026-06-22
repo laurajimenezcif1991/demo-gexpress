@@ -283,7 +283,7 @@ export default function Pipeline() {
       candidateCount: 0,
       isAI: false,
       route: `${stageBase}/estudios`,
-      forceEnabled: !finalistaLocked,
+      forceEnabled: true,
     };
 
     if (jobId.startsWith('mock-')) {

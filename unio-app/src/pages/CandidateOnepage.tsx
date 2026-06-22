@@ -741,7 +741,7 @@ export default function CandidateOnepage() {
                 <CheckCircle2 size={16} />
                 {stage === 'prueba_manejo' ? 'Pasar a Prueba Psicotécnica'
                   : stage === 'evaluaciones' ? 'Pasar a Entrevista'
-                  : stage === 'entrevistas' ? 'Pasar a Finalistas'
+                  : stage === 'entrevistas' ? 'Aprobar candidato'
                   : 'Pasar etapa'}
               </Button>
           )}

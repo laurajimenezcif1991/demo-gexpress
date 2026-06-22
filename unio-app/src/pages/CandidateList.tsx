@@ -221,7 +221,7 @@ export default function CandidateList() {
           setProgressStage(nextStage as Parameters<typeof setProgressStage>[0]);
           // Navigate to the next stage list automatically
           const base = processId ? `/pipeline/${jobId}/process/${processId}` : `/pipeline/${jobId}`;
-          setToastMessage(`${ids.length} candidato${ids.length !== 1 ? 's' : ''} avanzado${ids.length !== 1 ? 's' : ''} a ${nextStage === 'finalistas' ? 'Finalistas' : 'la siguiente fase'}`);
+          setToastMessage(`${ids.length} candidato${ids.length !== 1 ? 's' : ''} avanzado${ids.length !== 1 ? 's' : ''} a ${nextStage === 'finalistas' ? 'Aprobados' : 'la siguiente fase'}`);
           setToastVisible(true);
           setSelected(new Set());
           if (nextStage === 'finalistas') {
@@ -443,6 +443,50 @@ export default function CandidateList() {
               }}
             />
           ))}
+
+          {/* Empty state for estudios/Validaciones */}
+          {!candidatesLoading && !candidatesError && filteredCandidates.length === 0 && currentStage === 'estudios' && (
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              padding: '80px 32px', gap: '16px', textAlign: 'center',
+              background: 'linear-gradient(135deg, #f8f5ff 0%, #fdf0ff 50%, #f0f8ff 100%)',
+              borderRadius: 'var(--radius-lg)', margin: '16px',
+            }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: '50%',
+                background: 'var(--color-secondary-100)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+              </div>
+              <h2 style={{
+                fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px',
+                color: 'var(--color-brand-primary)', margin: 0,
+              }}>
+                Aún no hay candidatos en Validaciones
+              </h2>
+              <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0, maxWidth: '400px', lineHeight: 1.6 }}>
+                Aprueba candidatos desde la etapa de <strong>Entrevista</strong> para iniciar el proceso de validaciones (examen médico y estudio de seguridad).
+              </p>
+              <button
+                onClick={() => {
+                  const base = processId ? `/pipeline/${jobId}/process/${processId}` : `/pipeline/${jobId}`;
+                  navigate(`${base}/entrevistas`);
+                }}
+                style={{
+                  padding: '10px 20px', borderRadius: 'var(--radius-md)',
+                  border: '1.5px solid var(--color-brand-accent)',
+                  background: 'transparent', cursor: 'pointer',
+                  fontFamily: 'var(--font-display)', fontWeight: 600,
+                  fontSize: '14px', color: 'var(--color-brand-accent)',
+                }}
+              >
+                Ir a Entrevista
+              </button>
+            </div>
+          )}
         </div>
       </main>
 
@@ -526,7 +570,7 @@ export default function CandidateList() {
               <CheckCircle2 size={18} />
               {currentStage === 'prueba_manejo' ? 'Pasar a Prueba Psicotécnica'
                 : currentStage === 'evaluaciones' ? 'Pasar a Entrevista'
-                : currentStage === 'entrevistas' ? 'Pasar a Finalistas'
+                : currentStage === 'entrevistas' ? 'Aprobar candidato'
                 : 'Pasar etapa'}
             </Button>
           )}
@@ -621,13 +665,13 @@ export default function CandidateList() {
               fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px',
               color: 'var(--color-brand-primary)', margin: '0 0 10px', textAlign: 'center',
             }}>
-              Tus finalistas aún no están listos
+              Selección incompleta para Aprobados
             </h2>
             <p style={{
               fontSize: '14px', color: 'var(--color-text-secondary)', textAlign: 'center',
               lineHeight: '1.6', margin: '0 0 28px',
             }}>
-              Para avanzar necesitas elegir <strong>exactamente 3 finalistas</strong>.{' '}
+              Para aprobar necesitas elegir <strong>exactamente 3 candidatos</strong>.{' '}
               Actualmente tienes <strong>{selected.size}</strong> seleccionado{selected.size !== 1 ? 's' : ''}.{' '}
               {3 - selected.size > 0 && (
                 <>Elige <strong>{3 - selected.size} perfil{3 - selected.size !== 1 ? 'es' : ''} más</strong> para continuar.</>
@@ -688,14 +732,14 @@ export default function CandidateList() {
               fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px',
               color: 'var(--color-brand-primary)', margin: '0 0 10px', textAlign: 'center',
             }}>
-              El máximo es 3 finalistas
+              El máximo es 3 aprobados
             </h2>
             <p style={{
               fontSize: '14px', color: 'var(--color-text-secondary)', textAlign: 'center',
               lineHeight: '1.6', margin: '0 0 28px',
             }}>
               Ya tienes <strong>3 perfiles</strong> seleccionados, que es el máximo permitido.{' '}
-              Limitar el grupo de finalistas garantiza un proceso de decisión más enfocado y objetivo.{' '}
+              Limitar el grupo de aprobados garantiza un proceso de decisión más enfocado y objetivo.{' '}
               Revisa tus selecciones y quédate con los <strong>3 mejores perfiles</strong> del proceso.
             </p>
             <Button
