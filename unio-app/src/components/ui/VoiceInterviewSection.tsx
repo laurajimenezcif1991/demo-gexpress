@@ -22,15 +22,28 @@ interface VoiceInterviewSectionProps {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const GUIDE_QUESTIONS = [
-  '¿Cómo describió su situación familiar actual? ¿El/la candidato/a tiene personas a cargo?',
-  '¿Ha tenido conflictos laborales en trabajos anteriores? ¿Cómo los resolvió?',
-  '¿Cómo maneja la presión y situaciones de estrés en la operación?',
-  '¿Se ha visto involucrado/a alguna vez en una situación de robo o pérdida de mercancía?',
-  '¿Qué tan estable describió su entorno económico actualmente?',
-  '¿Consume o ha consumido sustancias psicoactivas? ¿Con qué frecuencia?',
-  '¿Cómo describió su relación con figuras de autoridad o supervisores?',
-];
+type InterviewerRole = 'psicologo' | 'jefe';
+
+const GUIDE_QUESTIONS: Record<InterviewerRole, { label: string; q: string }[]> = {
+  psicologo: [
+    { label: 'Situación familiar', q: '¿Cómo describió su situación familiar actual? ¿Tiene personas a cargo?' },
+    { label: 'Conflictos laborales', q: '¿Ha tenido conflictos en trabajos anteriores? ¿Cómo los resolvió?' },
+    { label: 'Manejo del estrés', q: '¿Cómo maneja la presión y situaciones de estrés en la operación?' },
+    { label: 'Integridad', q: '¿Se ha visto involucrado/a en situaciones de robo o pérdida de mercancía?' },
+    { label: 'Estabilidad económica', q: '¿Qué tan estable describió su entorno económico actualmente?' },
+    { label: 'Consumo de sustancias', q: '¿Consume o ha consumido sustancias psicoactivas? ¿Con qué frecuencia?' },
+    { label: 'Relación con autoridad', q: '¿Cómo describió su relación con figuras de autoridad o supervisores?' },
+  ],
+  jefe: [
+    { label: 'Experiencia técnica', q: '¿Qué tan detallado fue al describir su experiencia con el tipo de vehículo o ruta requerida para el cargo?' },
+    { label: 'Gestión operativa', q: '¿Cómo explicó su manejo de carga, tiempos de entrega y documentación de viaje?' },
+    { label: 'Contingencias en ruta', q: '¿Cómo respondió ante situaciones de emergencia en ruta: desvíos, accidentes o demoras?' },
+    { label: 'Herramientas digitales', q: '¿Demostró habilidad para trabajar con GPS, apps de gestión y comunicación con despacho?' },
+    { label: 'Disponibilidad', q: '¿Mostró disposición para trabajar en turnos extendidos, fines de semana o rutas nocturnas?' },
+    { label: 'Seguridad vial', q: '¿Describió una actitud positiva hacia las normas de seguridad y protocolos de la empresa?' },
+    { label: 'Trabajo en equipo', q: '¿Demostró capacidad para relacionarse con clientes, proveedores y compañeros de trabajo?' },
+  ],
+};
 
 const IDLE_WAVEFORM = [8,14,22,18,28,12,24,10,20,26,8,16,22,28,14,6,18,24,10,20,28,16,8,22,14,26,10,18,24,12,20,8];
 
@@ -185,27 +198,75 @@ function SectionHeader() {
   );
 }
 
-function GuideCard() {
+const ROLE_TABS: { id: InterviewerRole; label: string; sub: string }[] = [
+  { id: 'psicologo', label: 'Psicólogo/a',    sub: 'Perfil psicosocial' },
+  { id: 'jefe',      label: 'Jefe directo/a', sub: 'Perfil del cargo'   },
+];
+
+function GuideCard({
+  role, onRoleChange, compact = false,
+}: { role: InterviewerRole; onRoleChange: (r: InterviewerRole) => void; compact?: boolean }) {
+  const questions = GUIDE_QUESTIONS[role];
   return (
     <div style={{
       background: 'var(--color-neutral-50)',
       border: '1px solid var(--color-border-default)',
       borderRadius: 'var(--radius-md)',
-      padding: '16px 20px',
+      overflow: 'hidden',
     }}>
-      <p style={{ margin: '0 0 4px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.08em', color: 'var(--color-text-muted)' }}>
-        Guía de entrevista
-      </p>
-      <p style={{ margin: '0 0 12px', fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
-        Referencia para el psicólogo al grabar el resumen post-entrevista
-      </p>
-      <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {GUIDE_QUESTIONS.map((q, i) => (
-          <li key={i} style={{ fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--color-text-primary)', lineHeight: 1.55 }}>
-            {q}
-          </li>
-        ))}
-      </ol>
+      {/* Tab nav */}
+      <div style={{
+        display: 'flex',
+        borderBottom: '1px solid var(--color-border-default)',
+        background: '#fff',
+      }}>
+        {ROLE_TABS.map(tab => {
+          const active = role === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onRoleChange(tab.id)}
+              style={{
+                flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                gap: '1px', padding: '10px 12px',
+                border: 'none', borderBottom: `2px solid ${active ? 'var(--color-brand-accent)' : 'transparent'}`,
+                background: 'transparent', cursor: 'pointer',
+                transition: 'border-color 0.15s, background 0.15s',
+              }}
+            >
+              <span style={{
+                fontFamily: 'var(--font-display)', fontWeight: active ? 700 : 500,
+                fontSize: '13px',
+                color: active ? 'var(--color-brand-accent)' : 'var(--color-text-muted)',
+                transition: 'color 0.15s',
+              }}>
+                {tab.label}
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-display)', fontSize: '11px',
+                color: active ? 'var(--color-brand-accent)' : 'var(--color-text-muted)',
+                opacity: active ? 0.75 : 0.6,
+              }}>
+                {tab.sub}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Questions */}
+      <div style={{ padding: compact ? '12px 16px' : '16px 20px' }}>
+        <p style={{ margin: '0 0 10px', fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
+          Preguntas guía para grabar la nota de voz
+        </p>
+        <ol style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: compact ? '6px' : '8px' }}>
+          {questions.map((item, i) => (
+            <li key={i} style={{ fontFamily: 'var(--font-display)', fontSize: compact ? '12px' : '13px', color: 'var(--color-text-primary)', lineHeight: 1.5 }}>
+              <span style={{ fontWeight: 600 }}>{item.label}:</span>{' '}{item.q}
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }
@@ -604,8 +665,9 @@ function RecordingView({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function VoiceInterviewSection({ onDoneChange }: VoiceInterviewSectionProps) {
-  const [voiceState, setVoiceState] = useState<VoiceState>('pending');
+  const [voiceState, setVoiceState] = useState<VoiceState>('done');
   const [audioData, setAudioData] = useState<{ url: string; duration: number; bars: number[] } | null>(null);
+  const [interviewerRole, setInterviewerRole] = useState<InterviewerRole>('psicologo');
 
   const handleReady = useCallback((url: string, duration: number, bars: number[]) => {
     // Revoke previous URL if any
@@ -644,11 +706,11 @@ export default function VoiceInterviewSection({ onDoneChange }: VoiceInterviewSe
     <div style={{ marginTop: '24px', paddingTop: '4px' }}>
       <SectionHeader />
 
-      <div style={{ marginTop: '16px' }}>
+      <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {/* Pending: guide + start button */}
         {voiceState === 'pending' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <GuideCard />
+          <>
+            <GuideCard role={interviewerRole} onRoleChange={setInterviewerRole} />
             {recState.error && (
               <div style={{
                 display: 'flex', alignItems: 'flex-start', gap: '8px',
@@ -680,39 +742,35 @@ export default function VoiceInterviewSection({ onDoneChange }: VoiceInterviewSe
                 <Mic size={16} /> ● Grabar nota de voz
               </button>
             </div>
-          </div>
+          </>
         )}
 
-        {/* Recording: live waveform + stop */}
+        {/* Recording: compact guide for reference + live waveform + stop */}
         {voiceState === 'recording' && (
-          <RecordingView
-            elapsed={recState.elapsed}
-            waveformData={recState.waveformData}
-            onStop={handleStopRecording}
-          />
+          <>
+            <GuideCard role={interviewerRole} onRoleChange={setInterviewerRole} compact />
+            <RecordingView
+              elapsed={recState.elapsed}
+              waveformData={recState.waveformData}
+              onStop={handleStopRecording}
+            />
+          </>
         )}
 
         {/* Processing */}
         {voiceState === 'processing' && <Spinner />}
 
-        {/* Done: real audio player + AI summary */}
-        {voiceState === 'done' && audioData && (
-          <DoneView
-            audioUrl={audioData.url}
-            duration={audioData.duration}
-            bars={audioData.bars}
-            onReset={handleReset}
-          />
-        )}
-
-        {/* Done but no recorded audio (initial/demo state) */}
-        {voiceState === 'done' && !audioData && (
-          <DoneView
-            audioUrl=""
-            duration={0}
-            bars={IDLE_WAVEFORM}
-            onReset={handleReset}
-          />
+        {/* Done: guide (for reference) + real audio player + AI summary */}
+        {voiceState === 'done' && (
+          <>
+            <GuideCard role={interviewerRole} onRoleChange={setInterviewerRole} compact />
+            <DoneView
+              audioUrl={audioData?.url ?? ''}
+              duration={audioData?.duration ?? 0}
+              bars={audioData?.bars ?? IDLE_WAVEFORM}
+              onReset={handleReset}
+            />
+          </>
         )}
       </div>
     </div>
