@@ -46,7 +46,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
     if (path.includes('/candidate/') || path.includes('/finalist/')) {
       const params = new URLSearchParams(location.search);
       const stage = params.get('stage');
-      if (stage && ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas'].includes(stage)) return stage;
+      if (stage && ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas', 'estudios', 'finalistas'].includes(stage)) return stage;
       if (path.includes('/finalist/')) return 'finalistas';
       return 'pipeline';
     }
