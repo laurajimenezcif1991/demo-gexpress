@@ -129,7 +129,7 @@ export default function CandidateOnepage() {
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Hoja de vida — ${candidate.name}</title>
+  <title>${candidate.hasCV === false ? 'HV construida vía WhatsApp' : 'Hoja de vida'} — ${candidate.name}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f2f4f7; color: #1a1a2e; }
@@ -165,6 +165,7 @@ export default function CandidateOnepage() {
     <div class="header">
       <h1>${candidate.name}</h1>
       <p class="role">${candidate.role} · ${candidate.location}</p>
+      ${candidate.hasCV === false ? '<p style="font-size:11px;color:#a78bfa;margin-top:6px;letter-spacing:0.04em;">✦ HV construida vía WhatsApp</p>' : ''}
       <div class="contact">
         <span>📞 ${phone}</span>
         <span>✉️ ${email}</span>
@@ -1307,32 +1308,8 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
 
   return (
     <div style={{ paddingTop: '20px' }}>
-      {/* WhatsApp profile pill — shown only when candidate has no CV */}
-      {hasCV === false && (
-        <div style={{ marginBottom: '16px' }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '5px 12px',
-              borderRadius: '999px',
-              background: '#E8F8EF',
-              border: '1px solid #25D366',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#1a7a42',
-              fontFamily: 'var(--font-display)',
-            }}
-          >
-            <WaIcon size={14} color="#25D366" />
-            Perfil construido vía WhatsApp
-          </span>
-        </div>
-      )}
-
       {/* Resumen candidato */}
-      <div style={{ marginBottom: runt ? '16px' : '24px' }}>
+      <div style={{ marginBottom: '16px' }}>
         <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 8px', color: 'var(--color-text-primary)' }}>
           Resumen del candidato
         </h3>
@@ -1341,28 +1318,26 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
         </p>
       </div>
 
-      {/* RUNT action buttons — only shown when runt data is available */}
-      {runt && (
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
-          <Button variant="secondary" size="sm" onClick={() => setRuntModalOpen(true)}>
-            Consulta Runt
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => window.open('/manifiestos-vigia.pdf', '_blank')}
-          >
-            Ver Manifiestos
-          </Button>
-        </div>
-      )}
+      {/* RUNT + RNDC buttons — always shown */}
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
+        <Button variant="secondary" size="sm" onClick={() => runt ? setRuntModalOpen(true) : undefined} style={{ opacity: runt ? 1 : 0.55 }}>
+          Consulta Runt
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => window.open('/manifiestos-vigia.pdf', '_blank')}
+        >
+          Ver Manifiestos
+        </Button>
+      </div>
 
       {/* RUNT Modal */}
       {runtModalOpen && runt && (
         <RuntModal runt={runt} onClose={() => setRuntModalOpen(false)} />
       )}
 
-      {/* No negociables with scores */}
+      {/* No negociables — 2-column table (removed "Detalle / Evidencia" header) */}
       <div style={{ marginBottom: '24px' }}>
         <div
           style={{
@@ -1372,11 +1347,11 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
             background: 'rgba(255,255,255,0.43)',
           }}
         >
-          {/* Header */}
+          {/* Header — 2 columns */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '220px 190px 1fr',
+              gridTemplateColumns: '1fr 120px',
               background: '#f7f7f8',
               borderBottom: '1px solid #d4d4d5',
             }}
@@ -1386,9 +1361,6 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
             </div>
             <div style={{ padding: '11px 8px', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '14px', lineHeight: '20px', color: '#363539', textAlign: 'center', borderLeft: '1px solid #d4d4d5' }}>
               Evaluación
-            </div>
-            <div style={{ padding: '11px 16px', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '14px', lineHeight: '20px', color: '#363539', borderLeft: '1px solid #d4d4d5' }}>
-              Detalle / Evidencia
             </div>
           </div>
 
@@ -1412,8 +1384,8 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
                 {label}
               </div>
               <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <CheckCircle2 size={15} color="#27be69" />
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#27be69' }}>Cumple</span>
+                <CheckCircle2 size={15} color="#15803d" />
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#15803d' }}>Cumple</span>
               </div>
             </div>
           ))}

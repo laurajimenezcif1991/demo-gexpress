@@ -3184,6 +3184,17 @@ function _mkBulk(
       salaryRange,
       currentStage: stage,
       hasCV: idx % 4 !== 0, // ~25% perfil por WhatsApp
+      runtVerification: {
+        cc: `${10000000 + idx * 137}`,
+        totalManifiestos: yrs * 80 + (idx % 50),
+        licenseCategories: [
+          { categoria: 'C2', fechaExpedicion: `${2026 - yrs - 2}-03-15`, fechaVencimiento: `${2028 + (idx % 3)}-03-14` },
+        ],
+        tipoLicencia: 'C2',
+        vigencia: `Vigente hasta ${2028 + (idx % 3)}-03-14`,
+        vehiculosExperiencia: ['Camión rígido 2 ejes', 'Tractocamión'],
+        anosExperiencia: yrs,
+      },
       scoringAI: {
         score: Math.round(score * 0.96),
         status: score >= 60 ? 'continua' : score >= 40 ? 'pendiente' : 'rechazado',
