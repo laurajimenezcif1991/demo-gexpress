@@ -205,8 +205,17 @@ export default function CandidateOnepage() {
   const isPendingEntrevistas  = isMockJob && isCandidatePending(jobId, 'entrevistas',  candidateId);
   const isPendingEvaluaciones = isMockJob && isCandidatePending(jobId, 'evaluaciones', candidateId);
   const candidate = apiCandidate ?? { id: candidateId, name: '', role: '', sector: '', years: '', location: '', bio: '', score: 0, avatarInitials: candidateId.slice(0, 2).toUpperCase(), avatarColor: '#8750F6', hasCurrentJob: false, superpoder: '', aspiration: '', budget: '', salaryRange: 'en_rango' as const, currentStage: stage, scoringAI: { score: 0, status: 'pendiente' as const, resumen: '', noNegociables: [], logros: [], senales: [] } };
+
+  // Cumulative unlock order: each stage unlocks all accordions up to and including it
+  const UNLOCK_ORDER = ['prescreening','prueba_manejo','evaluaciones','entrevistas','estudios','finalistas'] as const;
+  const effectiveStage = (candidate.currentStage && UNLOCK_ORDER.includes(candidate.currentStage as typeof UNLOCK_ORDER[number]))
+    ? candidate.currentStage
+    : stage;
+  const stageIdx = UNLOCK_ORDER.indexOf(effectiveStage as typeof UNLOCK_ORDER[number]);
+  const stageReached = (required: typeof UNLOCK_ORDER[number]) => stageIdx >= UNLOCK_ORDER.indexOf(required);
+
   // Show prescreening if URL stage implies it OR if the API returned prescreening data OR if candidate was advanced there
-  const hasPrescreening = !!(apiCandidate?.prescreeningAI) || stage === 'prescreening' || stage === 'entrevistas' || stage === 'evaluaciones' || isPendingPrescreening;
+  const hasPrescreening = !!(apiCandidate?.prescreeningAI) || stageReached('prescreening') || isPendingPrescreening;
 
   const { setStatus } = useCandidateStatus();
   const { getFeedback } = useInterview();
@@ -228,15 +237,19 @@ export default function CandidateOnepage() {
   const entrevistasDescarta =
     entrevistasDone && (hrRecomendacion === 'no_recomiendo' || hmRecomendacion === 'no_recomiendo');
 
-  const [prescreeningOpen, setPrescreeningOpen] = useState(() => stage === 'prescreening');
-  const [pruebaManejoOpen, setPruebaManejoOpen] = useState(() => stage === 'prueba_manejo');
-  // 84 = score calculado desde los ratings PREFILLED de PruebaManejoContent (promedio 4.2/5 × 100)
-  const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(84);
-  const [voiceInterviewDone, setVoiceInterviewDone] = useState(true);
-  const [validacionesOpen, setValidacionesOpen] = useState(false);
+  const [prescreeningOpen, setPrescreeningOpen] = useState(() => effectiveStage === 'prescreening');
+  const [pruebaManejoOpen, setPruebaManejoOpen] = useState(() => effectiveStage === 'prueba_manejo');
+  // Score only exists for candidates who have completed prueba de manejo (stage ≥ prueba_manejo)
+  const [pruebaManejoScore, setPruebaManejoScore] = useState<number | undefined>(
+    stageReached('prueba_manejo') ? 84 : undefined
+  );
+  // Voice interview only done if candidate reached entrevistas stage
+  const [voiceInterviewDone, setVoiceInterviewDone] = useState(() => stageReached('entrevistas'));
+  // Validaciones open by default when candidate is in estudios or finalistas
+  const [validacionesOpen, setValidacionesOpen] = useState(() => stageReached('estudios'));
 
-  // Mock: documentos pre-cargados para demo de transporte
-  const mockValidaciones: ValidacionesState = {
+  // Pre-loaded docs only for candidates who reached estudios/finalistas
+  const mockValidaciones: ValidacionesState = stageReached('estudios') ? {
     examenMedico: {
       name: 'Informe_Medico_Ocupacional_ConductorC2.pdf',
       size: 0,
@@ -250,7 +263,7 @@ export default function CandidateOnepage() {
       url: '/demo-transportes/Estudio_Seguridad_Personal_ConductorC2.pdf',
     },
     visitaDomiciliaria: null,
-  };
+  } : { examenMedico: null, estudioSeguridad: null, visitaDomiciliaria: null };
 
   const [validacionesState, setValidacionesState] = useState<ValidacionesState>(mockValidaciones);
   const [waDoctosOpen, setWaDoctosOpen] = useState(false);
@@ -266,10 +279,13 @@ export default function CandidateOnepage() {
   const evaluacionesSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setPrescreeningOpen(stage === 'prescreening');
-    setPruebaManejoOpen(stage === 'prueba_manejo');
-    setEntrevistasOpen(stage === 'entrevistas');
-    setEvaluacionesOpen(stage === 'evaluaciones');
+    setPrescreeningOpen(effectiveStage === 'prescreening');
+    setPruebaManejoOpen(effectiveStage === 'prueba_manejo');
+    setEntrevistasOpen(effectiveStage === 'entrevistas');
+    setEvaluacionesOpen(effectiveStage === 'evaluaciones');
+    setValidacionesOpen(stageReached('estudios'));
+    setPruebaManejoScore(stageReached('prueba_manejo') ? 84 : undefined);
+    setVoiceInterviewDone(stageReached('entrevistas'));
 
 
     const sectionEl: HTMLElement | null =
@@ -668,14 +684,15 @@ export default function CandidateOnepage() {
               title="Prueba Psicotécnica"
               score={candidate.psychTest?.score}
               statusText={
-                candidate.psychTest && !isPendingEvaluaciones ? 'Completado'
+                !stageReached('evaluaciones') ? 'Sin iniciar'
+                : candidate.psychTest && !isPendingEvaluaciones ? 'Completado'
                 : isPendingEvaluaciones ? 'En proceso'
                 : 'Sin iniciar'
               }
               statusOk={!!candidate.psychTest && !isPendingEvaluaciones}
               isOpen={evaluacionesOpen}
               onToggle={() => setEvaluacionesOpen(!evaluacionesOpen)}
-              isLocked={false}
+              isLocked={!stageReached('evaluaciones')}
             >
               {candidate.psychTest ? (
                 <PruebaPsicologicaContent data={candidate.psychTest} />
@@ -693,39 +710,39 @@ export default function CandidateOnepage() {
               number={4}
               title="Entrevista"
               statusText={
-                voiceInterviewDone ? 'Completado'
-                : stage === 'entrevistas' ? 'En proceso'
+                !stageReached('entrevistas') ? 'Sin iniciar'
+                : voiceInterviewDone ? 'Completado'
+                : effectiveStage === 'entrevistas' ? 'En proceso'
                 : 'Sin iniciar'
               }
               statusOk={voiceInterviewDone}
               isOpen={entrevistasOpen}
               onToggle={() => setEntrevistasOpen(!entrevistasOpen)}
-              isLocked={false}
+              isLocked={!stageReached('entrevistas')}
             >
               <VoiceInterviewSection onDoneChange={setVoiceInterviewDone} />
             </AccordionSection>
           </div>
 
-          {/* 5. Validaciones */}
-          {voiceInterviewDone && (
-            <div style={{ scrollMarginTop: 24 }}>
-              <AccordionSection
-                number={5}
-                title="Validaciones"
-                statusText={
-                  getValidacionesStatus(validacionesState) === 'completado' ? 'Completado'
-                  : getValidacionesStatus(validacionesState) === 'en_proceso' ? 'En proceso'
-                  : 'Sin iniciar'
-                }
-                statusOk={getValidacionesStatus(validacionesState) === 'completado'}
-                isOpen={validacionesOpen}
-                onToggle={() => setValidacionesOpen(!validacionesOpen)}
-                isLocked={false}
-              >
-                <ValidacionesContent defaultState={mockValidaciones} onChange={setValidacionesState} />
-              </AccordionSection>
-            </div>
-          )}
+          {/* 5. Validaciones — always rendered, locked until estudios */}
+          <div style={{ scrollMarginTop: 24 }}>
+            <AccordionSection
+              number={5}
+              title="Validaciones"
+              statusText={
+                !stageReached('estudios') ? 'Sin iniciar'
+                : getValidacionesStatus(validacionesState) === 'completado' ? 'Completado'
+                : getValidacionesStatus(validacionesState) === 'en_proceso' ? 'En proceso'
+                : 'Sin iniciar'
+              }
+              statusOk={stageReached('estudios') && getValidacionesStatus(validacionesState) === 'completado'}
+              isOpen={validacionesOpen}
+              onToggle={() => setValidacionesOpen(!validacionesOpen)}
+              isLocked={!stageReached('estudios')}
+            >
+              <ValidacionesContent defaultState={mockValidaciones} onChange={setValidacionesState} />
+            </AccordionSection>
+          </div>
         </div>
         </div>
       </main>
