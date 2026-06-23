@@ -144,8 +144,8 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           </div>
         )}
 
-        {/* Status label — shown for all 3 states */}
-        {!isPending && currentStatus && (
+        {/* Status label — only shown when explicitly discarded */}
+        {!isPending && currentStatus && statusLabel === 'descartado' && (
           <div
             style={{
               display: 'inline-flex',
@@ -163,7 +163,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           </div>
         )}
 
-        {/* Name + role + location + stage badge */}
+        {/* Name + location inline + stage badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
           <span
             style={{
@@ -175,36 +175,18 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           >
             {candidate.name}
           </span>
-          {candidate.role && (
-            <span
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                color: 'var(--color-brand-accent)',
-                background: 'var(--color-secondary-50)',
-                borderRadius: '20px',
-                padding: '2px 10px',
-              }}
-            >
-              {candidate.role}
-            </span>
-          )}
           {candidate.location && (
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px',
-                fontSize: '11px',
+                gap: '3px',
+                fontSize: '12px',
                 fontWeight: 500,
                 color: 'var(--color-text-muted)',
-                background: '#ffffff',
-                border: '1px solid var(--color-border-default)',
-                borderRadius: '20px',
-                padding: '2px 10px',
               }}
             >
-              <MapPin size={10} />
+              <MapPin size={11} />
               {candidate.location}
             </span>
           )}
