@@ -132,6 +132,12 @@ export default function CandidateList() {
   const [filter, setFilter] = useState<FilterTab>('todos');
   const [search, setSearch] = useState('');
   const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
+
+  // Clear selection when navigating between stages
+  useEffect(() => {
+    setSelected(new Set());
+    setFilter('todos');
+  }, [currentStage]);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
