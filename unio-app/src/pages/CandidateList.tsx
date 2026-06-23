@@ -11,7 +11,7 @@ import { useCandidateStatus } from '../context/CandidateStatusContext';
 import { usePipeline } from '../context/PipelineContext';
 import { useCandidates } from '../hooks/useCandidates';
 import { useVacantes } from '../hooks/useVacantes';
-import { mockCandidatesByStage, mockCandidatesById, MOCK_INITIAL_STATUSES } from '../data/mock';
+import { mockCandidatesByStage, mockCandidatesById, MOCK_INITIAL_STATUSES, getMockPipelineStages } from '../data/mock';
 import { useMockStageState } from '../hooks/useMockStageState';
 import WhatsAppPreEntrevistaModal, { WaIcon } from '../components/ui/WhatsAppPreEntrevistaModal';
 import WhatsAppAgendarEntrevistaModal from '../components/ui/WhatsAppAgendarEntrevistaModal';
@@ -157,6 +157,19 @@ export default function CandidateList() {
     return s === undefined || s === 'por_validar' ? 0 : 1;
   };
 
+  // Funnel count from pipeline stage data (for mock jobs) — overrides actual array length in subtitle
+  const funnelCount = (() => {
+    if (!isMock) return null;
+    const pipelineStages = getMockPipelineStages(jobId);
+    const found = pipelineStages.find(ps => ps.id === currentStage);
+    if (!found) return null;
+    if (currentStage === 'prescreening') {
+      const scoringCount = pipelineStages.find(ps => ps.id === 'scoring')?.candidateCount ?? 0;
+      return found.candidateCount + scoringCount;
+    }
+    return found.candidateCount > 0 ? found.candidateCount : null;
+  })();
+
   const filteredCandidates = useMemo(() => {
     let list = candidates
       .filter((c) => !isEliminatedBefore(c.id, currentStage));
@@ -188,12 +201,20 @@ export default function CandidateList() {
     });
   }, [candidates, currentStage, filter, search, sortDir, getStatus]);
 
-  const filterCounts = useMemo(() => ({
-    todos: candidates.length,
-    high: candidates.filter((c) => c.score >= 80).length,
-    mid: candidates.filter((c) => c.score >= 40 && c.score < 80).length,
-    low: candidates.filter((c) => c.score < 50).length,
-  }), [candidates]);
+  const filterCounts = useMemo(() => {
+    const total    = funnelCount ?? candidates.length;
+    const realTotal = candidates.length || 1;
+    const highReal = candidates.filter((c) => c.score >= 80).length;
+    const midReal  = candidates.filter((c) => c.score >= 40 && c.score < 80).length;
+    const lowReal  = candidates.filter((c) => c.score < 50).length;
+    const scale    = funnelCount ? funnelCount / realTotal : 1;
+    return {
+      todos: total,
+      high: funnelCount ? Math.round(highReal * scale) : highReal,
+      mid:  funnelCount ? Math.round(midReal  * scale) : midReal,
+      low:  funnelCount ? Math.round(lowReal  * scale) : lowReal,
+    };
+  }, [candidates]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleSelect = (id: string) => {
     const next = new Set(selected);
@@ -278,7 +299,7 @@ export default function CandidateList() {
             {vacante ? `Perfiles de ${vacante.title}` : 'Perfiles'}
           </h1>
           <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)' }}>
-            {filteredCandidates.length} candidatos analizados y ranqueados por IA &middot; Ordenados por puntuaci&oacute;n general
+            {funnelCount ?? filteredCandidates.length} candidatos analizados y ranqueados por IA &middot; Ordenados por puntuaci&oacute;n general
           </p>
         </div>
 

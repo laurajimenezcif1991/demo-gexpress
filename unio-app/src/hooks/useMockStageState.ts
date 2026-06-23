@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
 import type { PipelineStageKey } from '../data/mock';
 
-export type MockStageKey = PipelineStageKey | 'finalistas';
+export type MockStageKey = PipelineStageKey;
 
 const STORAGE_KEY = 'unio-mock-stage';
 // Bump this whenever pre-seeded mock candidates change, to clear stale localStorage.
-const STORAGE_VERSION = 'v10';
+const STORAGE_VERSION = 'v12';
 
 const STAGE_ORDER: MockStageKey[] = [
   'scoring',

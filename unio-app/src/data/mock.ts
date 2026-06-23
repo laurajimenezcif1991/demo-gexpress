@@ -4,7 +4,7 @@ export type VacanteStatus = 'activa' | 'en_pausa' | 'cerrada';
 export type Priority = 'alta' | 'media' | 'baja';
 export type StageStatus = 'completed' | 'in_progress' | 'not_started';
 export type SalaryRange = 'en_rango' | 'fuera_de_rango';
-export type PipelineStageKey = 'scoring' | 'prescreening' | 'prueba_manejo' | 'evaluaciones' | 'entrevistas';
+export type PipelineStageKey = 'scoring' | 'prescreening' | 'prueba_manejo' | 'evaluaciones' | 'entrevistas' | 'estudios' | 'finalistas';
 
 export interface Vacante {
   id: string;
@@ -2301,16 +2301,30 @@ const vigiaCandidates: Candidate[] = [
   _mkVigia('mvc-8',  'William Castaño',         66, _p(8,  'men'), 'WC', '#F6A350', 'Bogotá',       '6 Años',  "$2'900.000", 'en_rango',       'prescreening'),
   _mkVigia('mvc-9',  'Orlando Medina',          54, _p(9,  'men'), 'OM', '#8750F6', 'Mosquera',     '5 Años',  "$3'300.000", 'en_rango',       'prescreening'),
   _mkVigia('mvc-10', 'Pablo Acosta',            49, _p(10, 'men'), 'PA', '#27BE69', 'Bogotá',       '5 Años',  "$3'000.000", 'en_rango',       'prescreening'),
-  _mkVigia('mvc-11', 'Nelson Cruz',             81, _p(11, 'men'), 'NC', '#295BFF', 'Bogotá',       '6 Años',  "$3'200.000", 'en_rango'),
-  _mkVigia('mvc-12', 'William Huertas',         78, _p(12, 'men'), 'WH', '#F6A350', 'Bogotá',       '5 Años',  "$3'000.000", 'en_rango'),
-  _mkVigia('mvc-13', 'Fredy Gutiérrez',         74, _p(13, 'men'), 'FG', '#8750F6', 'Funza',        '5 Años',  "$3'400.000", 'en_rango'),
-  _mkVigia('mvc-14', 'Germán Parra',            70, _p(14, 'men'), 'GP', '#27BE69', 'Bogotá',       '4 Años',  "$3'100.000", 'en_rango'),
-  _mkVigia('mvc-15', 'Álvaro Ramos',            63, _p(15, 'men'), 'AR', '#295BFF', 'Cota',         '4 Años',  "$3'200.000", 'en_rango'),
-  _mkVigia('mvc-16', 'Ricardo Bermúdez',        55, _p(1,  'men'), 'RB', '#F65078', 'Bogotá',       '3 Años',  "$3'100.000", 'en_rango'),
-  _mkVigia('mvc-17', 'Javier Morales',          50, _p(2,  'men'), 'JM', '#27BE69', 'Barranquilla', '2 Años',  "$3'000.000", 'en_rango'),
-  _mkVigia('mvc-18', 'Edwin Salcedo',           45, _p(3,  'men'), 'ES', '#F6A350', 'Bogotá',       '2 Años',  "$4'800.000", 'fuera_de_rango'),
-  _mkVigia('mvc-19', 'Raúl Quintero',           40, _p(4,  'men'), 'RQ', '#295BFF', 'Cali',         '1 Año',   "$5'000.000", 'fuera_de_rango'),
-  _mkVigia('mvc-20', 'Andrés Castellanos',      34, _p(5,  'men'), 'AC', '#8750F6', 'Bogotá',       '1 Año',   "$2'800.000", 'en_rango'),
+  _mkVigia('mvc-11', 'Nelson Cruz',             81, _p(11, 'men'), 'NC', '#295BFF', 'Bogotá',       '6 Años',  "$3'200.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-12', 'William Huertas',         78, _p(12, 'men'), 'WH', '#F6A350', 'Bogotá',       '5 Años',  "$3'000.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-13', 'Fredy Gutiérrez',         74, _p(13, 'men'), 'FG', '#8750F6', 'Funza',        '5 Años',  "$3'400.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-14', 'Germán Parra',            70, _p(14, 'men'), 'GP', '#27BE69', 'Bogotá',       '4 Años',  "$3'100.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-15', 'Álvaro Ramos',            63, _p(15, 'men'), 'AR', '#295BFF', 'Cota',         '4 Años',  "$3'200.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-16', 'Ricardo Bermúdez',        55, _p(1,  'men'), 'RB', '#F65078', 'Bogotá',       '3 Años',  "$3'100.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-17', 'Javier Morales',          50, _p(2,  'men'), 'JM', '#27BE69', 'Barranquilla', '2 Años',  "$3'000.000", 'en_rango',       'prescreening'),
+  _mkVigia('mvc-18', 'Edwin Salcedo',           45, _p(3,  'men'), 'ES', '#F6A350', 'Bogotá',       '2 Años',  "$4'800.000", 'fuera_de_rango', 'prescreening'),
+  _mkVigia('mvc-19', 'Raúl Quintero',           40, _p(4,  'men'), 'RQ', '#295BFF', 'Cali',         '1 Año',   "$5'000.000", 'fuera_de_rango', 'prescreening'),
+  _mkVigia('mvc-20', 'Andrés Castellanos',      34, _p(5,  'men'), 'AC', '#8750F6', 'Bogotá',       '1 Año',   "$2'800.000", 'en_rango',       'prescreening'),
+  // Additional scoring bulk
+  _mkVigia('mvc-21', 'Bernardo Ocampo',         86, _p(6,  'men'), 'BO', '#27BE69', 'Bogotá',       '8 Años',  "$3'200.000", 'en_rango'),
+  _mkVigia('mvc-22', 'Ernesto Velandia',        83, _p(7,  'men'), 'EV', '#F6A350', 'Bogotá',       '7 Años',  "$3'100.000", 'en_rango'),
+  _mkVigia('mvc-23', 'Hugo Manrique',           79, _p(8,  'men'), 'HM', '#295BFF', 'Cota',         '6 Años',  "$3'300.000", 'en_rango'),
+  _mkVigia('mvc-24', 'Ramiro Fuentes',          76, _p(9,  'men'), 'RF', '#8750F6', 'Bogotá',       '6 Años',  "$3'000.000", 'en_rango'),
+  _mkVigia('mvc-25', 'Álvaro Cáceres',          72, _p(10, 'men'), 'AC', '#F65078', 'Bogotá',       '5 Años',  "$3'200.000", 'en_rango'),
+  _mkVigia('mvc-26', 'Édgar Montoya',           68, _p(11, 'men'), 'EM', '#27BE69', 'Funza',        '5 Años',  "$3'100.000", 'en_rango'),
+  _mkVigia('mvc-27', 'Humberto Gaitán',         64, _p(12, 'men'), 'HG', '#F6A350', 'Bogotá',       '4 Años',  "$3'000.000", 'en_rango'),
+  _mkVigia('mvc-28', 'Iván Giraldo',            60, _p(13, 'men'), 'IG', '#295BFF', 'Bogotá',       '4 Años',  "$3'200.000", 'en_rango'),
+  _mkVigia('mvc-29', 'Julián Ariza',            56, _p(14, 'men'), 'JA', '#8750F6', 'Mosquera',     '3 Años',  "$3'100.000", 'en_rango'),
+  _mkVigia('mvc-30', 'Leandro Cifuentes',       51, _p(15, 'men'), 'LC', '#27BE69', 'Bogotá',       '3 Años',  "$3'000.000", 'en_rango'),
+  _mkVigia('mvc-31', 'Milton Bernal',           47, _p(1,  'men'), 'MB', '#F6A350', 'Bogotá',       '2 Años',  "$2'900.000", 'en_rango'),
+  _mkVigia('mvc-32', 'Néstor Figueroa',         43, _p(2,  'men'), 'NF', '#295BFF', 'Bogotá',       '2 Años',  "$3'500.000", 'fuera_de_rango'),
+  _mkVigia('mvc-33', 'Omar Londoño',            38, _p(3,  'men'), 'OL', '#F65078', 'Cali',         '1 Año',   "$4'200.000", 'fuera_de_rango'),
 ];
 
 const vigiaScoring       = vigiaCandidates.filter(c => c.currentStage === 'scoring');
@@ -2463,16 +2477,30 @@ const transpPubCandidates: Candidate[] = [
   _mkTranspPub('tp-8',  'Samuel Giraldo',          68, _p(23, 'men'), 'SG', '#F6A350', 'Soacha',      '5 Años',  "$2'700.000", 'en_rango',       'prescreening', { hasCV: false }),
   _mkTranspPub('tp-9',  'Alberto Pedraza',         55, _p(24, 'men'), 'AP', '#8750F6', 'Bogotá',      '4 Años',  "$2'500.000", 'en_rango',       'prescreening'),
   _mkTranspPub('tp-10', 'Ignacio Forero',          48, _p(25, 'men'), 'IF', '#27BE69', 'Bogotá',      '3 Años',  "$2'600.000", 'en_rango',       'prescreening'),
-  _mkTranspPub('tp-11', 'Diego Cárdenas',          84, _p(26, 'men'), 'DC', '#295BFF', 'Bogotá',      '7 Años',  "$2'800.000", 'en_rango'),
-  _mkTranspPub('tp-12', 'Francisco Patiño',        80, _p(27, 'men'), 'FP', '#F6A350', 'Bogotá',      '6 Años',  "$2'700.000", 'en_rango'),
-  _mkTranspPub('tp-13', 'Jesús Rojas',             76, _p(28, 'men'), 'JR', '#8750F6', 'Madrid',      '5 Años',  "$2'800.000", 'en_rango'),
-  _mkTranspPub('tp-14', 'Manuel Espitia',          72, _p(29, 'men'), 'ME', '#27BE69', 'Bogotá',      '4 Años',  "$2'700.000", 'en_rango'),
-  _mkTranspPub('tp-15', 'Óscar Clavijo',           65, _p(30, 'men'), 'OC', '#295BFF', 'Bogotá',      '4 Años',  "$2'600.000", 'en_rango'),
-  _mkTranspPub('tp-16', 'Roberto Fonseca',         57, _p(31, 'men'), 'RF', '#F65078', 'Bogotá',      '3 Años',  "$2'500.000", 'en_rango'),
-  _mkTranspPub('tp-17', 'Jairo Montaño',           51, _p(32, 'men'), 'JM', '#27BE69', 'Cali',        '2 Años',  "$2'600.000", 'en_rango'),
-  _mkTranspPub('tp-18', 'Luis Angarita',           46, _p(33, 'men'), 'LA', '#F6A350', 'Bogotá',      '2 Años',  "$3'500.000", 'fuera_de_rango'),
-  _mkTranspPub('tp-19', 'Pedro Salamanca',         41, _p(34, 'men'), 'PS', '#295BFF', 'Medellín',    '1 Año',   "$3'800.000", 'fuera_de_rango'),
-  _mkTranspPub('tp-20', 'Sergio Amaya',            36, _p(35, 'men'), 'SA', '#8750F6', 'Bogotá',      '1 Año',   "$2'400.000", 'en_rango'),
+  _mkTranspPub('tp-11', 'Diego Cárdenas',          84, _p(26, 'men'), 'DC', '#295BFF', 'Bogotá',      '7 Años',  "$2'800.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-12', 'Francisco Patiño',        80, _p(27, 'men'), 'FP', '#F6A350', 'Bogotá',      '6 Años',  "$2'700.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-13', 'Jesús Rojas',             76, _p(28, 'men'), 'JR', '#8750F6', 'Madrid',      '5 Años',  "$2'800.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-14', 'Manuel Espitia',          72, _p(29, 'men'), 'ME', '#27BE69', 'Bogotá',      '4 Años',  "$2'700.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-15', 'Óscar Clavijo',           65, _p(30, 'men'), 'OC', '#295BFF', 'Bogotá',      '4 Años',  "$2'600.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-16', 'Roberto Fonseca',         57, _p(31, 'men'), 'RF', '#F65078', 'Bogotá',      '3 Años',  "$2'500.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-17', 'Jairo Montaño',           51, _p(32, 'men'), 'JM', '#27BE69', 'Cali',        '2 Años',  "$2'600.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-18', 'Luis Angarita',           46, _p(33, 'men'), 'LA', '#F6A350', 'Bogotá',      '2 Años',  "$3'500.000", 'fuera_de_rango', 'prescreening'),
+  _mkTranspPub('tp-19', 'Pedro Salamanca',         41, _p(34, 'men'), 'PS', '#295BFF', 'Medellín',    '1 Año',   "$3'800.000", 'fuera_de_rango', 'prescreening'),
+  _mkTranspPub('tp-20', 'Sergio Amaya',            36, _p(35, 'men'), 'SA', '#8750F6', 'Bogotá',      '1 Año',   "$2'400.000", 'en_rango',       'prescreening'),
+  // Additional scoring bulk
+  _mkTranspPub('tp-21', 'Carlos Medina',           87, _p(16, 'men'), 'CM', '#27BE69', 'Bogotá',      '9 Años',  "$2'800.000", 'en_rango'),
+  _mkTranspPub('tp-22', 'Andrés Duarte',           83, _p(17, 'men'), 'AD', '#F6A350', 'Bogotá',      '8 Años',  "$2'700.000", 'en_rango'),
+  _mkTranspPub('tp-23', 'Hernán Molina',           79, _p(18, 'men'), 'HM', '#295BFF', 'Soacha',      '7 Años',  "$2'900.000", 'en_rango'),
+  _mkTranspPub('tp-24', 'Álvaro Correa',           75, _p(19, 'men'), 'AC', '#8750F6', 'Bogotá',      '6 Años',  "$2'800.000", 'en_rango'),
+  _mkTranspPub('tp-25', 'Gustavo Pulido',          71, _p(20, 'men'), 'GP', '#F65078', 'Bogotá',      '5 Años',  "$2'700.000", 'en_rango'),
+  _mkTranspPub('tp-26', 'Elkin Moreno',            67, _p(21, 'men'), 'EL', '#27BE69', 'Bogotá',      '5 Años',  "$2'600.000", 'en_rango'),
+  _mkTranspPub('tp-27', 'Marco Bernal',            63, _p(22, 'men'), 'MB', '#F6A350', 'Chía',        '4 Años',  "$2'700.000", 'en_rango'),
+  _mkTranspPub('tp-28', 'Fidel Suárez',            59, _p(23, 'men'), 'FS', '#295BFF', 'Bogotá',      '4 Años',  "$2'600.000", 'en_rango'),
+  _mkTranspPub('tp-29', 'Israel Nieto',            54, _p(24, 'men'), 'IN', '#8750F6', 'Bogotá',      '3 Años',  "$2'500.000", 'en_rango'),
+  _mkTranspPub('tp-30', 'Fabio León',              49, _p(25, 'men'), 'FL', '#27BE69', 'Bogotá',      '3 Años',  "$2'600.000", 'en_rango'),
+  _mkTranspPub('tp-31', 'Óscar Serrano',           44, _p(26, 'men'), 'OS', '#F6A350', 'Bogotá',      '2 Años',  "$2'500.000", 'en_rango'),
+  _mkTranspPub('tp-32', 'Misael Gómez',            39, _p(27, 'men'), 'MG', '#295BFF', 'Medellín',    '1 Año',   "$3'700.000", 'fuera_de_rango'),
+  _mkTranspPub('tp-33', 'Tito Vargas',             34, _p(28, 'men'), 'TV', '#F65078', 'Bogotá',      '1 Año',   "$2'400.000", 'en_rango'),
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -2621,16 +2649,32 @@ const distribCandidates: Candidate[] = [
   _mkDistrib('d-8',  'Henry Vargas',           66, _p(43, 'men'), 'HV', '#F6A350', 'Bogotá',       '4 Años',  "$2'500.000", 'en_rango',       'prescreening'),
   _mkDistrib('d-9',  'Sergio Nieto',           55, _p(44, 'men'), 'SN', '#8750F6', 'Bogotá',       '3 Años',  "$2'600.000", 'en_rango',       'prescreening'),
   _mkDistrib('d-10', 'Freddy Peña',            48, _p(45, 'men'), 'FP', '#27BE69', 'Bogotá',       '3 Años',  "$2'400.000", 'en_rango',       'prescreening'),
-  _mkDistrib('d-11', 'Gabriel Torres',         83, _p(46, 'men'), 'GT', '#295BFF', 'Bogotá',       '7 Años',  "$2'600.000", 'en_rango'),
-  _mkDistrib('d-12', 'Nicolás Parra',          79, _p(47, 'men'), 'NP', '#F6A350', 'Bogotá',       '6 Años',  "$2'500.000", 'en_rango'),
-  _mkDistrib('d-13', 'Fabio Guerrero',         75, _p(48, 'men'), 'FG', '#8750F6', 'Bosa',         '5 Años',  "$2'600.000", 'en_rango'),
-  _mkDistrib('d-14', 'Álvaro Pineda',          70, _p(49, 'men'), 'AP', '#27BE69', 'Bogotá',       '4 Años',  "$2'500.000", 'en_rango'),
-  _mkDistrib('d-15', 'Gonzalo Rincón',         64, _p(50, 'men'), 'GR', '#295BFF', 'Bogotá',       '4 Años',  "$2'400.000", 'en_rango'),
-  _mkDistrib('d-16', 'Omar Bermúdez',          57, _p(51, 'men'), 'OB', '#F65078', 'Bogotá',       '3 Años',  "$2'500.000", 'en_rango'),
-  _mkDistrib('d-17', 'Hernán Lagos',           51, _p(52, 'men'), 'HL', '#27BE69', 'Cali',         '2 Años',  "$2'400.000", 'en_rango'),
-  _mkDistrib('d-18', 'Mario Cárdenas',         45, _p(53, 'men'), 'MC', '#F6A350', 'Bogotá',       '2 Años',  "$3'500.000", 'fuera_de_rango'),
-  _mkDistrib('d-19', 'Felipe Serna',           40, _p(54, 'men'), 'FS', '#295BFF', 'Medellín',     '1 Año',   "$3'800.000", 'fuera_de_rango'),
-  _mkDistrib('d-20', 'Ricardo Álvarez',        35, _p(55, 'men'), 'RA', '#8750F6', 'Bogotá',       '1 Año',   "$2'300.000", 'en_rango'),
+  _mkDistrib('d-11', 'Gabriel Torres',         83, _p(46, 'men'), 'GT', '#295BFF', 'Bogotá',       '7 Años',  "$2'600.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-12', 'Nicolás Parra',          79, _p(47, 'men'), 'NP', '#F6A350', 'Bogotá',       '6 Años',  "$2'500.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-13', 'Fabio Guerrero',         75, _p(48, 'men'), 'FG', '#8750F6', 'Bosa',         '5 Años',  "$2'600.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-14', 'Álvaro Pineda',          70, _p(49, 'men'), 'AP', '#27BE69', 'Bogotá',       '4 Años',  "$2'500.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-15', 'Gonzalo Rincón',         64, _p(50, 'men'), 'GR', '#295BFF', 'Bogotá',       '4 Años',  "$2'400.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-16', 'Omar Bermúdez',          57, _p(51, 'men'), 'OB', '#F65078', 'Bogotá',       '3 Años',  "$2'500.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-17', 'Hernán Lagos',           51, _p(52, 'men'), 'HL', '#27BE69', 'Cali',         '2 Años',  "$2'400.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-18', 'Mario Cárdenas',         45, _p(53, 'men'), 'MC', '#F6A350', 'Bogotá',       '2 Años',  "$3'500.000", 'fuera_de_rango', 'prescreening'),
+  _mkDistrib('d-19', 'Felipe Serna',           40, _p(54, 'men'), 'FS', '#295BFF', 'Medellín',     '1 Año',   "$3'800.000", 'fuera_de_rango', 'prescreening'),
+  _mkDistrib('d-20', 'Ricardo Álvarez',        35, _p(55, 'men'), 'RA', '#8750F6', 'Bogotá',       '1 Año',   "$2'300.000", 'en_rango',  'prescreening'),
+  // Additional prescreening bulk — scoring stage candidates
+  _mkDistrib('d-21', 'Camilo Vargas',          88, _p(56, 'men'), 'CV', '#8750F6', 'Bogotá',       '9 Años',  "$2'600.000", 'en_rango'),
+  _mkDistrib('d-22', 'Juan Espinoza',          85, _p(57, 'men'), 'JE', '#27BE69', 'Bogotá',       '8 Años',  "$2'500.000", 'en_rango'),
+  _mkDistrib('d-23', 'Rodrigo Muñoz',          81, _p(58, 'men'), 'RM', '#F6A350', 'Soacha',       '7 Años',  "$2'700.000", 'en_rango'),
+  _mkDistrib('d-24', 'Sebastián Gil',          78, _p(59, 'men'), 'SG', '#295BFF', 'Bogotá',       '7 Años',  "$2'600.000", 'en_rango'),
+  _mkDistrib('d-25', 'Andrés Cano',            75, _p(60, 'men'), 'AC', '#F65078', 'Bogotá',       '6 Años',  "$2'500.000", 'en_rango'),
+  _mkDistrib('d-26', 'Miguel Ríos',            72, _p(61, 'men'), 'MR', '#8750F6', 'Bogotá',       '5 Años',  "$2'600.000", 'en_rango'),
+  _mkDistrib('d-27', 'Esteban Mora',           68, _p(62, 'men'), 'EM', '#27BE69', 'Bogotá',       '5 Años',  "$2'400.000", 'en_rango'),
+  _mkDistrib('d-28', 'Jaime Castaño',          65, _p(63, 'men'), 'JC', '#F6A350', 'Bogotá',       '4 Años',  "$2'500.000", 'en_rango'),
+  _mkDistrib('d-29', 'Samuel Pedraza',         61, _p(64, 'men'), 'SP', '#295BFF', 'Bogotá',       '4 Años',  "$2'400.000", 'en_rango'),
+  _mkDistrib('d-30', 'Diego Rueda',            58, _p(65, 'men'), 'DR', '#8750F6', 'Bogotá',       '3 Años',  "$2'600.000", 'en_rango'),
+  _mkDistrib('d-31', 'Cristian Pinto',         54, _p(66, 'men'), 'CP', '#27BE69', 'Chía',         '3 Años',  "$2'500.000", 'en_rango'),
+  _mkDistrib('d-32', 'Alejandro Rojas',        51, _p(67, 'men'), 'AR', '#F6A350', 'Bogotá',       '2 Años',  "$2'400.000", 'en_rango'),
+  _mkDistrib('d-33', 'Gustavo Heredia',        47, _p(68, 'men'), 'GH', '#295BFF', 'Bogotá',       '2 Años',  "$2'300.000", 'en_rango'),
+  _mkDistrib('d-34', 'Nicolás Ortega',         43, _p(69, 'men'), 'NO', '#F65078', 'Bogotá',       '1 Año',   "$2'500.000", 'fuera_de_rango'),
+  _mkDistrib('d-35', 'Pablo Serrano',          39, _p(70, 'men'), 'PS', '#8750F6', 'Medellín',     '1 Año',   "$3'600.000", 'fuera_de_rango'),
 ];
 
 // ── Prueba Psicológica: perfil conductor C2 transporte público ─────────────────
@@ -3031,12 +3075,153 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
   ];
 }
 
+// ── Bulk candidate generator for funnel demo ──────────────────────────────────
+// Generates lightweight placeholder candidates to fill realistic funnel counts.
+const _BULK_NAMES: [string, string][] = [
+  ['Alexánder','Rincón'],['Bernardo','Silva'],['Camilo','Pedraza'],['Daniel','Quiroga'],
+  ['Edgardo','Fuentes'],['Fernando','Cano'],['Gerardo','Pinto'],['Harold','Castro'],
+  ['Ignacio','Toro'],['Jorge','Melo'],['Kevin','Buitrago'],['Leonardo','Crespo'],
+  ['Manuel','Acosta'],['Norberto','Zapata'],['Orlando','Mora'],['Patricio','Jiménez'],
+  ['Quintín','Ospino'],['Rafael','Delgado'],['Saúl','Arango'],['Teodoro','Palomino'],
+  ['Ubaldo','Escobar'],['Víctor','Trujillo'],['William','Padilla'],['Yamid','Cifuentes'],
+  ['Zairo','Becerra'],['Álvaro','Quintana'],['Édgar','Solano'],['Félix','Mejías'],
+  ['Gonzalo','Vega'],['Horacio','Sandoval'],['Ismael','Restrepo'],['Javier','Guevara'],
+  ['Laureano','Navarro'],['Lorenzo','Pacheco'],['Misael','Oñate'],['Néstor','Ibáñez'],
+  ['Óscar','Aguilar'],['Pedro','Blanco'],['Rubén','Tafur'],['Simón','Camargo'],
+  ['Tomás','Alvarado'],['Uriel','Benítez'],['Walter','Romero'],['Yamil','Flórez'],
+  ['Abel','Murillo'],['Benito','Salazar'],['Celio','Torres'],['Dario','Peñaloza'],
+  ['Efraín','Londoño'],['Franklin','Ramírez'],['Gilberto','Villamizar'],['Hernando','Ávila'],
+  ['Iván','Guerrero'],['Julio','Holguín'],['Kléber','Fandiño'],['Lorenzo','Serrano'],
+  ['Manuel','Pinzón'],['Nomar','Gutiérrez'],['Octavio','Franco'],['Porfirio','Castaño'],
+  ['Rodolfo','Parra'],['Santiago','Peña'],['Tadeo','García'],['Uriel','Cárdenas'],
+  ['Valentín','Suárez'],['Wilson','Lozano'],['Xavier','Gil'],['Yonier','Rojas'],
+  ['Alfonso','Forero'],['Brayan','Muñoz'],['César','Vargas'],['David','Mendoza'],
+  ['Emilio','Morales'],['Fernando','Torres'],['Guillermo','López'],['Hernán','Cruz'],
+];
+function _mkBulk(
+  prefix: string,
+  role: string,
+  sector: string,
+  stage: PipelineStageKey,
+  count: number,
+  startIdx: number,
+  scoreRange: [number, number],
+): Candidate[] {
+  const colors = ['#8750F6','#27BE69','#295BFF','#F6A350','#F65078'];
+  const cities = ['Bogotá','Soacha','Bogotá','Bogotá','Chía','Bogotá','Funza','Mosquera','Madrid','Cota','Bogotá','Bogotá'];
+  const salaries: [string, SalaryRange][] = [
+    ["$2'400.000",'en_rango'],["$2'500.000",'en_rango'],["$2'600.000",'en_rango'],
+    ["$2'700.000",'en_rango'],["$2'800.000",'en_rango'],["$3'600.000",'fuera_de_rango'],
+  ];
+  const hasPre = stage !== 'scoring';
+  return Array.from({ length: count }, (_, i) => {
+    const idx = startIdx + i;
+    const nameArr = _BULK_NAMES[idx % _BULK_NAMES.length] ?? ['Candidato','Demo'];
+    const name = `${nameArr[0]} ${nameArr[1]}`;
+    const score = Math.max(22, Math.min(97, scoreRange[0] + Math.round(Math.abs(Math.sin(idx * 4.7 + 2.3)) * (scoreRange[1] - scoreRange[0]))));
+    const color = colors[idx % colors.length]!;
+    const city  = cities[idx % cities.length]!;
+    const yrs   = 2 + (idx % 9);
+    const [salary, salaryRange] = salaries[idx % salaries.length]!;
+    const initials = `${nameArr[0]?.[0] ?? 'C'}${nameArr[1]?.[0] ?? 'C'}`;
+    return {
+      id: `${prefix}-blk-${idx}`,
+      name,
+      role,
+      sector,
+      years: `${yrs} Años`,
+      location: `${city}, Colombia`,
+      bio: `Conductor profesional con licencia C2 vigente y ${yrs} años de experiencia comprobada en operación de vehículos de carga.`,
+      score,
+      photo: _p(idx % 35, 'men'),
+      avatarInitials: initials,
+      avatarColor: color,
+      hasCurrentJob: score >= 58,
+      currentCompany: score >= 58 ? 'Empresa de Transporte' : undefined,
+      currentRole:    score >= 58 ? role : undefined,
+      superpoder: `"${yrs} años de experiencia en operación C2"`,
+      aspiration: salary,
+      budget:     salary,
+      salaryRange,
+      currentStage: stage,
+      scoringAI: {
+        score: Math.round(score * 0.96),
+        status: score >= 60 ? 'continua' : score >= 40 ? 'pendiente' : 'rechazado',
+        resumen: `${name} presenta un perfil ${score >= 70 ? 'sólido' : score >= 50 ? 'básico' : 'con observaciones'} para el cargo. Licencia C2 ${score >= 60 ? 'vigente' : 'por validar'}. ${yrs} años de experiencia.`,
+        noNegociables: [],
+        logros: [],
+        senales: [],
+      },
+      prescreeningAI: hasPre ? {
+        score: Math.round(score * 0.97),
+        status: score >= 65 ? 'continua' : 'pendiente',
+        resumen: `${name} confirmó disponibilidad para el cargo y cumple los requisitos básicos de experiencia en conducción de carga.`,
+        noNegociables: [],
+        plusDetectados: [],
+        senales: [],
+      } : undefined,
+    };
+  });
+}
+
+// ── Bulk arrays per vacancy ────────────────────────────────────────────────────
+// Funnel: prescreening=100, prueba_manejo=60, evaluaciones=40, entrevistas=30, estudios=20, finalistas=15
+// Each vacancy uses a different startIdx offset (0, 500, 1000) to avoid name collisions.
+
+// mock-distrib
+const distribBulkPre   = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prescreening', 65,  0, [28,94]);
+const distribBulkPM    = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_manejo', 48, 65, [42,92]);
+const distribBulkEval  = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','evaluaciones',  37,113, [50,91]);
+const distribBulkEntrev= _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','entrevistas',   25,150, [58,93]);
+const distribBulkEstud = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','estudios',      15,175, [60,94]);
+const distribBulkFinal = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','finalistas',    13,190, [72,96]);
+
+// mock-transp-pub
+const tpBulkPre    = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','prescreening', 67, 500, [28,94]);
+const tpBulkPM     = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','prueba_manejo', 47, 567, [42,92]);
+const tpBulkEval   = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','evaluaciones',  37, 614, [50,91]);
+const tpBulkEntrev = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','entrevistas',   25, 651, [58,93]);
+const tpBulkEstud  = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','estudios',      15, 676, [60,94]);
+const tpBulkFinal  = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','finalistas',    13, 691, [72,96]);
+
+// mock-vigia
+const vigiaBulkPre    = _mkBulk('vc','Conductor C2 Carga Refrigerada','Logística / Cadena de Frío','prescreening', 67,1000, [28,94]);
+const vigiaBulkPM     = _mkBulk('vc','Conductor C2 Carga Refrigerada','Logística / Cadena de Frío','prueba_manejo', 47,1067, [42,92]);
+const vigiaBulkEval   = _mkBulk('vc','Conductor C2 Carga Refrigerada','Logística / Cadena de Frío','evaluaciones',  37,1114, [50,91]);
+const vigiaBulkEntrev = _mkBulk('vc','Conductor C2 Carga Refrigerada','Logística / Cadena de Frío','entrevistas',   25,1151, [58,93]);
+const vigiaBulkEstud  = _mkBulk('vc','Conductor C2 Carga Refrigerada','Logística / Cadena de Frío','estudios',      15,1176, [60,94]);
+const vigiaBulkFinal  = _mkBulk('vc','Conductor C2 Carga Refrigerada','Logística / Cadena de Frío','finalistas',    13,1191, [72,96]);
+
 export const mockCandidatesByStage: Record<string, Partial<Record<string, Candidate[]>>> = {
   // evaluaciones candidates (tp-e*, v-e*, d-e*) only appear in their own stage —
   // keeping them out of scoring/prescreening/entrevistas prevents duplicate cards.
-  'mock-transp-pub': { scoring: [...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring], prescreening: [...transpPubEntrevistas, ...transpPubPrescreening], prueba_manejo: transpPubEntrevistas, evaluaciones: transpPubEvaluaciones, entrevistas: transpPubEntrevistas, estudios: transpPubEntrevistas, finalistas: transpPubEntrevistas.slice(0, 2) },
-  'mock-vigia':   { scoring: [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring], prescreening: [...vigiaEntrevistas, ...vigiaPrescreening], prueba_manejo: vigiaEntrevistas, evaluaciones: vigiaEvaluaciones, entrevistas: vigiaEntrevistas, estudios: vigiaEntrevistas, finalistas: vigiaEntrevistas.slice(0, 2) },
-  'mock-distrib': { scoring: [...distribEntrevistas, ...distribPrescreening, ...distribScoring], prescreening: [...distribEntrevistas, ...distribPrescreening], prueba_manejo: distribEntrevistas, evaluaciones: distribEvaluaciones, entrevistas: distribEntrevistas, estudios: distribEntrevistas, finalistas: distribEntrevistas.slice(0, 2) },
+  'mock-transp-pub': {
+    scoring:     [...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring],
+    prescreening:[...transpPubEntrevistas, ...transpPubPrescreening, ...transpPubScoring, ...tpBulkPre],
+    prueba_manejo:[...transpPubEntrevistas, ...transpPubPrescreening, ...tpBulkPM],
+    evaluaciones: [...transpPubEvaluaciones, ...tpBulkEval],
+    entrevistas:  [...transpPubEntrevistas, ...tpBulkEntrev],
+    estudios:     [...transpPubEntrevistas, ...tpBulkEstud],
+    finalistas:   [...transpPubEntrevistas.slice(0,2), ...tpBulkFinal],
+  },
+  'mock-vigia': {
+    scoring:     [...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring],
+    prescreening:[...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaScoring, ...vigiaBulkPre],
+    prueba_manejo:[...vigiaEntrevistas, ...vigiaPrescreening, ...vigiaBulkPM],
+    evaluaciones: [...vigiaEvaluaciones, ...vigiaBulkEval],
+    entrevistas:  [...vigiaEntrevistas, ...vigiaBulkEntrev],
+    estudios:     [...vigiaEntrevistas, ...vigiaBulkEstud],
+    finalistas:   [...vigiaEntrevistas.slice(0,2), ...vigiaBulkFinal],
+  },
+  'mock-distrib': {
+    scoring:     [...distribEntrevistas, ...distribPrescreening, ...distribScoring],
+    prescreening:[...distribEntrevistas, ...distribPrescreening, ...distribScoring, ...distribBulkPre],
+    prueba_manejo:[...distribEntrevistas, ...distribPrescreening, ...distribBulkPM],
+    evaluaciones: [...distribEvaluaciones, ...distribBulkEval],
+    entrevistas:  [...distribEntrevistas, ...distribBulkEntrev],
+    estudios:     [...distribEntrevistas, ...distribBulkEstud],
+    finalistas:   [...distribEntrevistas.slice(0,2), ...distribBulkFinal],
+  },
   'mock-recep':    { scoring: recepCandidates },
   'mock-bodega':   { scoring: [...bodegaPreCandidates, ...bodegaScoreOnly], prescreening: bodegaPreCandidates },
   'mock-th':       { scoring: [...thEntrevistasCandidates, ...thPreCandidates, ...thScoreOnly], prescreening: [...thEntrevistasCandidates, ...thPreCandidates], entrevistas: thEntrevistasCandidates },

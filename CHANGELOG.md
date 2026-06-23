@@ -7,6 +7,17 @@
 
 ## [Sin commitear]
 
+### Mock data — Poblado completo del embudo por etapa
+- `PipelineStageKey` extendido para incluir `'estudios'` y `'finalistas'`
+- `MockStageKey` simplificado para igualar `PipelineStageKey`
+- Generador `_mkBulk()` creado para producir candidatos placeholder con datos realistas (nombre, score, ciudad, años, etc.)
+- 72 nombres colombianos en `_BULK_NAMES` para variedad
+- Candidatos d-11→d-20, tp-11→tp-20, mvc-11→mvc-20 movidos a stage `'prescreening'`
+- Nuevos candidatos d-21→d-35, tp-21→tp-33, mvc-21→mvc-33 agregados
+- Bulk arrays generados para las 3 vacantes: prescreening≈100, prueba_manejo≈60, evaluaciones≈40, entrevistas≈30, estudios≈20, finalistas≈15
+- `mockCandidatesByStage` actualizado para todas las etapas en las 3 vacantes de transporte
+- `STORAGE_VERSION` bumpeado a `v12`
+
 ---
 
 ## [feat: pipeline UX refinements + funnel mock data para vacantes transporte] — 23 Jun 2026
