@@ -288,12 +288,26 @@ export default function Pipeline() {
 
     if (jobId.startsWith('mock-')) {
       const base = mergeScoring(getMockPipelineStages(jobId));
-      // Remove finalistas from the base list so we can append it last
-      const withoutFinalistas = base.filter((s) => s.id !== 'finalistas');
+      // estudios and finalistas are extracted from base (so their counts come from getMockPipelineStages)
+      const withoutEstudiosAndFinalistas = base.filter((s) => s.id !== 'estudios' && s.id !== 'finalistas');
+      const estudiosBase = base.find((s) => s.id === 'estudios');
       const finalistasBase = base.find((s) => s.id === 'finalistas');
+
+      const estudiosCardFinal: PipelineStage = {
+        id: 'estudios',
+        label: STAGE_META.estudios.label,
+        stageBadge: STAGE_META.estudios.stageBadge,
+        status: estudiosBase?.status ?? 'not_started',
+        candidateCount: estudiosBase?.candidateCount ?? 0,
+        isAI: false,
+        route: `${stageBase}/estudios`,
+        forceEnabled: true,
+      };
+
       const hasFinalists =
         getPendingCandidates(jobId, 'finalistas').length > 0 ||
-        (mockFinalistCards[jobId]?.length ?? 0) > 0;
+        (mockFinalistCards[jobId]?.length ?? 0) > 0 ||
+        (finalistasBase?.candidateCount ?? 0) > 0;
       const finalistasCard: PipelineStage = {
         ...(finalistasBase ?? {
           id: 'finalistas',
@@ -304,10 +318,10 @@ export default function Pipeline() {
           isAI: false,
           route: `${stageBase}/finalistas`,
         }),
-        status: hasFinalists ? (finalistasBase?.status ?? 'not_started') : 'not_started',
+        status: hasFinalists ? (finalistasBase?.status ?? 'in_progress') : 'not_started',
         forceEnabled: true,
       };
-      return [...withoutFinalistas, estudiosCard, finalistasCard];
+      return [...withoutEstudiosAndFinalistas, estudiosCardFinal, finalistasCard];
     }
     if (selectionProcess?.phases) {
       const mapped = mapPhasesToStages(selectionProcess.phases, jobId, processId ?? '');
@@ -456,30 +470,23 @@ export default function Pipeline() {
           </div>
 
           {/* Description */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '24px' }}>
-            <p
-              style={{
-                margin: 0,
-                fontSize: '14px',
-                color: 'var(--color-text-muted)',
-                lineHeight: '1.7',
-                maxWidth: '600px',
-              }}
-            >
-              {jobDescription ?? 'Sin descripción disponible.'}
-            </p>
-            <Button variant="ghost" size="sm" style={{ flexShrink: 0 }}>
-              Ver RCP Completo
-              <ChevronRight size={14} />
-            </Button>
-          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '14px',
+              color: 'var(--color-text-muted)',
+              lineHeight: '1.7',
+            }}
+          >
+            {jobDescription ?? 'Sin descripción disponible.'}
+          </p>
         </div>
 
         {/* Pipeline grid */}
         <div
           style={{
             display: 'grid',
-                gridTemplateColumns: 'repeat(6, 1fr)',
+                gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '16px',
           }}
         >

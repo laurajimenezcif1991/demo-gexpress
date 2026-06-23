@@ -9,6 +9,36 @@
 
 ---
 
+## [feat: pipeline UX refinements + funnel mock data para vacantes transporte] — 23 Jun 2026
+
+### Pipeline & Mock data
+- Actualizar `transpPipeline` en `mock.ts` para aceptar parámetros `estudios` y `finalistas`
+- Funnel realista para las 3 vacantes de transporte: prescreening=100, manejo=60, psico=40, entrevista=30, validaciones=20, aprobados=15
+- Añadir `estudios` a `mockCandidatesByStage` para `mock-transp-pub`, `mock-vigia` y `mock-distrib`
+- `DEFAULT_MOCK_PROGRESS` actualizado a `'estudios'` para las 3 vacantes de transporte
+- `STORAGE_VERSION` bumpeado a `v10` para limpiar localStorage al recargar
+- `Pipeline.tsx`: extraer `candidateCount` de `estudios` y `finalistas` desde `getMockPipelineStages` en lugar de hardcodear 0
+
+### CandidateOnepage — Prescreening & Validaciones
+- No negociables: reemplazar datos dinámicos con 4 ítems fijos para transporte (licencia C2, experiencia, ubicación, transporte propio)
+- Ocultar secciones "Plus detectados" y "Señales para validar"
+- Acordeón Validaciones: eliminar botón "Solicitar docs. de ingreso", párrafo descriptivo interno
+- Prueba de manejo `isLocked`: desbloquear cuando `pruebaManejoScore !== undefined` (datos diligenciados)
+
+### ValidacionesContent
+- Reemplazar emojis (🩺🔒🏠) con iconos Lucide (`Stethoscope`, `ShieldCheck`, `Home`)
+- Top-align iconos con encabezado de cada sección (`alignItems: flex-start`)
+- Gap entre módulos aumentado de 20px a 32px; separación encabezado-cargador de 8px a 14px
+
+### Pipeline.tsx
+- Grid cambiado a 3×2 (`repeat(3, 1fr)`)
+- Ocultar botón "Ver RCP Completo"; descripción del rol ocupa ancho completo
+
+### CandidateList.tsx
+- Texto WizardBar en etapa `estudios`: "Inicia el proceso de contratación con estos candidatos"
+
+---
+
 ## [feat: CTAs Entrevista→Validaciones y Validaciones→Aprobados con modal] — 22 Jun 2026
 
 ### Flujo de avance Entrevista → Validaciones → Aprobados

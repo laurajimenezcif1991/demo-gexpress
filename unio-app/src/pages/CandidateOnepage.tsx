@@ -640,7 +640,7 @@ export default function CandidateOnepage() {
               statusOk={pruebaManejoScore !== undefined}
               isOpen={pruebaManejoOpen}
               onToggle={() => setPruebaManejoOpen(o => !o)}
-              isLocked={stage !== 'prueba_manejo' && stage !== 'evaluaciones' && stage !== 'entrevistas'}
+              isLocked={pruebaManejoScore === undefined && stage !== 'prueba_manejo' && stage !== 'evaluaciones' && stage !== 'entrevistas' && stage !== 'estudios' && stage !== 'finalistas'}
             >
               {pruebaManejoScore !== undefined || stage === 'prueba_manejo' ? (
                 pruebaManejoScore !== undefined ? (
@@ -722,24 +722,6 @@ export default function CandidateOnepage() {
                 onToggle={() => setValidacionesOpen(!validacionesOpen)}
                 isLocked={false}
               >
-                <div style={{ marginBottom: '16px' }}>
-                  <p style={{ margin: '0 0 12px', fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.55 }}>
-                    Carga los resultados de los documentos de validación. Incluye examen médico ocupacional, estudio de seguridad y visita domiciliaria cuando aplique.
-                  </p>
-                  <button
-                    onClick={() => setWaDoctosOpen(true)}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '8px',
-                      padding: '9px 16px', borderRadius: '10px',
-                      background: '#25D366', border: 'none', cursor: 'pointer',
-                      fontWeight: 700, fontSize: '13px', color: '#fff',
-                      boxShadow: '0 2px 8px rgba(37,211,102,0.3)',
-                    }}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M5.655 0h13.69C22.537 0 24 1.464 24 3.656v16.688C24 22.536 22.536 24 20.344 24H3.656C1.464 24 0 22.536 0 20.344V3.656C0 1.464 1.464 0 3.656 0h2zm6.345 4.5C8.414 4.5 5.5 7.414 5.5 11s2.914 6.5 6.5 6.5c1.124 0 2.182-.295 3.097-.817L18 18l-1.317-2.903A6.467 6.467 0 0 0 18.5 11c0-3.586-2.914-6.5-6.5-6.5z" fillRule="evenodd" clipRule="evenodd" opacity="0"/></svg>
-                    Solicitar docs. de ingreso
-                  </button>
-                </div>
                 <ValidacionesContent defaultState={mockValidaciones} onChange={setValidacionesState} />
               </AccordionSection>
             </div>
@@ -1393,108 +1375,35 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
             </div>
           </div>
 
-          {/* Data rows */}
-          {(prescreening.noNegociables as any[]).map((item: any, i: number) => {
-            const score: number = item.score ?? 0;
-            const isHighScore = score >= 90;
-            const trackBg = isHighScore ? '#f0f0f0' : '#f2ecfe';
-            const fillBg  = isHighScore ? '#27be69' : '#8750f6';
-            const barFill = Math.round((score / 100) * 128);
-            const isLast  = i === prescreening.noNegociables.length - 1;
-
-            return (
-              <div
-                key={i}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '220px 190px 1fr',
-                  borderBottom: isLast ? 'none' : '1px solid #d4d4d5',
-                  alignItems: 'stretch',
-                }}
-              >
-                {/* Col 1 — label */}
-                <div style={{ padding: '14px 16px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', lineHeight: '21px', color: '#363539', display: 'flex', alignItems: 'center' }}>
-                  {item.label}
-                </div>
-
-                {/* Col 2 — score bar + number */}
-                <div style={{ padding: '14px 8px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                  {/* Track */}
-                  <div style={{ width: '100px', height: '8px', borderRadius: '4px', background: trackBg, flexShrink: 0, overflow: 'hidden' }}>
-                    <div style={{ width: `${barFill * 100 / 128}%`, height: '100%', borderRadius: '4px', background: fillBg }} />
-                  </div>
-                  {/* Number */}
-                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '15px', color: '#434245', minWidth: '28px', textAlign: 'right' }}>
-                    {score}
-                  </span>
-                </div>
-
-                {/* Col 3 — evidence */}
-                <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: '13px', lineHeight: '21px', color: '#363539' }}>
-                  {item.evidencia}
-                </div>
+          {/* Data rows — fixed no negociables for transport */}
+          {[
+            'Cuenta con Licencia de conducción C2 vigente con mínimo 2 años desde su expedición.',
+            'Tiene mínimo 2 años de experiencia certificada en conducción de carga.',
+            'Vive en Cota, municipios aledaños o Bogotá.',
+            'Cuenta con medio de transporte para llegar a la sede en vía Cota-Siberia.',
+          ].map((label, i, arr) => (
+            <div
+              key={i}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 120px',
+                borderBottom: i === arr.length - 1 ? 'none' : '1px solid #d4d4d5',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: '#363539' }}>
+                {label}
               </div>
-            );
-          })}
+              <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <CheckCircle2 size={15} color="#27be69" />
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#27be69' }}>Cumple</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Plus detectados + Señales */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <div>
-          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 12px', color: 'var(--color-text-primary)' }}>
-            Plus detectados
-          </h3>
-          {prescreening.plusDetectados.map((raw, i) => {
-            let label = '';
-            let description = typeof raw === 'string' ? raw : '';
-            try {
-              const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-              if (parsed && typeof parsed === 'object') {
-                label = parsed.label ?? '';
-                description = parsed.description ?? '';
-              }
-            } catch { /* keep raw */ }
-            return (
-              <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-                <Trophy size={18} color="var(--color-warning-600)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
-                  {label && <strong style={{ color: 'var(--color-text-primary)', display: 'block', marginBottom: '2px' }}>{label}</strong>}
-                  {description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-        <div>
-          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', margin: '0 0 12px', color: 'var(--color-text-primary)' }}>
-            Señales para validar
-          </h3>
-          {prescreening.senales.map((raw, i) => {
-            let type = 'warning';
-            let description = typeof raw === 'string' ? raw : '';
-            try {
-              const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-              if (parsed && typeof parsed === 'object') {
-                type = parsed.type ?? 'warning';
-                description = parsed.description ?? '';
-              }
-            } catch { /* keep raw */ }
-            const iconMap: Record<string, React.ReactNode> = {
-              warning:   <AlertTriangle size={16} color="var(--color-warning-600)" style={{ flexShrink: 0, marginTop: '2px' }} />,
-              lightbulb: <Lightbulb size={16} color="var(--color-brand-accent)" style={{ flexShrink: 0, marginTop: '2px' }} />,
-              target:    <Target size={16} color="var(--color-info-600, #0ea5e9)" style={{ flexShrink: 0, marginTop: '2px' }} />,
-            };
-            const icon = iconMap[type] ?? <MessageSquare size={16} color="var(--color-info-600)" style={{ flexShrink: 0, marginTop: '2px' }} />;
-            return (
-              <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-                {icon}
-                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      {/* Plus detectados + Señales — ocultos */}
 
       {/* Validación de Antecedentes — colapsable al final del acordeón */}
       <div style={{ marginTop: '24px' }}>

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { Upload, FileText, CheckCircle, AlertCircle, X, Clock, ExternalLink } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Upload, FileText, CheckCircle, AlertCircle, X, Clock, ExternalLink, Stethoscope, ShieldCheck, Home } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -17,7 +18,7 @@ interface DocSlot {
   description: string;
   required: boolean;
   acceptedTypes: string;
-  icon: string;
+  icon: ReactNode;
 }
 
 export interface ValidacionesState {
@@ -40,7 +41,7 @@ const DOC_SLOTS: DocSlot[] = [
     description: 'Resultado del examen de aptitud para conducción de vehículos pesados.',
     required: true,
     acceptedTypes: '.pdf,.jpg,.jpeg,.png',
-    icon: '🩺',
+    icon: <Stethoscope size={18} color="var(--color-text-muted)" />,
   },
   {
     id: 'estudioSeguridad',
@@ -48,7 +49,7 @@ const DOC_SLOTS: DocSlot[] = [
     description: 'Informe de verificación de antecedentes penales, judiciales y referencias.',
     required: true,
     acceptedTypes: '.pdf',
-    icon: '🔒',
+    icon: <ShieldCheck size={18} color="var(--color-text-muted)" />,
   },
   {
     id: 'visitaDomiciliaria',
@@ -56,7 +57,7 @@ const DOC_SLOTS: DocSlot[] = [
     description: 'Informe de visita al domicilio del candidato. Aplica según política interna.',
     required: false,
     acceptedTypes: '.pdf',
-    icon: '🏠',
+    icon: <Home size={18} color="var(--color-text-muted)" />,
   },
 ];
 
@@ -238,26 +239,13 @@ export default function ValidacionesContent({ defaultState, onChange }: Props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Info banner */}
-      <div style={{
-        padding: '12px 16px',
-        background: 'var(--color-secondary-50)',
-        border: '1px solid var(--color-border-default)',
-        borderRadius: 'var(--radius-md)',
-        fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.55,
-      }}>
-        En esta primera versión el reclutador carga manualmente los resultados. Los documentos quedan almacenados en la plataforma. <strong>No se realiza análisis automático</strong> de los documentos en este momento.
-      </div>
-
-      {/* Status */}
-      <StatusBadge state={docs} />
 
       {/* Document slots */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
         {DOC_SLOTS.map(slot => (
           <div key={slot.id}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ fontSize: '16px' }}>{slot.icon}</span>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '14px' }}>
+              <span style={{ display: 'flex', flexShrink: 0, marginTop: '2px' }}>{slot.icon}</span>
               <div>
                 <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   {slot.label}

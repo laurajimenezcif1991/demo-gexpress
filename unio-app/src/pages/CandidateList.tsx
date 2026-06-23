@@ -509,7 +509,9 @@ export default function CandidateList() {
               color: 'var(--color-text-primary)',
             }}
           >
-            Mueve estos perfiles a la siguiente fase de evaluación
+            {currentStage === 'estudios'
+              ? 'Inicia el proceso de contratación con estos candidatos'
+              : 'Mueve estos perfiles a la siguiente fase de evaluación'}
           </span>
           <span
             style={{
