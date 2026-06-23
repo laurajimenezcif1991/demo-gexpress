@@ -3101,6 +3101,31 @@ const _BULK_NAMES: [string, string][] = [
   ['Alfonso','Forero'],['Brayan','Muñoz'],['César','Vargas'],['David','Mendoza'],
   ['Emilio','Morales'],['Fernando','Torres'],['Guillermo','López'],['Hernán','Cruz'],
 ];
+const _BULK_COMPANIES = [
+  'TCC S.A.','Coordinadora Mercantil','Servientrega','Deprisa','Envía Colvanes',
+  'Suppla S.A.','DHL Express Colombia','FedEx Colombia','Logi-Trans S.A.S','Grupo Nutresa Logística',
+  'Alimentos Polar Colombia','Bavaria S.A.','Quala S.A.','Alpina Productos Alimenticios','Postobón S.A.',
+  'Almacenes Éxito','Carrefour Colombia','Makro Supermayorista','Olimpica S.A.','Colanta Ltda',
+];
+const _BULK_ROLES_PREV = [
+  'Conductor C2 Urbano','Conductor de Reparto','Operador de Flota','Conductor Ruta Local',
+  'Conductor Distribución','Chofer Entrega Última Milla','Operador Logístico','Conductor Mensajería',
+  'Conductor Tractocamión','Auxiliar de Transporte','Conductor Camión Rígido','Conductor de Carga',
+];
+const _BULK_LOGROS = [
+  ['Cero accidentes en 3 años consecutivos de operación','Reconocimiento por puntualidad en entregas'],
+  ['Más de 500 manifiestos completados sin novedad','Licencia C2 vigente sin infracciones'],
+  ['Operación en zona AMVA y Bogotá D.C. sin incidentes','Conocimiento de rutas intermunicipales'],
+  ['Manejo de mercancía perecedera y carga especial','Turno rotativo sin ausentismo en último año'],
+  ['Capacitación en conducción defensiva certificada','Gestión de documentos de transporte sin errores'],
+];
+const _BULK_SIGNALS_NEG = [
+  ['Sin antecedentes verificados aún','Aspiración salarial pendiente de confirmación'],
+  ['Dirección de residencia fuera del área preferida'],
+  ['Vehículo propio no confirmado'],
+  ['Referencias laborales pendientes de contacto'],
+];
+
 function _mkBulk(
   prefix: string,
   role: string,
@@ -3127,41 +3152,69 @@ function _mkBulk(
     const yrs   = 2 + (idx % 9);
     const [salary, salaryRange] = salaries[idx % salaries.length]!;
     const initials = `${nameArr[0]?.[0] ?? 'C'}${nameArr[1]?.[0] ?? 'C'}`;
+    const company   = _BULK_COMPANIES[idx % _BULK_COMPANIES.length]!;
+    const prevRole  = _BULK_ROLES_PREV[idx % _BULK_ROLES_PREV.length]!;
+    const prevYrs   = Math.max(1, yrs - 1);
+    // Scenario: high scores continue, mid scores are pending, low scores discarded
+    const preStatus: 'continua' | 'pendiente' | 'rechazado' =
+      score >= 68 ? 'continua' : score >= 45 ? 'pendiente' : 'rechazado';
+    const logros  = _BULK_LOGROS[idx % _BULK_LOGROS.length] ?? [];
+    const senales = score < 60 ? (_BULK_SIGNALS_NEG[idx % _BULK_SIGNALS_NEG.length] ?? []) : [];
+
     return {
       id: `${prefix}-blk-${idx}`,
       name,
       role,
       sector,
-      years: `${yrs} Años`,
+      years: `${yrs} Año${yrs !== 1 ? 's' : ''}`,
       location: `${city}, Colombia`,
-      bio: `Conductor profesional con licencia C2 vigente y ${yrs} años de experiencia comprobada en operación de vehículos de carga.`,
+      bio: `Conductor profesional con licencia C2 vigente. ${yrs} años de experiencia en operación de vehículos de carga, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`,
       score,
       photo: _p(idx % 35, 'men'),
       avatarInitials: initials,
       avatarColor: color,
       hasCurrentJob: score >= 58,
-      currentCompany: score >= 58 ? 'Empresa de Transporte' : undefined,
-      currentRole:    score >= 58 ? role : undefined,
-      superpoder: `"${yrs} años de experiencia en operación C2"`,
+      currentCompany: score >= 58 ? company : undefined,
+      currentRole:    score >= 58 ? prevRole : undefined,
+      lastCompany:    score < 58 ? company : undefined,
+      lastRole:       score < 58 ? prevRole : undefined,
+      superpoder: `"${yrs} años conduciendo C2 — cero incidentes"`,
       aspiration: salary,
       budget:     salary,
       salaryRange,
       currentStage: stage,
+      hasCV: idx % 4 !== 0, // ~25% perfil por WhatsApp
       scoringAI: {
         score: Math.round(score * 0.96),
         status: score >= 60 ? 'continua' : score >= 40 ? 'pendiente' : 'rechazado',
-        resumen: `${name} presenta un perfil ${score >= 70 ? 'sólido' : score >= 50 ? 'básico' : 'con observaciones'} para el cargo. Licencia C2 ${score >= 60 ? 'vigente' : 'por validar'}. ${yrs} años de experiencia.`,
+        resumen: score >= 68
+          ? `${name} demuestra un perfil sólido para el cargo. Licencia C2 vigente con ${yrs} años de experiencia comprobada en empresas como ${company}. Sin infracciones reportadas.`
+          : score >= 45
+          ? `${name} cumple los requisitos mínimos. Experiencia de ${yrs} años aunque en proceso de actualización de documentos. Se recomienda validar referencias.`
+          : `${name} no supera los criterios mínimos del perfil. Experiencia insuficiente o aspiración salarial fuera de rango. Se sugiere descartar en esta convocatoria.`,
         noNegociables: [],
-        logros: [],
-        senales: [],
+        logros,
+        senales,
       },
       prescreeningAI: hasPre ? {
         score: Math.round(score * 0.97),
-        status: score >= 65 ? 'continua' : 'pendiente',
-        resumen: `${name} confirmó disponibilidad para el cargo y cumple los requisitos básicos de experiencia en conducción de carga.`,
+        status: preStatus,
+        resumen: preStatus === 'continua'
+          ? `${name} confirmó licencia C2 vigente y ${yrs} años de experiencia en distribución de carga. Disponibilidad inmediata y residencia en zona de cobertura. Perfil alineado con los requisitos del cargo.`
+          : preStatus === 'pendiente'
+          ? `${name} cumple parcialmente los requisitos. Se validaron ${yrs} años de experiencia, pero algunos aspectos como vehículo propio y zona de residencia requieren confirmación adicional.`
+          : `${name} no cumple los criterios mínimos del proceso. Experiencia inferior a lo requerido o aspiración salarial fuera del rango establecido para el cargo.`,
         noNegociables: [],
-        plusDetectados: [],
-        senales: [],
+        plusDetectados: preStatus === 'continua' ? logros.slice(0,1) : [],
+        senales: preStatus !== 'continua' ? senales : [],
+        entornoPersonal: [
+          { label: 'Disponibilidad', value: 'Inmediata', status: 'ok' },
+          { label: 'Residencia', value: city, status: city === 'Barranquilla' || city === 'Cali' || city === 'Medellín' ? 'warning' : 'ok' },
+          { label: 'Años de exp.', value: `${yrs} años`, status: yrs >= 2 ? 'ok' : 'warning' },
+        ],
+        experienciaLaboral: [
+          { empresa: company, rol: prevRole, periodo: `${2026 - yrs} – Presente`, descripcion: `Operación de rutas de carga con ${company}. ${yrs * 80}+ manifiestos completados.` },
+        ],
       } : undefined,
     };
   });
@@ -3246,6 +3299,10 @@ export const mockCandidatesById: Record<string, Candidate> = [
   ...vigiaCandidates,
   ...distribEvaluaciones,
   ...distribCandidates,
+  // Bulk arrays (all three vacancies, all stages)
+  ...distribBulkPre, ...distribBulkPM, ...distribBulkEval, ...distribBulkEntrev, ...distribBulkEstud, ...distribBulkFinal,
+  ...tpBulkPre, ...tpBulkPM, ...tpBulkEval, ...tpBulkEntrev, ...tpBulkEstud, ...tpBulkFinal,
+  ...vigiaBulkPre, ...vigiaBulkPM, ...vigiaBulkEval, ...vigiaBulkEntrev, ...vigiaBulkEstud, ...vigiaBulkFinal,
   ...recepCandidates,
   ...bodegaPreCandidates, ...bodegaScoreOnly,
   ...thEntrevistasCandidates, ...thPreCandidates, ...thScoreOnly,
