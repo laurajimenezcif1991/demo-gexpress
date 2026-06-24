@@ -7,6 +7,21 @@
 
 ## [Sin commitear]
 
+### WaApplyFlow — Simulación WhatsApp CV Builder + Prescreening
+- Nueva página standalone `WaApplyFlow.tsx` accessible en `/apply/:vacancyId` (ruta pública)
+- UI completa estilo WhatsApp: header verde con avatar, fondo con patrón WA, burbujas bot (blanco) / candidato (verde)
+- Indicador de "tipeo" animado con tres puntos entre mensajes
+- Quick replies como botones estilo chip WA + input de texto libre para campos abiertos
+- **Flujo Quick Match** (no negociables): validación secuencial de licencia C2, experiencia 2+ años, ubicación Cota/Bogotá
+- **Flujo sin HV → CV Builder**: recopila nombre, ciudad, años de experiencia, hasta 2 experiencias previas
+- **Flujo con HV**: simula procesamiento de CV con IA y continúa directamente al prescreening
+- **Prescreening 6 pasos**: confirmar nombre → interés/disponibilidad → card empresa → card vacante (salario/condiciones) → no negociables → viabilidad prueba de manejo
+- Cards embebidas para info empresa y vacante (con datos reales: salario, horario, contrato)
+- Estado final diferenciado: descalificado (quick match fail) o completado exitosamente
+- Ruta registrada en `App.tsx` como ruta pública sin ProtectedRoute
+
+---
+
 ### Mock data — Poblado completo del embudo por etapa
 - `PipelineStageKey` extendido para incluir `'estudios'` y `'finalistas'`
 - `MockStageKey` simplificado para igualar `PipelineStageKey`

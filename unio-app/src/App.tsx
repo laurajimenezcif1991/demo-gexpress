@@ -17,6 +17,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import PruebaBienvenida from './pages/PruebaBienvenida';
 import PruebaTest from './pages/PruebaTest';
 import PruebaExito from './pages/PruebaExito';
+import WaApplyFlow from './pages/WaApplyFlow';
 import AuthPage from './pages/auth/AuthPage';
 import VerifyEmail from './pages/auth/VerifyEmail';
 import ForgotPassword from './pages/auth/ForgotPassword';
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
 
             {/* ── Public ── */}
+            <Route path="/apply/:vacancyId" element={<WaApplyFlow />} />
             <Route path="/eval/:evalId" element={<HMEvalForm />} />
             <Route path="/prueba/:evalId"       element={<PruebaBienvenida />} />
             <Route path="/prueba/:evalId/test"  element={<PruebaTest />} />
