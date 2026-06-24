@@ -362,33 +362,45 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
       })() : (viewStage ?? candidate.currentStage) === 'estudios' ? (() => {
         const { medico, seguridad } = getValidacionesProgress(candidate.id);
         const done = [medico, seguridad].filter(Boolean).length;
+        const VALIDACION_STEPS = ['Médico', 'Seguridad'];
+        const stepsColor = done === 2 ? '#15803d' : done === 1 ? '#d97706' : '#9ca3af';
+        const statusLabel = done === 2 ? 'Validaciones completas' : done === 1 ? 'En progreso' : 'Sin iniciar';
+        const statusSublabel = done === 2 ? 'Médico y seguridad OK' : done === 1 ? 'Resultados médicos OK' : 'Validaciones no iniciadas';
+        const statusIcon = done === 2 ? <FolderCheck size={12} /> : done === 1 ? <Send size={12} /> : <FileText size={12} />;
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px', flexShrink: 0, minWidth: '90px' }}>
-            <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.3px', fontFamily: 'var(--font-display)' }}>
-              {done}/2 validaciones
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flexShrink: 0, minWidth: '110px' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {VALIDACION_STEPS.map((_, i) => {
+                const filled = i < done;
+                const isLast = i === VALIDACION_STEPS.length - 1;
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{
+                      width: '8px', height: '8px', borderRadius: '50%',
+                      background: filled ? stepsColor : '#e5e7eb',
+                      border: `1.5px solid ${filled ? stepsColor : '#d1d5db'}`,
+                    }} />
+                    {!isLast && (
+                      <div style={{
+                        width: '18px', height: '1.5px',
+                        background: done === 2 ? stepsColor : '#e5e7eb',
+                      }} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: '5px',
+              fontSize: '11px', fontWeight: 700,
+              color: stepsColor, fontFamily: 'var(--font-display)',
+            }}>
+              {statusIcon}
+              {statusLabel}
+            </div>
+            <span style={{ fontSize: '10px', color: 'var(--color-text-muted)', textAlign: 'right', lineHeight: 1.3 }}>
+              {statusSublabel}
             </span>
-            {[
-              { label: 'Resultados médicos', done: medico },
-              { label: 'Estudio de seguridad', done: seguridad },
-            ].map(({ label, done: isDone }) => (
-              <div
-                key={label}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  fontFamily: 'var(--font-display)',
-                  color: isDone ? '#15803d' : 'var(--color-text-muted)',
-                }}
-              >
-                {isDone
-                  ? <CheckCircle2 size={12} color="#15803d" />
-                  : <Circle size={12} color="#d1d5db" />}
-                {label}
-              </div>
-            ))}
           </div>
         );
       })() : !candidate.veredictoEntrevista ? (
