@@ -4,7 +4,7 @@ import Avatar from './Avatar';
 import { getScoreColors } from './ScorePill';
 import Badge from './Badge';
 import { useState } from 'react';
-import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle } from 'lucide-react';
+import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle, FileText, Send, FolderCheck } from 'lucide-react';
 
 const VEREDICTO_CONFIG = {
   apto:          { label: 'Apto',                icon: <CheckCheck size={12} />,     color: '#15803d', bg: '#dcfce7', border: '#86efac' },
@@ -51,6 +51,20 @@ const MANEJO_RESULT_CONFIG = {
   apto_reservas: { label: 'Apto con reservas',  color: '#92400e', bg: '#fef3c7', border: '#fcd34d' },
   no_apto:       { label: 'No apto',            color: '#991b1b', bg: '#fee2e2', border: '#fca5a5' },
 } as const;
+
+type DocsStatus = 'sin_solicitar' | 'solicitado' | 'recibido';
+
+const DOCS_CONFIG: Record<DocsStatus, { label: string; sublabel: string; color: string; icon: React.ReactNode; steps: number }> = {
+  sin_solicitar: { label: 'Sin solicitar',       sublabel: 'Documentos no solicitados',    color: '#9ca3af', icon: <FileText size={12} />,   steps: 0 },
+  solicitado:    { label: 'En progreso',          sublabel: 'Docs solicitados · Pendiente', color: '#d97706', icon: <Send size={12} />,        steps: 1 },
+  recibido:      { label: 'Docs recibidos',       sublabel: 'Documentación completa',       color: '#15803d', icon: <FolderCheck size={12} />, steps: 2 },
+};
+
+function getDocsStatus(id: string): DocsStatus {
+  const n = parseInt(id.replace(/\D/g, '') || '0', 10);
+  const states: DocsStatus[] = ['sin_solicitar', 'solicitado', 'recibido'];
+  return states[n % 3];
+}
 
 function getManejoResult(score: number): keyof typeof MANEJO_RESULT_CONFIG {
   if (score >= 78) return 'apto';
@@ -302,8 +316,50 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
         </p>
       </div>
 
-      {/* Right-side widget: validaciones for estudios, score otherwise */}
-      {(viewStage ?? candidate.currentStage) === 'estudios' ? (() => {
+      {/* Right-side widget: docs tracker for finalistas, validaciones for estudios, score otherwise */}
+      {(viewStage ?? candidate.currentStage) === 'finalistas' ? (() => {
+        const status = getDocsStatus(candidate.id);
+        const cfg = DOCS_CONFIG[status];
+        const STEP_LABELS = ['Solicitar', 'En progreso', 'Recibido'];
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flexShrink: 0, minWidth: '110px' }}>
+            {/* Mini stepper */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {STEP_LABELS.map((_, i) => {
+                const filled = i <= cfg.steps;
+                const isLast = i === STEP_LABELS.length - 1;
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{
+                      width: '8px', height: '8px', borderRadius: '50%',
+                      background: filled ? cfg.color : '#e5e7eb',
+                      border: `1.5px solid ${filled ? cfg.color : '#d1d5db'}`,
+                    }} />
+                    {!isLast && (
+                      <div style={{
+                        width: '18px', height: '1.5px',
+                        background: i < cfg.steps ? cfg.color : '#e5e7eb',
+                      }} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {/* Status label */}
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: '5px',
+              fontSize: '11px', fontWeight: 700,
+              color: cfg.color, fontFamily: 'var(--font-display)',
+            }}>
+              {cfg.icon}
+              {cfg.label}
+            </div>
+            <span style={{ fontSize: '10px', color: 'var(--color-text-muted)', textAlign: 'right', lineHeight: 1.3 }}>
+              {cfg.sublabel}
+            </span>
+          </div>
+        );
+      })() : (viewStage ?? candidate.currentStage) === 'estudios' ? (() => {
         const { medico, seguridad } = getValidacionesProgress(candidate.id);
         const done = [medico, seguridad].filter(Boolean).length;
         return (
