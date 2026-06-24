@@ -207,7 +207,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
               {candidate.location}
             </span>
           )}
-          {candidate.veredictoEntrevista && (() => {
+          {candidate.veredictoEntrevista && candidate.currentStage === 'entrevistas' && (() => {
             const v = VEREDICTO_CONFIG[candidate.veredictoEntrevista];
             return (
               <span style={{
