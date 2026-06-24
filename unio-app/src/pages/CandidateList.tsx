@@ -471,6 +471,7 @@ export default function CandidateList() {
               selected={selected.has(candidate.id)}
               onSelect={toggleSelect}
               showStageChip={false}
+              viewStage={currentStage}
               onClick={() => {
                 const base = processId
                   ? `/pipeline/${jobId}/process/${processId}/candidate/${candidate.id}`

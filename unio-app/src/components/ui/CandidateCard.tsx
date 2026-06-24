@@ -62,13 +62,14 @@ interface CandidateCardProps {
   onClick?: () => void;
   showStageChip?: boolean;
   isPending?: boolean;
+  viewStage?: PipelineStageKey;
 }
 
 const GRADIENT = 'linear-gradient(115deg, #9A7CF7, #FDD83F, #F05899, #3DAC56, #00ADFE)';
 const gradientBorderBg = (innerColor: string) =>
   `linear-gradient(${innerColor}, ${innerColor}) padding-box, ${GRADIENT} border-box`;
 
-export default function CandidateCard({ candidate, statusLabel, selected, onSelect, onClick, showStageChip = true, isPending = false }: CandidateCardProps) {
+export default function CandidateCard({ candidate, statusLabel, selected, onSelect, onClick, showStageChip = true, isPending = false, viewStage }: CandidateCardProps) {
   const { bg: scoreBg, fg: scoreFg } = getScoreColors(candidate.score);
   const [hovered, setHovered] = useState(false);
   const showGradient = hovered || !!selected;
@@ -207,7 +208,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
               {candidate.location}
             </span>
           )}
-          {candidate.veredictoEntrevista && candidate.currentStage === 'entrevistas' && (() => {
+          {candidate.veredictoEntrevista && (viewStage ?? candidate.currentStage) === 'entrevistas' && (() => {
             const v = VEREDICTO_CONFIG[candidate.veredictoEntrevista];
             return (
               <span style={{
@@ -274,7 +275,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
       </div>
 
       {/* Right-side widget: validaciones for estudios, score otherwise */}
-      {candidate.currentStage === 'estudios' ? (() => {
+      {(viewStage ?? candidate.currentStage) === 'estudios' ? (() => {
         const { medico, seguridad } = getValidacionesProgress(candidate.id);
         const done = [medico, seguridad].filter(Boolean).length;
         return (
