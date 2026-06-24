@@ -136,13 +136,13 @@ export default function DescartarModal({ open, onClose, onConfirm, candidateName
                 <div
                   onClick={() => handleTypeSelect(type)}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '10px',
+                    display: 'flex', alignItems: 'flex-start', gap: '10px',
                     padding: '14px 16px', cursor: 'pointer',
                   }}
                 >
                   {/* Custom radio */}
                   <div style={{
-                    width: '18px', height: '18px', borderRadius: '50%', flexShrink: 0,
+                    width: '18px', height: '18px', borderRadius: '50%', flexShrink: 0, marginTop: '1px',
                     border: `2px solid ${isActive ? config.color : '#d1d5db'}`,
                     background: isActive ? config.color : '#fff',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -150,7 +150,7 @@ export default function DescartarModal({ open, onClose, onConfirm, candidateName
                   }}>
                     {isActive && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />}
                   </div>
-                  <div style={{ color: isActive ? config.color : 'var(--color-text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ color: isActive ? config.color : 'var(--color-text-primary)', display: 'flex', alignItems: 'flex-start', paddingTop: '1px' }}>
                     {config.icon}
                   </div>
                   <div style={{ flex: 1 }}>
