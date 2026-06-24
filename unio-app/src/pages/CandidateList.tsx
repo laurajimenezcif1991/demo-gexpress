@@ -318,13 +318,10 @@ export default function CandidateList() {
       });
     }
 
-    // ── Sort ─────────────────────────────────────────────────────────────────
+    // ── Sort by application date ──────────────────────────────────────────────
     return [...list].sort((a, b) => {
       const pDiff = statusPriority(a.id) - statusPriority(b.id);
       if (pDiff !== 0) return pDiff;
-      if (isScoringStageFn()) {
-        return sortDir === 'desc' ? b.score - a.score : a.score - b.score;
-      }
       const aT = getMockAppliedDate(a.id).getTime();
       const bT = getMockAppliedDate(b.id).getTime();
       return sortDir === 'desc' ? bT - aT : aT - bT;
@@ -521,9 +518,7 @@ export default function CandidateList() {
               }}
             >
               <ArrowUpDown size={13} />
-              {isScoringStageFn()
-                ? (sortDir === 'desc' ? 'Mayor a menor' : 'Menor a mayor')
-                : (sortDir === 'desc' ? 'Más reciente' : 'Más antiguo')}
+              {sortDir === 'desc' ? 'Más recientes primero' : 'Más antiguos primero'}
             </button>
           </div>
         </div>
