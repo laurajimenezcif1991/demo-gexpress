@@ -2493,9 +2493,9 @@ const transpPubCandidates: Candidate[] = [
   _mkTranspPub('tp-15', 'Óscar Clavijo',           65, _p(30, 'men'), 'OC', '#295BFF', 'Bogotá',      '4 Años',  "$2'600.000", 'en_rango',       'prescreening'),
   _mkTranspPub('tp-16', 'Roberto Fonseca',         57, _p(31, 'men'), 'RF', '#F65078', 'Bogotá',      '3 Años',  "$2'500.000", 'en_rango',       'prescreening'),
   _mkTranspPub('tp-17', 'Jairo Montaño',           51, _p(32, 'men'), 'JM', '#27BE69', 'Cali',        '2 Años',  "$2'600.000", 'en_rango',       'prescreening'),
-  _mkTranspPub('tp-18', 'Luis Angarita',           46, _p(33, 'men'), 'LA', '#F6A350', 'Bogotá',      '2 Años',  "$3'500.000", 'fuera_de_rango', 'prescreening'),
-  _mkTranspPub('tp-19', 'Pedro Salamanca',         41, _p(34, 'men'), 'PS', '#295BFF', 'Medellín',    '1 Año',   "$3'800.000", 'fuera_de_rango', 'prescreening'),
-  _mkTranspPub('tp-20', 'Sergio Amaya',            36, _p(35, 'men'), 'SA', '#8750F6', 'Bogotá',      '1 Año',   "$2'400.000", 'en_rango',       'prescreening'),
+  _mkTranspPub('tp-18', 'Luis Angarita',    46, _p(33, 'men'), 'LA', '#F6A350', 'Bogotá',   '2 Años', "$3'500.000", 'fuera_de_rango', 'prescreening', { prescreeningAI: { status: 'no_realizada', score: 0, resumen: '', noNegociables: [], plusDetectados: [], senales: [] } }),
+  _mkTranspPub('tp-19', 'Pedro Salamanca', 41, _p(34, 'men'), 'PS', '#295BFF', 'Medellín', '1 Año',  "$3'800.000", 'fuera_de_rango', 'prescreening', { prescreeningAI: { status: 'no_realizada', score: 0, resumen: '', noNegociables: [], plusDetectados: [], senales: [] } }),
+  _mkTranspPub('tp-20', 'Sergio Amaya',    36, _p(35, 'men'), 'SA', '#8750F6', 'Bogotá',   '1 Año',  "$2'400.000", 'en_rango',       'prescreening', { prescreeningAI: { status: 'no_realizada', score: 0, resumen: '', noNegociables: [], plusDetectados: [], senales: [] } }),
   // Prueba de manejo detailed candidates
   _mkTranspPub('tp-21', 'Carlos Medina',           87, _p(16, 'men'), 'CM', '#27BE69', 'Bogotá',      '9 Años',  "$2'800.000", 'en_rango',       'prueba_manejo'),
   _mkTranspPub('tp-22', 'Andrés Duarte',           83, _p(17, 'men'), 'AD', '#F6A350', 'Bogotá',      '8 Años',  "$2'700.000", 'en_rango',       'prueba_manejo'),
@@ -2668,9 +2668,9 @@ const distribCandidates: Candidate[] = [
   _mkDistrib('d-15', 'Gonzalo Rincón',         64, _p(50, 'men'), 'GR', '#295BFF', 'Bogotá',       '4 Años',  "$2'400.000", 'en_rango',  'prescreening'),
   _mkDistrib('d-16', 'Omar Bermúdez',          57, _p(51, 'men'), 'OB', '#F65078', 'Bogotá',       '3 Años',  "$2'500.000", 'en_rango',  'prescreening'),
   _mkDistrib('d-17', 'Hernán Lagos',           51, _p(52, 'men'), 'HL', '#27BE69', 'Cali',         '2 Años',  "$2'400.000", 'en_rango',  'prescreening'),
-  _mkDistrib('d-18', 'Mario Cárdenas',         45, _p(53, 'men'), 'MC', '#F6A350', 'Bogotá',       '2 Años',  "$3'500.000", 'fuera_de_rango', 'prescreening'),
-  _mkDistrib('d-19', 'Felipe Serna',           40, _p(54, 'men'), 'FS', '#295BFF', 'Medellín',     '1 Año',   "$3'800.000", 'fuera_de_rango', 'prescreening'),
-  _mkDistrib('d-20', 'Ricardo Álvarez',        35, _p(55, 'men'), 'RA', '#8750F6', 'Bogotá',       '1 Año',   "$2'300.000", 'en_rango',  'prescreening'),
+  _mkDistrib('d-18', 'Mario Cárdenas', 45, _p(53, 'men'), 'MC', '#F6A350', 'Bogotá',   '2 Años', "$3'500.000", 'fuera_de_rango', 'prescreening', { prescreeningAI: { status: 'no_realizada', score: 0, resumen: '', noNegociables: [], plusDetectados: [], senales: [] } }),
+  _mkDistrib('d-19', 'Felipe Serna',   40, _p(54, 'men'), 'FS', '#295BFF', 'Medellín', '1 Año',  "$3'800.000", 'fuera_de_rango', 'prescreening', { prescreeningAI: { status: 'no_realizada', score: 0, resumen: '', noNegociables: [], plusDetectados: [], senales: [] } }),
+  _mkDistrib('d-20', 'Ricardo Álvarez',35, _p(55, 'men'), 'RA', '#8750F6', 'Bogotá',   '1 Año',  "$2'300.000", 'en_rango',       'prescreening', { prescreeningAI: { status: 'no_realizada', score: 0, resumen: '', noNegociables: [], plusDetectados: [], senales: [] } }),
   // Prueba de manejo detailed candidates
   _mkDistrib('d-21', 'Camilo Vargas',          88, _p(56, 'men'), 'CV', '#8750F6', 'Bogotá',       '9 Años',  "$2'600.000", 'en_rango',       'prueba_manejo'),
   _mkDistrib('d-22', 'Juan Espinoza',          85, _p(57, 'men'), 'JE', '#27BE69', 'Bogotá',       '8 Años',  "$2'500.000", 'en_rango',       'prueba_manejo'),
@@ -2972,11 +2972,12 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
     scoring: {
       'tp-11': 'continua', 'tp-12': 'continua', 'tp-13': 'continua',
       'tp-14': 'por_validar', 'tp-15': 'por_validar', 'tp-16': 'por_validar',
-      'tp-17': 'descartado', 'tp-18': 'descartado', 'tp-19': 'descartado', 'tp-20': 'descartado',
+      'tp-17': 'continua', 'tp-18': 'continua', 'tp-19': 'continua', 'tp-20': 'continua',
     },
     prescreening: {
       'tp-6': 'continua', 'tp-7': 'continua',
       'tp-8': 'por_validar', 'tp-9': 'por_validar', 'tp-10': 'descartado',
+      'tp-18': 'por_validar', 'tp-19': 'por_validar', 'tp-20': 'por_validar',
     },
     evaluaciones: {
       'tp-e1': 'continua',
@@ -2988,11 +2989,12 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
     scoring: {
       'd-11': 'continua', 'd-12': 'continua', 'd-13': 'continua',
       'd-14': 'por_validar', 'd-15': 'por_validar', 'd-16': 'por_validar',
-      'd-17': 'descartado', 'd-18': 'descartado', 'd-19': 'descartado', 'd-20': 'descartado',
+      'd-17': 'continua', 'd-18': 'continua', 'd-19': 'continua', 'd-20': 'continua',
     },
     prescreening: {
       'd-6': 'continua', 'd-7': 'continua',
       'd-8': 'por_validar', 'd-9': 'por_validar', 'd-10': 'descartado',
+      'd-18': 'por_validar', 'd-19': 'por_validar', 'd-20': 'por_validar',
     },
     evaluaciones: {
       'd-e1': 'continua',

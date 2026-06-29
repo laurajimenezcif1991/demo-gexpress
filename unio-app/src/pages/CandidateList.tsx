@@ -342,10 +342,11 @@ export default function CandidateList() {
 
     if (SCORING_STAGES.has(currentStage)) {
       return {
-        todos: total,
-        high: sc(candidates.filter((c) => c.score >= 80).length),
-        mid:  sc(candidates.filter((c) => c.score >= 40 && c.score < 80).length),
-        low:  sc(candidates.filter((c) => c.score < 50).length),
+        todos:        total,
+        high:         sc(candidates.filter((c) => c.score >= 80).length),
+        mid:          sc(candidates.filter((c) => c.score >= 40 && c.score < 80).length),
+        low:          sc(candidates.filter((c) => c.score < 50).length),
+        no_validado:  candidates.filter((c) => c.prescreeningAI?.status === 'no_realizada').length,
       };
     }
     if (currentStage === 'entrevistas') {
