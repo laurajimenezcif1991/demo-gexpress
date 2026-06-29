@@ -7,6 +7,10 @@
 
 ## [Sin commitear]
 
+### Pipeline — Colores cromáticos + ancho reducido
+- Nuevo esquema de 6 colores ordenados por tono cromático (naranja → ámbar → verde → cyan → violeta → púrpura)
+- Ancho máximo del panel reducido de 1400px a 900px para mejor lectura del funnel
+
 ### Pipeline — Rediseño a vista Funnel
 - Reemplaza grid de tarjetas por vista funnel de barras horizontales (estilo Analytics)
 - Cada etapa muestra barra proporcional al conteo de candidatos, número de candidatos y % de conversión vs etapa anterior
