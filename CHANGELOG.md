@@ -7,6 +7,13 @@
 
 ## [Sin commitear]
 
+### Pipeline — Rediseño a vista Funnel
+- Reemplaza grid de tarjetas por vista funnel de barras horizontales (estilo Analytics)
+- Cada etapa muestra barra proporcional al conteo de candidatos, número de candidatos y % de conversión vs etapa anterior
+- Filas clickeables navegan a la etapa correspondiente; etapas bloqueadas en opacidad reducida
+- Animación `fadeSlideRight` escalonada por fila
+- Aplicado a demo-transportes y demo-generico
+
 ### WaApplyFlow — Simulación WhatsApp CV Builder + Prescreening
 - Nueva página standalone `WaApplyFlow.tsx` accessible en `/apply/:vacancyId` (ruta pública)
 - UI completa estilo WhatsApp: header verde con avatar, fondo con patrón WA, burbujas bot (blanco) / candidato (verde)

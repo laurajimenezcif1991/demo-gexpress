@@ -1,19 +1,16 @@
 import { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  UserCheck,
-  Pencil,
-  Lock,
   MapPin,
   Calendar,
   Users,
   ChevronRight,
   ArrowLeft,
+  Lock,
 } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import Badge from '../components/ui/Badge';
-import Button from '../components/ui/Button';
-import { Skeleton, SkeletonCircle } from '../components/ui/Skeleton';
+import { Skeleton } from '../components/ui/Skeleton';
 import { getPipelineStages, getMockPipelineStages, mockFinalistCards, MOCK_DESCRIPTIONS, type PipelineStage } from '../data/mock';
 import { useMockStageState } from '../hooks/useMockStageState';
 import { usePipeline } from '../context/PipelineContext';
@@ -128,119 +125,131 @@ function formatDate(iso: string): string {
   }
 }
 
-function StageCard({ stage }: { stage: PipelineStage }) {
+function FunnelRow({
+  stage,
+  maxCount,
+  convPct,
+  idx,
+}: {
+  stage: PipelineStage;
+  maxCount: number;
+  convPct: number | null;
+  idx: number;
+}) {
   const navigate = useNavigate();
-  const colors = stageColors[stage.id] || stageColors.scoring;
-  const isCompleted = stage.status === 'completed';
-  const isInProgress = stage.status === 'in_progress';
   const isNotStarted = stage.status === 'not_started' && !stage.forceEnabled;
+  const barPct = maxCount > 0 ? Math.max((stage.candidateCount / maxCount) * 100, 0.5) : 0.5;
+  const colors = stageColors[stage.id] || stageColors.scoring;
 
-  const statusDotColor = isCompleted
-    ? 'var(--color-positive-500)'
-    : isInProgress
-    ? 'var(--color-warning-500)'
-    : 'var(--color-neutral-400)';
-
-  const statusText = isCompleted ? 'Completado' : isInProgress ? 'En proceso' : 'Sin iniciar';
-
-  const Icon = isNotStarted ? Lock : isCompleted ? UserCheck : Pencil;
+  const statusDotColor =
+    stage.status === 'completed'
+      ? 'var(--color-positive-500)'
+      : stage.status === 'in_progress'
+      ? 'var(--color-warning-500)'
+      : 'var(--color-neutral-300)';
 
   return (
     <div
+      onClick={() => !isNotStarted && navigate(stage.route)}
       style={{
-        background: '#ffffff',
-        border: '1px solid var(--color-border-default)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '24px',
-        opacity: isNotStarted ? 0.55 : 1,
         display: 'flex',
-        flexDirection: 'column',
-        gap: '12px',
-        minHeight: '220px',
+        alignItems: 'center',
+        gap: '16px',
+        padding: '10px 16px',
+        borderRadius: 'var(--radius-md)',
+        cursor: isNotStarted ? 'default' : 'pointer',
+        opacity: isNotStarted ? 0.45 : 1,
+        transition: 'background 0.15s ease',
+        animation: `fadeSlideRight 0.35s ease ${idx * 60}ms both`,
+      }}
+      onMouseEnter={(e) => {
+        if (!isNotStarted) (e.currentTarget as HTMLDivElement).style.background = 'var(--color-surface-subtle)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = 'transparent';
       }}
     >
-      {/* Top row: icon + AI badge */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: 'var(--radius-md)',
-            background: isNotStarted ? 'var(--color-surface-muted)' : colors.bg,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: isNotStarted ? 'var(--color-text-muted)' : colors.fg,
-          }}
-        >
-          <Icon size={20} />
-        </div>
-        {stage.isAI && !isNotStarted && (
-          <Badge variant="ai" small>
-            ✦ IA
-          </Badge>
-        )}
-      </div>
-
-      {/* Status */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <div
-          style={{
-            width: '7px',
-            height: '7px',
-            borderRadius: '50%',
-            background: statusDotColor,
-            flexShrink: 0,
-          }}
-        />
-        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)' }}>
-          {statusText}
-        </span>
-      </div>
-
-      {/* Stage badge — always visible */}
-      <div style={{ display: 'flex' }}>
-        <Badge variant={stageBadgeVariants[stage.id] ?? 'default'}>
-          {stage.stageBadge}
-        </Badge>
-      </div>
-
-      {/* Candidate count — always visible */}
+      {/* Status dot */}
       <div
         style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: statusDotColor,
+          flexShrink: 0,
+        }}
+      />
+
+      {/* Stage label */}
+      <div
+        style={{
+          width: '148px',
+          flexShrink: 0,
+          fontSize: '12px',
+          fontWeight: 700,
+          letterSpacing: '0.5px',
+          textTransform: 'uppercase',
+          color: 'var(--color-text-primary)',
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          fontSize: '13px',
-          color: 'var(--color-text-muted)',
         }}
       >
-        <Users size={14} />
-        {stage.candidateCount} candidatos
+        {stage.label}
+        {stage.isAI && (
+          <Badge variant="ai" small>✦ IA</Badge>
+        )}
+        {isNotStarted && <Lock size={11} color="var(--color-text-muted)" />}
       </div>
 
-      {/* Action button */}
-      <div style={{ marginTop: 'auto' }}>
-        <Button
-          variant="secondary"
-          size="md"
-          fullWidth
-          disabled={isNotStarted}
-          onClick={() => !isNotStarted && navigate(stage.route)}
-        >
-          {isNotStarted ? (
-            <>
-              <Lock size={14} />
-              Bloqueado
-            </>
-          ) : (
-            <>
-              Ver resultados
-              <ChevronRight size={14} />
-            </>
-          )}
-        </Button>
+      {/* Bar track */}
+      <div
+        style={{
+          flex: 1,
+          height: '28px',
+          background: 'var(--color-neutral-100)',
+          borderRadius: '9999px',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            height: '100%',
+            width: `${barPct}%`,
+            background: isNotStarted ? 'var(--color-neutral-200)' : colors.fg,
+            borderRadius: '9999px',
+            transition: 'width 0.45s ease',
+          }}
+        />
       </div>
+
+      {/* Count + conversion */}
+      <div style={{ flexShrink: 0, textAlign: 'right', minWidth: '180px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
+          <span
+            style={{
+              fontSize: '15px',
+              fontWeight: 700,
+              color: 'var(--color-text-primary)',
+              fontFamily: 'var(--font-display)',
+            }}
+          >
+            {stage.candidateCount.toLocaleString('es-CO')}
+          </span>
+        </div>
+        <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+          {convPct !== null
+            ? idx === 0
+              ? '100% · inicio del funnel'
+              : `${convPct}% conversión`
+            : '—'}
+        </div>
+      </div>
+
+      {/* Arrow */}
+      {!isNotStarted && (
+        <ChevronRight size={16} color="var(--color-text-muted)" style={{ flexShrink: 0 }} />
+      )}
     </div>
   );
 }
@@ -482,47 +491,71 @@ export default function Pipeline() {
           </p>
         </div>
 
-        {/* Pipeline grid */}
+        {/* Funnel de candidatos */}
         <div
           style={{
-            display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
+            background: '#ffffff',
+            border: '1px solid var(--color-border-default)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '24px',
           }}
         >
+          {/* Section title */}
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 700,
+              fontSize: '12px',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-primary)',
+              marginBottom: '4px',
+            }}
+          >
+            Funnel de candidatos
+          </div>
+          <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '20px' }}>
+            Haz click en una etapa para ver los candidatos
+          </div>
+
+          {/* Skeleton */}
           {loading && (
-            <>
-              {Array.from({ length: 3 }).map((_, col) => (
-                <div key={col} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {/* Column header skeleton */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '4px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <Skeleton width={32} height={32} borderRadius={8} />
-                      <Skeleton width={120} height={16} />
-                    </div>
-                    <Skeleton width={28} height={22} borderRadius={20} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '10px 16px' }}>
+                  <Skeleton width={8} height={8} borderRadius={4} />
+                  <Skeleton width={148} height={14} />
+                  <div style={{ flex: 1 }}>
+                    <Skeleton height={28} borderRadius={9999} />
                   </div>
-                  {/* Card skeletons */}
-                  {Array.from({ length: col === 0 ? 4 : col === 1 ? 3 : 2 }).map((_, j) => (
-                    <div key={j} style={{ background: '#ffffff', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border-default)', padding: '14px 16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                        <SkeletonCircle size={36} />
-                        <div style={{ flex: 1 }}>
-                          <Skeleton height={13} width="70%" style={{ marginBottom: '6px' }} />
-                          <Skeleton height={11} width="45%" />
-                        </div>
-                        <Skeleton width={36} height={28} borderRadius={20} />
-                      </div>
-                      <Skeleton height={6} width="100%" borderRadius={3} />
-                    </div>
-                  ))}
+                  <Skeleton width={100} height={32} />
                 </div>
               ))}
-            </>
+            </div>
           )}
-          {!loading && stages.map((stage) => (
-            <StageCard key={stage.id} stage={stage} />
-          ))}
+
+          {/* Funnel rows */}
+          {!loading && (() => {
+            const maxCount = Math.max(...stages.map((s) => s.candidateCount), 1);
+            return stages.map((stage, idx) => {
+              const prev = stages[idx - 1];
+              const convPct =
+                idx === 0
+                  ? 100
+                  : prev && prev.candidateCount > 0
+                  ? Math.round((stage.candidateCount / prev.candidateCount) * 100)
+                  : null;
+              return (
+                <FunnelRow
+                  key={stage.id}
+                  stage={stage}
+                  maxCount={maxCount}
+                  convPct={convPct}
+                  idx={idx}
+                />
+              );
+            });
+          })()}
         </div>
       </main>
     </div>
