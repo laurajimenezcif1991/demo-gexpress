@@ -90,6 +90,8 @@ export interface Candidate {
   pruebaManejo?: { status: 'agendada'; fecha: string; hora: string; lugar: string } | { status: 'pendiente' };
   /** Interview verdict — shown as chip on candidate cards in entrevistas/estudios/finalistas */
   veredictoEntrevista?: 'apto' | 'apto_reservas' | 'no_apto';
+  /** WA Pre-screening validation state for candidates in prescreening stage */
+  waPrescreeningStatus?: 'no_realizada' | 'pasa' | 'no_pasa';
 }
 
 export interface NoNegociable {
@@ -2186,9 +2188,12 @@ function _mkVigia(id: string, name: string, score: number, photo: string, initia
   const wrongCity = city === 'Bucaramanga' || city === 'Barranquilla';
   const personal = idx < _vigiaPersonal.length ? _vigiaPersonal[idx] : _vigiaPersonal[0];
   const hasPrescreeningStageVigia = stage === 'prescreening' || stage === 'entrevistas';
+  const waPrescreeningStatus: Candidate['waPrescreeningStatus'] = stage === 'prescreening'
+    ? (score >= 65 ? 'pasa' : score >= 50 ? 'no_realizada' : 'no_pasa')
+    : undefined;
   const pre: Candidate['prescreeningAI'] = hasPrescreeningStageVigia ? {
     score: Math.round(score * 0.97),
-    status: hi ? 'continua' : md ? 'continua' : 'pendiente',
+    status: waPrescreeningStatus === 'no_pasa' ? 'rechazado' : (hi || md) ? 'continua' : 'pendiente',
     resumen: hi
       ? `${name} confirmó disponibilidad inmediata y motivación genuina por el cargo. Durante la conversación demostró conocimiento práctico de rutas nacionales y manejo de carga refrigerada. Corroboró experiencia documentada en su hoja de vida y no presentó inconsistencias.`
       : md
@@ -2291,6 +2296,7 @@ function _mkVigia(id: string, name: string, score: number, photo: string, initia
     veredictoEntrevista: (['entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
       ? (score >= 78 ? 'apto' as const : score >= 62 ? 'apto_reservas' as const : 'no_apto' as const)
       : undefined,
+    ...(waPrescreeningStatus ? { waPrescreeningStatus } : {}),
     ...extras,
   };
 }
@@ -2390,9 +2396,12 @@ function _mkTranspPub(id: string, name: string, score: number, photo: string, in
   const wrongCity = city === 'Medellín' || city === 'Cali';
   const runt = _transpPubRunt[idx % _transpPubRunt.length];
   const hasPrescreeningStageTP = stage === 'prescreening' || stage === 'entrevistas';
+  const waPrescreeningStatus: Candidate['waPrescreeningStatus'] = stage === 'prescreening'
+    ? (score >= 65 ? 'pasa' : score >= 50 ? 'no_realizada' : 'no_pasa')
+    : undefined;
   const pre: Candidate['prescreeningAI'] = hasPrescreeningStageTP ? {
     score: Math.round(score * 0.96),
-    status: hi ? 'continua' : md ? 'continua' : 'pendiente',
+    status: waPrescreeningStatus === 'no_pasa' ? 'rechazado' : (hi || md) ? 'continua' : 'pendiente',
     resumen: hi
       ? `${name} confirmó licencia C2 vigente y record vial limpio. Con ${years} de experiencia en transporte público, demostró conocimiento del protocolo de servicio al usuario y disponibilidad total para turnos rotativos.`
       : md
@@ -2471,6 +2480,7 @@ function _mkTranspPub(id: string, name: string, score: number, photo: string, in
     veredictoEntrevista: (['entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
       ? (score >= 78 ? 'apto' as const : score >= 62 ? 'apto_reservas' as const : 'no_apto' as const)
       : undefined,
+    ...(waPrescreeningStatus ? { waPrescreeningStatus } : {}),
     ...extras,
   };
 }
@@ -2565,9 +2575,12 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
   const wrongCity = city === 'Barranquilla' || city === 'Cali' || city === 'Medellín';
   const runt = _distribRunt[idx % _distribRunt.length];
   const hasPrescreeningStage = stage === 'prescreening' || stage === 'entrevistas';
+  const waPrescreeningStatus: Candidate['waPrescreeningStatus'] = stage === 'prescreening'
+    ? (score >= 65 ? 'pasa' : score >= 50 ? 'no_realizada' : 'no_pasa')
+    : undefined;
   const pre: Candidate['prescreeningAI'] = hasPrescreeningStage ? {
     score: Math.round(score * 0.97),
-    status: hi ? 'continua' : md ? 'continua' : 'pendiente',
+    status: waPrescreeningStatus === 'no_pasa' ? 'rechazado' : (hi || md) ? 'continua' : 'pendiente',
     resumen: hi
       ? `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`
       : md
@@ -2646,6 +2659,7 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
     veredictoEntrevista: (['entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
       ? (score >= 78 ? 'apto' as const : score >= 62 ? 'apto_reservas' as const : 'no_apto' as const)
       : undefined,
+    ...(waPrescreeningStatus ? { waPrescreeningStatus } : {}),
     ...extras,
   };
 }
