@@ -209,19 +209,21 @@ function FunnelRow({
 
       {/* Count + conversion */}
       <div style={{ flexShrink: 0, textAlign: 'right', minWidth: '180px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
+          <Users size={18} color="var(--color-text-muted)" />
           <span
             style={{
-              fontSize: '15px',
-              fontWeight: 700,
+              fontSize: '22px',
+              fontWeight: 800,
               color: 'var(--color-text-primary)',
               fontFamily: 'var(--font-display)',
+              lineHeight: 1,
             }}
           >
             {stage.candidateCount.toLocaleString('es-CO')}
           </span>
         </div>
-        <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
           {convPct !== null
             ? idx === 0
               ? '100% · inicio del funnel'
