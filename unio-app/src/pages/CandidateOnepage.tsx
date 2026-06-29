@@ -625,17 +625,68 @@ export default function CandidateOnepage() {
                   score={prescreeningScore}
                   statusText={
                     hasPrescreeningData
-                      ? prescreeningStatus === 'rechazado' ? 'Descartado' : 'Completado'
+                      ? prescreeningStatus === 'rechazado' ? 'Descartado'
+                      : prescreeningStatus === 'no_realizada' ? 'No realizada'
+                      : 'Completado'
                       : (isPendingPrescreening || waCompleted || hasPrescreening) ? 'En proceso'
                       : 'Sin iniciar'
                   }
-                  statusOk={hasPrescreeningData && prescreeningStatus !== 'rechazado'}
+                  statusOk={hasPrescreeningData && prescreeningStatus !== 'rechazado' && prescreeningStatus !== 'no_realizada'}
                   isOpen={prescreeningOpen}
                   onToggle={() => (hasPrescreening || waCompleted) && setPrescreeningOpen(!prescreeningOpen)}
                   isLocked={!hasPrescreening && !waCompleted}
                 >
                   {(hasPrescreening || waCompleted) && (
-                    prescreeningData ? (
+                    prescreeningData && prescreeningStatus === 'no_realizada' ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '12px',
+                          padding: '36px 24px',
+                          textAlign: 'center',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            background: 'var(--color-surface-subtle)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <HelpCircle size={24} color="var(--color-text-muted)" />
+                        </div>
+                        <div>
+                          <div
+                            style={{
+                              fontFamily: 'var(--font-display)',
+                              fontWeight: 700,
+                              fontSize: '15px',
+                              color: 'var(--color-text-primary)',
+                              marginBottom: '6px',
+                            }}
+                          >
+                            Validación no realizada
+                          </div>
+                          <div
+                            style={{
+                              fontSize: '13px',
+                              color: 'var(--color-text-muted)',
+                              lineHeight: '1.6',
+                              maxWidth: '380px',
+                            }}
+                          >
+                            Este candidato no superó los filtros de scoring requeridos para iniciar la pre-entrevista IA. La validación de prescreening no fue ejecutada.
+                          </div>
+                        </div>
+                      </div>
+                    ) : prescreeningData ? (
                       <PrescreeningContent
                         prescreening={prescreeningData}
                         hasCV={candidate.hasCV}
