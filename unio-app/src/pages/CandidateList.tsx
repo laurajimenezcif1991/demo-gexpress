@@ -641,25 +641,30 @@ export default function CandidateList() {
               {candidatesError}
             </div>
           )}
-          {!candidatesLoading && !candidatesError && filteredCandidates.map((candidate) => (
-            <CandidateCard
-              key={candidate.id}
-              candidate={candidate}
-              statusLabel={pendingSet.has(candidate.id) ? undefined : getStatus(candidate.id, currentStage)}
-              isPending={pendingSet.has(candidate.id)}
-              selected={selected.has(candidate.id)}
-              onSelect={toggleSelect}
-              showStageChip={false}
-              viewStage={currentStage}
-              onClick={() => {
-                markVisited(candidate.id);
-                const base = processId
-                  ? `/pipeline/${jobId}/process/${processId}/candidate/${candidate.id}`
-                  : `/pipeline/${jobId}/candidate/${candidate.id}`;
-                navigate(`${base}?stage=${currentStage}`);
-              }}
-            />
-          ))}
+          {!candidatesLoading && !candidatesError && (() => {
+            const visited = getAllVisited();
+            return filteredCandidates.map((candidate) => (
+              <CandidateCard
+                key={candidate.id}
+                candidate={candidate}
+                statusLabel={pendingSet.has(candidate.id) ? undefined : getStatus(candidate.id, currentStage)}
+                isPending={pendingSet.has(candidate.id)}
+                selected={selected.has(candidate.id)}
+                onSelect={toggleSelect}
+                showStageChip={false}
+                viewStage={currentStage}
+                appliedDate={getMockAppliedDate(candidate.id)}
+                isVisited={visited.has(candidate.id)}
+                onClick={() => {
+                  markVisited(candidate.id);
+                  const base = processId
+                    ? `/pipeline/${jobId}/process/${processId}/candidate/${candidate.id}`
+                    : `/pipeline/${jobId}/candidate/${candidate.id}`;
+                  navigate(`${base}?stage=${currentStage}`);
+                }}
+              />
+            ));
+          })()}
 
           {/* Empty state for estudios/Validaciones */}
           {!candidatesLoading && !candidatesError && filteredCandidates.length === 0 && currentStage === 'estudios' && (

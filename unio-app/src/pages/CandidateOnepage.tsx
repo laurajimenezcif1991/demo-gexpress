@@ -27,6 +27,7 @@ import {
   Briefcase,
   GraduationCap,
   FileText,
+  CalendarDays,
 } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import WizardBar from '../components/layout/WizardBar';
@@ -519,6 +520,20 @@ export default function CandidateOnepage() {
                 <Badge variant="default" small>
                   <img src={clockHistoryUrl} width={11} height={11} alt="" /> {candidate.years}
                 </Badge>
+                {(() => {
+                  const n = parseInt((candidate.id ?? '').replace(/\D/g, '') || '0', 10);
+                  const daysAgo = (n * 13 + 7) % 90;
+                  const d = new Date('2026-06-23');
+                  d.setDate(d.getDate() - daysAgo);
+                  const month = d.toLocaleDateString('en-US', { month: 'short' });
+                  const day   = String(d.getDate()).padStart(2, '0');
+                  const year  = String(d.getFullYear()).slice(2);
+                  return (
+                    <Badge variant="default" small>
+                      <CalendarDays size={11} /> Aplicación: {month} {day} /{year}
+                    </Badge>
+                  );
+                })()}
               </div>
 
               {/* Estado actual */}

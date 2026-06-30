@@ -4,7 +4,7 @@ import Avatar from './Avatar';
 import { getScoreColors } from './ScorePill';
 import Badge from './Badge';
 import { useState } from 'react';
-import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle, FileText, Send, FolderCheck } from 'lucide-react';
+import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle, FileText, Send, FolderCheck, Eye, EyeOff, CalendarDays } from 'lucide-react';
 
 const VEREDICTO_CONFIG = {
   apto:          { label: 'Apto',                icon: <CheckCheck size={12} />,     color: '#15803d', bg: '#dcfce7', border: '#86efac' },
@@ -80,6 +80,13 @@ function getValidacionesProgress(id: string): { medico: boolean; seguridad: bool
   };
 }
 
+function formatAppliedDate(date: Date): string {
+  const month = date.toLocaleDateString('en-US', { month: 'short' });
+  const day   = String(date.getDate()).padStart(2, '0');
+  const year  = String(date.getFullYear()).slice(2);
+  return `${month} ${day} /${year}`;
+}
+
 interface CandidateCardProps {
   candidate: Candidate;
   statusLabel?: CandidateStatus;
@@ -89,13 +96,15 @@ interface CandidateCardProps {
   showStageChip?: boolean;
   isPending?: boolean;
   viewStage?: PipelineStageKey;
+  appliedDate?: Date;
+  isVisited?: boolean;
 }
 
 const GRADIENT = 'linear-gradient(115deg, #9A7CF7, #FDD83F, #F05899, #3DAC56, #00ADFE)';
 const gradientBorderBg = (innerColor: string) =>
   `linear-gradient(${innerColor}, ${innerColor}) padding-box, ${GRADIENT} border-box`;
 
-export default function CandidateCard({ candidate, statusLabel, selected, onSelect, onClick, showStageChip = true, isPending = false, viewStage }: CandidateCardProps) {
+export default function CandidateCard({ candidate, statusLabel, selected, onSelect, onClick, showStageChip = true, isPending = false, viewStage, appliedDate, isVisited }: CandidateCardProps) {
   const { bg: scoreBg, fg: scoreFg } = getScoreColors(candidate.score);
   const isNoRealizada = candidate.prescreeningAI?.status === 'no_realizada';
   const [hovered, setHovered] = useState(false);
@@ -302,7 +311,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
         {/* Bio */}
         <p
           style={{
-            margin: 0,
+            margin: '0 0 8px',
             fontSize: '13px',
             color: 'var(--color-text-muted)',
             lineHeight: '1.5',
@@ -315,6 +324,36 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
         >
           {candidate.bio}
         </p>
+
+        {/* Meta row: fecha de aplicación + estado revisión */}
+        {(appliedDate !== undefined || isVisited !== undefined) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {appliedDate !== undefined && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: '4px',
+                fontSize: '11px', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-display)', fontWeight: 500,
+              }}>
+                <CalendarDays size={11} />
+                Aplicación: {formatAppliedDate(appliedDate)}
+              </span>
+            )}
+            {isVisited !== undefined && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: '4px',
+                fontSize: '11px', fontWeight: 700,
+                fontFamily: 'var(--font-display)',
+                color:      isVisited ? '#15803d' : '#6b7280',
+                background: isVisited ? '#dcfce7'  : '#f3f4f6',
+                border:     `1px solid ${isVisited ? '#86efac' : '#e5e7eb'}`,
+                borderRadius: '20px', padding: '1px 8px',
+              }}>
+                {isVisited ? <Eye size={10} /> : <EyeOff size={10} />}
+                {isVisited ? 'Revisado' : 'Sin revisar'}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Right-side widget: docs tracker for finalistas, validaciones for estudios, score otherwise */}
