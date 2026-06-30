@@ -89,7 +89,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
   const stageItems = [
     {
       id: 'prescreening',
-      label: 'Prescreening IA',
+      label: 'Prescreening',
       Icon: AlignLeft,
       path: `${stageBase}/prescreening`,
       locked: false,
