@@ -7,6 +7,20 @@
 
 ## [Sin commitear]
 
+---
+
+## [ca39470] — 29 Jun 2026
+
+### Listado de candidatos — Filtros reestructurados (dropdown Estado + Resultado)
+- Reemplaza chips de filtrado por dos dropdowns tipo Gmail/navegador: **Estado** y **Resultado**
+- **Estado**: Todos / Vistos / Sin revisar / Continúa / Rechazados + "Validación no realizada" solo en Prescreening
+- **Resultado**: dinámico según etapa — rangos de score (Prescreening, Prueba de manejo, Psicotécnica), veredicto cualitativo (Entrevista), avance documental (Validaciones / Aprobados)
+- Filtro de fecha oculto en UI; lógica preservada en el código
+- Botón de ordenamiento por fecha mantenido y alineado
+- Aplicado a demo-transportes y demo-generico
+
+---
+
 ### Pipeline — Colores cromáticos + ancho reducido
 - Nuevo esquema de 6 colores ordenados por tono cromático (naranja → ámbar → verde → cyan → violeta → púrpura)
 - Ancho máximo del panel reducido de 1400px a 900px para mejor lectura del funnel
