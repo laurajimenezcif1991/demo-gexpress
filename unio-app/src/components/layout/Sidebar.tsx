@@ -55,6 +55,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
     if (path.includes('/estudios')) return 'estudios';
     if (path === '/finalistas') return 'finalistas';
     if (path.includes('/finalistas')) return 'finalistas';
+    if (path.includes('/prueba_conocimiento')) return 'prueba_conocimiento';
     if (path.includes('/prueba_manejo')) return 'prueba_manejo';
     if (path.includes('/evaluaciones')) return 'evaluaciones';
     if (path.includes('/entrevistas')) return 'entrevistas';
@@ -66,9 +67,13 @@ export default function Sidebar({ activeItem }: SidebarProps) {
 
   const currentActive = getActiveId();
 
+  // Derive jobId from URL as a reliable fallback when context hasn't been initialized yet
+  const urlJobId = location.pathname.match(/\/pipeline\/([^/]+)/)?.[1];
+  const effectiveJobId = (jobId && jobId !== 'v1') ? jobId : (urlJobId ?? jobId);
+
   const stageBase = selectionProcessId
-    ? `/pipeline/${jobId}/process/${selectionProcessId}`
-    : `/pipeline/${jobId}`;
+    ? `/pipeline/${effectiveJobId}/process/${selectionProcessId}`
+    : `/pipeline/${effectiveJobId}`;
 
   const topItems = [
     {

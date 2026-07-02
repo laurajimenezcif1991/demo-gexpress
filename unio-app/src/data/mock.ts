@@ -3052,7 +3052,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
     s('prueba_manejo',        'Prueba de manejo',           'Prueba manejo',    manejo > 0    ? (ent > 0       ? 'completed'    : 'in_progress') : 'not_started', manejo,    false),
     s('entrevistas',          'Entrevista',                 'Entrevista',       ent > 0       ? (psicotech > 0 ? 'completed'    : 'in_progress') : 'not_started', ent,       false),
     s('evaluaciones',         'Prueba Psicométrica',        'Psicométrica',     psicotech > 0 ? (conoc > 0     ? 'completed'    : 'in_progress') : 'not_started', psicotech, false),
-    s('prueba_conocimiento',  'Prueba de conocimiento',     'Conocimiento',     conoc > 0     ? (est > 0       ? 'completed'    : 'in_progress') : 'not_started', conoc,     false),
+    { ...s('prueba_conocimiento', 'Prueba de conocimiento', 'Conocimiento', conoc > 0 ? (est > 0 ? 'completed' : 'in_progress') : 'not_started', conoc, false), forceEnabled: true },
     s('estudios',             'Validaciones',               'Validaciones',     est > 0       ? (fin > 0       ? 'in_progress'  : 'in_progress') : 'not_started', est,       false),
     s('finalistas',           'Aprobados',                  'Aprobados',        fin > 0       ? 'in_progress'                                   : 'not_started', fin,       false),
   ];

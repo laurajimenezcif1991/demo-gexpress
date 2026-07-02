@@ -7,6 +7,13 @@
 
 ## [Sin commitear]
 
+### Fix definitivo: Prueba de conocimiento ahora es seleccionable
+- Sidebar: `getActiveId()` ahora detecta `/prueba_conocimiento` en la URL y resalta el item correctamente
+- Sidebar: `stageBase` deriva el `jobId` directamente de la URL como fallback (evita usar el default `v1` del contexto antes de que se inicialice)
+- Pipeline funnel: todos los stages mock (incluido `prueba_conocimiento`) ahora usan `stageBase` consistente para sus rutas, en lugar de rutas hardcoded sin `processId`
+- `prueba_conocimiento` ahora tiene `forceEnabled: true` para garantizar que el FunnelRow sea siempre clickeable
+- STORAGE_VERSION bumped a v16 para limpiar localStorage obsoleto
+
 ---
 
 ## [pending] — 01 Jul 2026

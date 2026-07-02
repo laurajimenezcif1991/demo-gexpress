@@ -284,7 +284,9 @@ export default function Pipeline() {
     };
 
     if (jobId.startsWith('mock-')) {
-      const base = mergeScoring(getMockPipelineStages(jobId));
+      const base = mergeScoring(
+        getMockPipelineStages(jobId).map((s) => ({ ...s, route: `${stageBase}/${s.id}` })),
+      );
       // estudios and finalistas are extracted from base (so their counts come from getMockPipelineStages)
       const withoutEstudiosAndFinalistas = base.filter((s) => s.id !== 'estudios' && s.id !== 'finalistas');
       const estudiosBase = base.find((s) => s.id === 'estudios');
