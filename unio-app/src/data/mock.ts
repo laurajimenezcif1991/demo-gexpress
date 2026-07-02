@@ -3216,26 +3216,29 @@ function _primaTranspB(name: string, score: number): PsychTestResult {
 
 // ── Bulk candidate generator for funnel demo ──────────────────────────────────
 // Generates lightweight placeholder candidates to fill realistic funnel counts.
-const _BULK_NAMES: [string, string][] = [
-  ['Alexánder','Rincón'],['Bernardo','Silva'],['Camilo','Pedraza'],['Daniel','Quiroga'],
-  ['Edgardo','Fuentes'],['Fernando','Cano'],['Gerardo','Pinto'],['Harold','Castro'],
-  ['Ignacio','Toro'],['Jorge','Melo'],['Kevin','Buitrago'],['Leonardo','Crespo'],
-  ['Manuel','Acosta'],['Norberto','Zapata'],['Orlando','Mora'],['Patricio','Jiménez'],
-  ['Quintín','Ospino'],['Rafael','Delgado'],['Saúl','Arango'],['Teodoro','Palomino'],
-  ['Ubaldo','Escobar'],['Víctor','Trujillo'],['William','Padilla'],['Yamid','Cifuentes'],
-  ['Zairo','Becerra'],['Álvaro','Quintana'],['Édgar','Solano'],['Félix','Mejías'],
-  ['Gonzalo','Vega'],['Horacio','Sandoval'],['Ismael','Restrepo'],['Javier','Guevara'],
-  ['Laureano','Navarro'],['Lorenzo','Pacheco'],['Misael','Oñate'],['Néstor','Ibáñez'],
-  ['Óscar','Aguilar'],['Pedro','Blanco'],['Rubén','Tafur'],['Simón','Camargo'],
-  ['Tomás','Alvarado'],['Uriel','Benítez'],['Walter','Romero'],['Yamil','Flórez'],
-  ['Abel','Murillo'],['Benito','Salazar'],['Celio','Torres'],['Dario','Peñaloza'],
-  ['Efraín','Londoño'],['Franklin','Ramírez'],['Gilberto','Villamizar'],['Hernando','Ávila'],
-  ['Iván','Guerrero'],['Julio','Holguín'],['Kléber','Fandiño'],['Lorenzo','Serrano'],
-  ['Manuel','Pinzón'],['Nomar','Gutiérrez'],['Octavio','Franco'],['Porfirio','Castaño'],
-  ['Rodolfo','Parra'],['Santiago','Peña'],['Tadeo','García'],['Uriel','Cárdenas'],
-  ['Valentín','Suárez'],['Wilson','Lozano'],['Xavier','Gil'],['Yonier','Rojas'],
-  ['Alfonso','Forero'],['Brayan','Muñoz'],['César','Vargas'],['David','Mendoza'],
-  ['Emilio','Morales'],['Fernando','Torres'],['Guillermo','López'],['Hernán','Cruz'],
+// [firstName, lastName, gender]
+const _BULK_NAMES: [string, string, 'M'|'F'][] = [
+  ['Alexánder','Rincón','M'],   ['Luisa','Silva','F'],        ['Camilo','Pedraza','M'],    ['Daniela','Quiroga','F'],
+  ['Edgardo','Fuentes','M'],    ['Fernando','Cano','M'],      ['Gerardo','Pinto','M'],     ['Harold','Castro','M'],
+  ['Ignacio','Toro','M'],       ['Jorge','Melo','M'],         ['Kevin','Buitrago','M'],    ['Leonardo','Crespo','M'],
+  ['Manuel','Acosta','M'],      ['Norberto','Zapata','M'],    ['Marcela','Mora','F'],      ['Patricio','Jiménez','M'],
+  ['Sandra','Ospino','F'],      ['Rafael','Delgado','M'],     ['Saúl','Arango','M'],       ['Paola','Palomino','F'],
+  ['Ubaldo','Escobar','M'],     ['Víctor','Trujillo','M'],    ['William','Padilla','M'],   ['Yamid','Cifuentes','M'],
+  ['Zairo','Becerra','M'],      ['Álvaro','Quintana','M'],    ['Édgar','Solano','M'],      ['Félix','Mejías','M'],
+  ['Gonzalo','Vega','M'],       ['Carolina','Sandoval','F'],  ['Ismael','Restrepo','M'],   ['Javier','Guevara','M'],
+  ['Laureano','Navarro','M'],   ['Lorenzo','Pacheco','M'],    ['Misael','Oñate','M'],      ['Néstor','Ibáñez','M'],
+  ['Óscar','Aguilar','M'],      ['Pedro','Blanco','M'],       ['Rubén','Tafur','M'],       ['Simón','Camargo','M'],
+  ['Tomás','Alvarado','M'],     ['Uriel','Benítez','M'],      ['Walter','Romero','M'],     ['Yamil','Flórez','M'],
+  ['Abel','Murillo','M'],       ['Benito','Salazar','M'],     ['Celio','Torres','M'],      ['Dario','Peñaloza','M'],
+  ['Efraín','Londoño','M'],     ['Franklin','Ramírez','M'],   ['Gilberto','Villamizar','M'],['Hernando','Ávila','M'],
+  ['Iván','Guerrero','M'],      ['Julio','Holguín','M'],      ['Kléber','Fandiño','M'],    ['Lorenzo','Serrano','M'],
+  ['Valentina','Pinzón','F'],   ['Nomar','Gutiérrez','M'],    ['Octavio','Franco','M'],    ['Porfirio','Castaño','M'],
+  ['Rodolfo','Parra','M'],      ['Santiago','Peña','M'],      ['Tatiana','García','F'],    ['Uriel','Cárdenas','M'],
+  ['Valentín','Suárez','M'],    ['Wilson','Lozano','M'],      ['Xavier','Gil','M'],        ['Yonier','Rojas','M'],
+  ['Alfonso','Forero','M'],     ['Brayan','Muñoz','M'],       ['César','Vargas','M'],      ['Diana','Mendoza','F'],
+  ['Emilio','Morales','M'],     ['Fernando','Torres','M'],    ['Adriana','López','F'],     ['Hernán','Cruz','M'],
+  ['Natalia','Ramírez','F'],    ['Claudia','Herrera','F'],    ['Stephany','Ríos','F'],     ['Karen','Vargas','F'],
+  ['Lina','Martínez','F'],      ['Juliana','Castro','F'],     ['Andrea','Peña','F'],       ['Camila','Rojas','F'],
 ];
 const _BULK_COMPANIES = [
   'TCC S.A.','Coordinadora Mercantil','Servientrega','Deprisa','Envía Colvanes',
@@ -3362,8 +3365,9 @@ function _mkBulk(
   const hasPre = stage !== 'scoring';
   return Array.from({ length: count }, (_, i) => {
     const idx = startIdx + i;
-    const nameArr = _BULK_NAMES[idx % _BULK_NAMES.length] ?? ['Candidato','Demo'];
+    const nameArr = _BULK_NAMES[idx % _BULK_NAMES.length] ?? ['Candidato','Demo','M'];
     const name = `${nameArr[0]} ${nameArr[1]}`;
+    const isFemale = nameArr[2] === 'F';
     const score = Math.max(22, Math.min(97, scoreRange[0] + Math.round(Math.abs(Math.sin(idx * 4.7 + 2.3)) * (scoreRange[1] - scoreRange[0]))));
     const color = colors[idx % colors.length]!;
     const city  = cities[idx % cities.length]!;
@@ -3386,9 +3390,11 @@ function _mkBulk(
       sector,
       years: `${yrs} Año${yrs !== 1 ? 's' : ''}`,
       location: `${city}, Colombia`,
-      bio: `Conductor profesional con licencia C2 vigente. ${yrs} años de experiencia en operación de vehículos de carga, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`,
+      bio: isFemale
+        ? `Conductora profesional con licencia C2/C3 vigente. ${yrs} años de experiencia conduciendo vehículos de carga y pasajeros, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`
+        : `Conductor profesional con licencia C2 vigente. ${yrs} años de experiencia en operación de vehículos de carga, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`,
       score,
-      photo: _p(idx % 35, 'men'),
+      photo: _p(idx % 35, isFemale ? 'women' : 'men'),
       avatarInitials: initials,
       avatarColor: color,
       hasCurrentJob: score >= 58,
@@ -3396,7 +3402,7 @@ function _mkBulk(
       currentRole:    score >= 58 ? prevRole : undefined,
       lastCompany:    score < 58 ? company : undefined,
       lastRole:       score < 58 ? prevRole : undefined,
-      superpoder: `"${yrs} años conduciendo C2 — cero incidentes"`,
+      superpoder: `"${yrs} años conduciendo ${isFemale ? 'bus zonal' : 'C2'} — cero incidentes"`,
       aspiration: salary,
       budget:     salary,
       salaryRange,
