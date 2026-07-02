@@ -349,9 +349,6 @@ export default function PruebaConocimientoContent({ data }: PruebaConocimientoCo
       {/* Category breakdown */}
       <CategoryBreakdown categories={categories} animated={animated} />
 
-      {/* Question list */}
-      <QuestionList questions={data.questions} />
-
       {/* Observations */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <h4 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', color: '#252432' }}>
