@@ -112,6 +112,9 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
   const innerBg = selected ? 'var(--color-secondary-50)' : '#ffffff';
 
   const currentStatus = statusLabel ? statusConfig[statusLabel] : null;
+  const shortBio = candidate.bio && candidate.bio.length > 95
+    ? candidate.bio.slice(0, 95) + '…'
+    : candidate.bio;
 
   return (
     <div
@@ -120,16 +123,16 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
       onMouseLeave={() => setHovered(false)}
       style={{
         display: 'flex',
-        alignItems: 'flex-start',
-        gap: '16px',
-        padding: '16px 20px',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '12px 16px',
         background: showGradient ? gradientBorderBg(innerBg) : innerBg,
         border: showGradient ? '2px solid transparent' : '1px solid var(--color-border-default)',
         borderRadius: 'var(--radius-lg)',
         cursor: onClick ? 'pointer' : 'default',
         transition: 'border 0.15s ease',
-        marginBottom: '8px',
-        overflow: 'hidden',
+        marginBottom: '6px',
+        minWidth: 0,
       }}
     >
       {/* Checkbox */}
@@ -176,7 +179,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
       )}
 
       {/* Info */}
-      <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+      <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', width: 0 }}>
         {/* Pending chip — shown for newly advanced candidates, not in finalistas */}
         {isPending && (viewStage ?? candidate.currentStage) !== 'finalistas' && (
           <div
@@ -312,16 +315,17 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
         {/* Bio */}
         <p
           style={{
-            margin: '0 0 8px',
-            fontSize: '13px',
+            margin: '0 0 6px',
+            fontSize: '12.5px',
             color: 'var(--color-text-muted)',
-            lineHeight: '1.5',
+            lineHeight: '1.4',
+            whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            maxWidth: '100%',
           }}
         >
-          {candidate.bio}
+          {shortBio}
         </p>
 
         {/* Meta row: fecha de aplicación + estado revisión */}
