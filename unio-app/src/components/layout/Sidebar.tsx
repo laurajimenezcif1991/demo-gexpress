@@ -163,11 +163,11 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       }}
     >
       {/* Logo */}
-      <div style={{ padding: '20px 20px 16px' }}>
+      <div style={{ padding: '20px 20px 16px', overflow: 'hidden' }}>
         <img
           src={companyLogoUrl || assetUrl('/logo-gcexpress.png')}
           alt={companyName || 'Grupo Express'}
-          style={{ maxHeight: '110px', maxWidth: '300px', width: 'auto', height: 'auto', display: 'block', objectFit: 'contain' }}
+          style={{ maxHeight: '80px', maxWidth: '100%', width: 'auto', height: 'auto', display: 'block', objectFit: 'contain' }}
         />
       </div>
 
