@@ -72,7 +72,8 @@ function now() {
 function uid() { return Math.random().toString(36).slice(2); }
 
 const VACANCY = {
-  title: 'Conductor C2 Distribución Urbana',
+  title: 'Conductor/a Bus Zonal – Bogotá',
+  description: 'Se requiere CONDUCTORAS Y CONDUCTORES de bus zonal para la ciudad de Bogotá. Deben contar con Licencia C2 o C3, mínimo 6 meses de experiencia conduciendo vehículos de mínimo 1.5 toneladas, 19 pasajeros o vehículo particular.',
   company: 'Grupo Express',
   salary: '$2.500.000 – $2.700.000',
   location: 'Kennedy – Bogotá',
@@ -310,7 +311,8 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
     ps_vacante: {
       botMessages: ['Ahora te comparto los detalles de la vacante 📋'],
       card: {
-        title: `🚛 ${VACANCY.title}`,
+        title: `🚌 ${VACANCY.title}`,
+        subtitle: VACANCY.description,
         body: [
           `💰 Salario: ${VACANCY.salary}`,
           `📍 Ubicación: ${VACANCY.location}`,

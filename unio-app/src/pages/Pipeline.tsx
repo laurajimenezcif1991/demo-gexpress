@@ -182,9 +182,6 @@ function FunnelRow({
         }}
       >
         {stage.label}
-        {stage.isAI && (
-          <Badge variant="ai" small>✦ IA</Badge>
-        )}
         {isNotStarted && <Lock size={11} color="var(--color-text-muted)" />}
       </div>
 

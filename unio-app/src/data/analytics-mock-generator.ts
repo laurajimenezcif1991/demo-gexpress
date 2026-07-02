@@ -267,7 +267,7 @@ export function generateAnalyticsData(
   const VACANTES_AGING = [
     { vacante: 'Conductor C2 Transporte Público',  area: 'Operaciones' },
     { vacante: 'Conductor C2 Carga Refrigerada',   area: 'Logística' },
-    { vacante: 'Conductor C2 Distribución Urbana', area: 'Logística' },
+    { vacante: 'Conductor/a Bus Zonal – Bogotá', area: 'Logística' },
     { vacante: 'Conductor C2 Líquidos a Granel',   area: 'Operaciones' },
     { vacante: 'Conductor C2 Carga Seca',          area: 'Logística' },
     { vacante: 'Conductor C2 Materiales Peligrosos', area: 'Operaciones' },
@@ -312,7 +312,7 @@ export function generateAnalyticsData(
   const VACANTE_POOL = [
     { vacante: 'Conductor C2 Transporte Público',    area: 'Operaciones',       tipo: 'Operativa' },
     { vacante: 'Conductor C2 Carga Refrigerada',     area: 'Logística',         tipo: 'Operativa' },
-    { vacante: 'Conductor C2 Distribución Urbana',   area: 'Logística',         tipo: 'Operativa' },
+    { vacante: 'Conductor/a Bus Zonal – Bogotá',   area: 'Logística',         tipo: 'Operativa' },
     { vacante: 'Conductor C2 Líquidos a Granel',     area: 'Operaciones',       tipo: 'Operativa' },
     { vacante: 'Conductor C2 Carga Seca',            area: 'Logística',         tipo: 'Operativa' },
     { vacante: 'Conductor C2 Materiales Peligrosos', area: 'Operaciones',       tipo: 'Operativa' },

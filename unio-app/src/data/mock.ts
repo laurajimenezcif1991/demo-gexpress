@@ -2586,7 +2586,7 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
     score: Math.round(score * 0.97),
     status: hi ? 'continua' : md ? 'continua' : 'pendiente',
     resumen: hi
-      ? `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`
+      ? `${name} confirmó licencia C2 vigente y amplia experiencia conduciendo buses y vehículos de carga en Bogotá. Demuestra conocimiento de rutas zonales y cumplimiento de normas de tránsito.`
       : md
       ? `${name} tiene experiencia básica en distribución. Confirmó disponibilidad y licencia vigente, pero con menor detalle en manejo de sistemas de guías y rutas de alto volumen.`
       : `${name} presentó experiencia limitada en distribución formal. La disponibilidad para cargue y descargue no fue confirmada con claridad.`,
@@ -2617,9 +2617,9 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
     ],
   } : undefined;
   return {
-    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
+    id, name, role: 'Conductor/a Bus Zonal – Bogotá', sector: 'Transporte Público / Bus Zonal',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor con licencia C2 y experiencia en distribución urbana y reparto de mercancía. Manejo de rutas de última milla, sistemas de guías y atención al cliente final.',
+    bio: 'Conductor/a de bus zonal con licencia C2 o C3 y experiencia conduciendo vehículos de más de 1.5 toneladas y/o 19 pasajeros en Bogotá.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: score >= 68,
     ...(score >= 68 ? { currentCompany: job.c, currentRole: job.r } : { lastCompany: job.c, lastRole: job.r, lastDate: job.d }),
@@ -2842,9 +2842,9 @@ function _mkDistribEval(id: string, name: string, score: number, photo: string, 
   const runt    = _distribRunt[0];
   const trips   = Math.round(200 + (score - 75) * 12);
   return {
-    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
+    id, name, role: 'Conductor/a Bus Zonal – Bogotá', sector: 'Transporte Público / Bus Zonal',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor con licencia C2 y amplia experiencia en distribución urbana y reparto de mercancía. Experto en rutas de última milla, manejo de guías digitales y atención al cliente final.',
+    bio: 'Conductor/a de bus zonal con licencia C2 o C3 y amplia experiencia conduciendo vehículos de pasajeros y carga en Bogotá. Historial de conducción limpio y orientación al servicio.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
     superpoder: '"Eficiencia en rutas urbanas con cero pérdidas de mercancía"',
@@ -2872,7 +2872,7 @@ function _mkDistribEval(id: string, name: string, score: number, photo: string, 
     },
     prescreeningAI: {
       score: Math.round(score * 0.97), status: 'continua',
-      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`,
+      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia conduciendo buses y vehículos de carga en Bogotá. Demuestra conocimiento de rutas zonales y cumplimiento de normas de tránsito.`,
       noNegociables: [
         { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` } as EvalRow,
         { label: 'Sin comparendos activos ni infracciones graves', score: score, evidencia: `Record limpio confirmado. Sin multas pendientes en RUNT.` } as EvalRow,
@@ -3024,7 +3024,7 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
 export const MOCK_VACANTES: Vacante[] = [
   { id: 'mock-transp-pub', jobId: 'mock-transp-pub', status: 'activa',   title: 'Conductor C2 Transporte Público', area: ['Operaciones', 'Transporte Público'], priority: 'alta',  progressLabel: 'Validación RUNT', progressPct: 25, total: 20, activos: 20, fecha: '28 Abr 2026' },
   { id: 'mock-vigia',      jobId: 'mock-vigia',      status: 'activa',   title: 'Conductor C2 Carga Refrigerada',  area: ['Operaciones', 'Logística'],           priority: 'alta',  progressLabel: 'Validación RUNT', progressPct: 10, total: 20, activos: 20, fecha: '03 May 2026' },
-  { id: 'mock-distrib',    jobId: 'mock-distrib',    status: 'activa',   title: 'Conductor C2 Distribución Urbana', area: ['Logística', 'Última Milla'],          priority: 'media', progressLabel: 'Pre-entrevista',  progressPct: 5,  total: 20, activos: 20, fecha: '15 May 2026' },
+  { id: 'mock-distrib',    jobId: 'mock-distrib',    status: 'activa',   title: 'Conductor/a Bus Zonal – Bogotá', area: ['Logística', 'Transporte Público'],    priority: 'media', progressLabel: 'Pre-entrevista',  progressPct: 5,  total: 20, activos: 20, fecha: '15 May 2026' },
 ];
 
 export const MOCK_DESCRIPTIONS: Record<string, string> = {
@@ -3033,7 +3033,7 @@ export const MOCK_DESCRIPTIONS: Record<string, string> = {
   'mock-vigia':
     'Conductor de carga seca refrigerada y congelada para Grupo Express S.A.S. — empresa con 47 años de experiencia en el sector. Responsable del transporte seguro y puntual de mercancía a nivel nacional, conservando la cadena de frío, cumpliendo protocolos HSEQ, BASC y SARLAFT, y gestionando documentación de despacho y cumplidos en cada viaje. Jornada domingo a domingo, turnos de 12 horas. Sede base: Kennedy, Bogotá.',
   'mock-distrib':
-    'Conductor de distribución urbana y última milla con licencia C2 para operador logístico. Responsable de la entrega de mercancía a clientes comerciales en Bogotá y área metropolitana, cargue y descargue de productos, uso de sistema de guías digital y cumplimiento de ventanas de entrega. Ruta diaria fija, horario desde las 6:00 AM.',
+    'Se requiere CONDUCTORAS Y CONDUCTORES de bus zonal para la ciudad de Bogotá. Deben contar con Licencia C2 o C3, mínimo 6 meses de experiencia conduciendo vehículos de mínimo 1.5 toneladas, 19 pasajeros o vehículo particular.',
 };
 
 export function getMockPipelineStages(jobId: string): PipelineStage[] {
@@ -3473,13 +3473,13 @@ function _mkBulk(
 // StartIdx blocks (non-overlapping): d=0..270, tp=500..772, vc=1000..1272
 
 // mock-distrib (detailed: pre=15, pm=15, eval=3, entrev=5)
-const distribBulkPre   = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prescreening',        85,   0, [28,94]);
-const distribBulkPM    = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_manejo',        45,  85, [42,92]);
-const distribBulkEntrev= _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','entrevistas',          45, 130, [56,94]);
-const distribBulkEval  = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','evaluaciones',         32, 175, [58,93]);
-const distribBulkConoc = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_conocimiento',  28, 207, [62,93]);
-const distribBulkEstud = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','estudios',             20, 235, [65,94]);
-const distribBulkFinal = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','finalistas',           15, 255, [72,96]);
+const distribBulkPre   = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','prescreening',        85,   0, [28,94]);
+const distribBulkPM    = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','prueba_manejo',        45,  85, [42,92]);
+const distribBulkEntrev= _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','entrevistas',          45, 130, [56,94]);
+const distribBulkEval  = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','evaluaciones',         32, 175, [58,93]);
+const distribBulkConoc = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','prueba_conocimiento',  28, 207, [62,93]);
+const distribBulkEstud = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','estudios',             20, 235, [65,94]);
+const distribBulkFinal = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','finalistas',           15, 255, [72,96]);
 
 // mock-transp-pub (detailed: pre=15, pm=13, eval=3, entrev=5)
 const tpBulkPre    = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','prescreening',       85, 500, [28,94]);
