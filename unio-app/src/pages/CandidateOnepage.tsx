@@ -280,13 +280,13 @@ export default function CandidateOnepage() {
       name: 'Informe_Medico_Ocupacional_ConductorC2.pdf',
       size: 0,
       uploadedAt: new Date('2026-06-18T10:30:00'),
-      url: '/demo-transportes/Informe_Medico_Ocupacional_ConductorC2.pdf',
+      url: '/demo-gexpress/Informe_Medico_Ocupacional_ConductorC2.pdf',
     },
     estudioSeguridad: {
       name: 'Estudio_Seguridad_Personal_ConductorC2.pdf',
       size: 0,
       uploadedAt: new Date('2026-06-19T14:15:00'),
-      url: '/demo-transportes/Estudio_Seguridad_Personal_ConductorC2.pdf',
+      url: '/demo-gexpress/Estudio_Seguridad_Personal_ConductorC2.pdf',
     },
     visitaDomiciliaria: null,
   } : { examenMedico: null, estudioSeguridad: null, visitaDomiciliaria: null };
