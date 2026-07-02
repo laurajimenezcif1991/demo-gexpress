@@ -115,7 +115,7 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
 
     qm_experiencia: {
       botMessages: [
-        '¡Excelente! ✅ ¿Tienes mínimo *6 meses de experiencia certificada* en conducción de carga?',
+        '¡Excelente! ✅ ¿Tienes mínimo *6 meses de experiencia certificada* en conducción de transporte público?',
       ],
       replies: [
         { id: 'si', label: '✅ Sí, tengo 6+ meses', value: 'si' },
