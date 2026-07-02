@@ -1441,19 +1441,18 @@ const _LOCAL_WOMEN: string[] = [`${_base}driver-f1.png`, `${_base}driver-f2.png`
 const _RU_MEN   = [1,2,3,6,7,12,18,23,25,27,28,34,35,37,39,40,41,42,43,48,50,51,52,54,55,59,60,61,64,65,69,71,73,74,79,81,82,84,85,86,87,89,93,94,96];
 const _RU_WOMEN = [6,7,8,20,24,27,37,43,44,46,47,51,53,54,55,57,58,62,64,65,66,69,70,78,79,81,82,84,86,87,92];
 
-// Interleave local photos and randomuser.me so local ones appear often but with variety
-const _POOL_MEN: string[] = [
-  ..._LOCAL_MEN, ..._LOCAL_MEN, ..._LOCAL_MEN,
-  ..._RU_MEN.slice(0, 10).map(i => `https://randomuser.me/api/portraits/men/${i}.jpg`),
-  ..._LOCAL_MEN,
-  ..._RU_MEN.slice(10, 20).map(i => `https://randomuser.me/api/portraits/men/${i}.jpg`),
-];
-const _POOL_WOMEN: string[] = [
-  ..._LOCAL_WOMEN, ..._LOCAL_WOMEN, ..._LOCAL_WOMEN,
-  ..._RU_WOMEN.slice(0, 8).map(i => `https://randomuser.me/api/portraits/women/${i}.jpg`),
-  ..._LOCAL_WOMEN,
-  ..._RU_WOMEN.slice(8, 16).map(i => `https://randomuser.me/api/portraits/women/${i}.jpg`),
-];
+// Interleave: local photo every 3 slots so same face never appears back-to-back
+const _ru = (g: 'men'|'women', i: number) => `https://randomuser.me/api/portraits/${g}/${i}.jpg`;
+const _POOL_MEN: string[] = _RU_MEN.reduce<string[]>((acc, n, i) => {
+  acc.push(_ru('men', n));
+  if (i % 3 === 2) acc.push(_LOCAL_MEN[(Math.floor(i / 3)) % _LOCAL_MEN.length]!);
+  return acc;
+}, []);
+const _POOL_WOMEN: string[] = _RU_WOMEN.reduce<string[]>((acc, n, i) => {
+  acc.push(_ru('women', n));
+  if (i % 3 === 2) acc.push(_LOCAL_WOMEN[(Math.floor(i / 3)) % _LOCAL_WOMEN.length]!);
+  return acc;
+}, []);
 
 const _p = (n: number, g: 'women' | 'men') => {
   const pool = g === 'women' ? _POOL_WOMEN : _POOL_MEN;
