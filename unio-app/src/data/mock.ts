@@ -263,7 +263,7 @@ export const candidates: Candidate[] = [
     location: 'Buenos Aires, Argentina',
     bio: 'Desarrolladora de herramientas educativas digitales, centradas en la gamificación y la interactividad.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/women/44.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/68.jpg',
     avatarInitials: 'CF',
     avatarColor: '#8750F6',
     hasCurrentJob: false,
@@ -329,7 +329,7 @@ export const candidates: Candidate[] = [
     location: 'Lima, Perú',
     bio: 'Investigador en el uso de IA para diagnósticos médicos, con un enfoque en la precisión y la accesibilidad.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/men/32.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/62.jpg',
     avatarInitials: 'GC',
     avatarColor: '#27BE69',
     hasCurrentJob: true,
@@ -490,7 +490,7 @@ export const candidates: Candidate[] = [
     location: 'Lima, Perú',
     bio: 'Investigadora en el uso de IA para diagnósticos médicos, con un enfoque en la precisión y la accesibilidad.',
     score: 92,
-    photo: 'https://randomuser.me/api/portraits/women/25.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/54.jpg',
     avatarInitials: 'IF',
     avatarColor: '#295BFF',
     hasCurrentJob: true,
@@ -553,7 +553,7 @@ export const candidates: Candidate[] = [
     location: 'São Paulo, Brasil',
     bio: 'Desarrolladora de experiencias de realidad aumentada para eventos y entretenimiento, creando interacciones memorables.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/women/48.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/74.jpg',
     avatarInitials: 'MT',
     avatarColor: '#FFBF0F',
     hasCurrentJob: true,
@@ -616,7 +616,7 @@ export const candidates: Candidate[] = [
     location: 'Quito, Ecuador',
     bio: 'Experto en soluciones tecnológicas para la industria automotriz, centrado en la movilidad eléctrica y conectividad.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/men/18.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/71.jpg',
     avatarInitials: 'RT',
     avatarColor: '#8750F6',
     hasCurrentJob: true,
@@ -678,7 +678,7 @@ export const candidates: Candidate[] = [
     location: 'Medellín, Colombia',
     bio: 'Especialista en la optimización de procesos logísticos y en la mejora de la experiencia de compra en línea.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/men/41.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/83.jpg',
     avatarInitials: 'JL',
     avatarColor: '#27BE69',
     hasCurrentJob: true,
@@ -741,7 +741,7 @@ export const candidates: Candidate[] = [
     location: 'Buenos Aires, Argentina',
     bio: 'Estratega de contenido digital: ayudando a marcas a construir su presencia en redes sociales y aumentar el engagement.',
     score: 74,
-    photo: 'https://randomuser.me/api/portraits/women/56.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/80.jpg',
     avatarInitials: 'AG',
     avatarColor: '#D32F2F',
     hasCurrentJob: true,
@@ -783,7 +783,7 @@ export const candidates: Candidate[] = [
     location: 'Santiago, Chile',
     bio: 'Consultora en proyectos de energías limpias, enfocada en promover la sostenibilidad y la eficiencia energética.',
     score: 74,
-    photo: 'https://randomuser.me/api/portraits/women/62.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/89.jpg',
     avatarInitials: 'SM',
     avatarColor: '#FFBF0F',
     hasCurrentJob: false,
@@ -825,7 +825,7 @@ export const candidates: Candidate[] = [
     location: 'Montevideo, Uruguay',
     bio: 'Investigador en biotecnología, enfocado en el desarrollo de nuevos terapias y tratamientos innovadores.',
     score: 74,
-    photo: 'https://randomuser.me/api/portraits/men/55.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/87.jpg',
     avatarInitials: 'DP',
     avatarColor: '#295BFF',
     hasCurrentJob: true,
@@ -1434,7 +1434,14 @@ export const shortlistCandidates = [
 ];
 
 // ─── DEMO VACANTES — SISTEMA DE 5 PROCESOS ────────────────────────────────────
-const _p = (n: number, g: 'women' | 'men') => `https://randomuser.me/api/portraits/${g}/${n}.jpg`;
+// Curated portrait indices that look more Latin American on randomuser.me
+const _LATAM_MEN   = [51,54,57,60,62,65,67,71,75,78,83,87,91,96,50,53,56,59,63,66,70,74,77,82,86,90,95,52,55,58,61,64,68,72,76,80,85,89,93,97];
+const _LATAM_WOMEN = [42,48,52,54,57,61,65,68,71,74,78,80,84,89,43,49,53,55,58,62,66,69,72,75,79,81,85,90,44,50,56,59,63,67,70,73,76,82,86,92];
+const _p = (n: number, g: 'women' | 'men') => {
+  const pool = g === 'women' ? _LATAM_WOMEN : _LATAM_MEN;
+  const idx  = pool[n % pool.length] ?? n;
+  return `https://randomuser.me/api/portraits/${g}/${idx}.jpg`;
+};
 
 // ─── Job history tables per vacancy (c=company, r=role, d=end date) ──────────
 const _recepJobs = [
