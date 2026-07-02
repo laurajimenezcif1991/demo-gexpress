@@ -318,8 +318,9 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             display: '-webkit-box',
-            WebkitLineClamp: 2,
+            WebkitLineClamp: 1,
             WebkitBoxOrient: 'vertical',
+            whiteSpace: 'nowrap',
           }}
         >
           {candidate.bio}
