@@ -33,7 +33,7 @@ function CategoryBreakdown({ categories, animated }: { categories: CategoryRow[]
       <h4 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', color: '#252432' }}>
         Desempeño por categoría
       </h4>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px 24px' }}>
         {categories.map((cat, i) => {
           const pct = Math.round((cat.correct / cat.total) * 100);
           const color = pct >= 80 ? '#1a8a55' : pct >= 60 ? '#b45309' : '#dc2626';
