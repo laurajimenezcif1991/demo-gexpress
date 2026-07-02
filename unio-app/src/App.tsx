@@ -77,8 +77,8 @@ export default function App() {
             <Route path="/pipeline/:jobId/entrevistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/evaluaciones" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/prueba_conocimiento" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
-            <Route path="/pipeline/:jobId/finalistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/pipeline/:jobId/estudios" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
+            <Route path="/pipeline/:jobId/finalistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
             <Route path="/finalistas" element={<ProtectedRoute><CandidateList /></ProtectedRoute>} />
 
             {/* Deep-link routes for candidate & finalist detail (keep for back-nav) */}

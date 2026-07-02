@@ -150,6 +150,7 @@ export default function CandidateList() {
     const path = location.pathname;
     if (path.includes('/prescreening')) return 'prescreening';
     if (path.includes('/prueba_manejo')) return 'prueba_manejo';
+    if (path.includes('/prueba_conocimiento')) return 'prueba_conocimiento';
     if (path.includes('/evaluaciones')) return 'evaluaciones';
     if (path.includes('/entrevistas')) return 'entrevistas';
     if (path.includes('/estudios')) return 'estudios';
