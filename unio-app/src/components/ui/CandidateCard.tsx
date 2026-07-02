@@ -162,8 +162,8 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           src={candidate.photo}
           alt={candidate.name}
           style={{
-            width: 48,
-            height: 48,
+            width: 60,
+            height: 60,
             borderRadius: '50%',
             objectFit: 'cover',
             flexShrink: 0,
@@ -171,7 +171,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           }}
         />
       ) : (
-        <Avatar initials={candidate.avatarInitials} color={candidate.avatarColor} size={48} />
+        <Avatar initials={candidate.avatarInitials} color={candidate.avatarColor} size={60} />
       )}
 
       {/* Info */}
@@ -317,9 +317,6 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
             lineHeight: '1.5',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            WebkitLineClamp: 1,
-            WebkitBoxOrient: 'vertical',
             whiteSpace: 'nowrap',
           }}
         >
