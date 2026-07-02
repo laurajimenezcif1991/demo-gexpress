@@ -9,14 +9,6 @@
 
 ---
 
-## [pending] — 01 Jul 2026
-
-### Renombrar "Prueba Psicotécnica" → "Prueba Psicométrica"
-- Actualizado en Sidebar, Pipeline (label + stageBadge), Onepager (título, texto pendiente, botón avance) y CandidateList
-- Actualizado label y badge en mock.ts
-
----
-
 ## [ca39470] — 29 Jun 2026
 
 ### Listado de candidatos — Filtros reestructurados (dropdown Estado + Resultado)

@@ -56,7 +56,7 @@ function mapPhaseStatus(label?: string): 'completed' | 'in_progress' | 'not_star
   return 'not_started';
 }
 
-const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas', 'estudios', 'finalistas'];
+const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'entrevistas', 'evaluaciones', 'estudios', 'finalistas'];
 
 // Normalize API phase type keys to internal stage IDs
 function normalizePhaseType(raw: string): string {

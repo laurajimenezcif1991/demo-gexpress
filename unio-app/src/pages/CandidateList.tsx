@@ -130,7 +130,7 @@ export default function CandidateList() {
   const navigate = useNavigate();
   const { setStatuses, getStatus, seedStatuses } = useCandidateStatus();
 
-  const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas', 'estudios', 'finalistas'] as const;
+  const STAGE_ORDER = ['scoring', 'prescreening', 'prueba_manejo', 'entrevistas', 'evaluaciones', 'estudios', 'finalistas'] as const;
 
   const priorStages = (stage: string) => {
     const idx = STAGE_ORDER.indexOf(stage as typeof STAGE_ORDER[number]);
@@ -812,7 +812,7 @@ export default function CandidateList() {
               onClick={() => handleBulkAction('pasar')}
             >
               <CheckCircle2 size={18} />
-              {currentStage === 'prueba_manejo' ? 'Pasar a Prueba Psicométrica'
+              {currentStage === 'prueba_manejo' ? 'Pasar a Entrevista'
                 : currentStage === 'evaluaciones' ? 'Pasar a Entrevista'
                 : 'Pasar etapa'}
             </Button>

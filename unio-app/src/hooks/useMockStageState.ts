@@ -11,8 +11,8 @@ const STAGE_ORDER: MockStageKey[] = [
   'scoring',
   'prescreening',
   'prueba_manejo',
-  'evaluaciones',
   'entrevistas',
+  'evaluaciones',
   'estudios',
   'finalistas',
 ];

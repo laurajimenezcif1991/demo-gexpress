@@ -71,8 +71,8 @@ const ONEPAGE_PIPELINE_STAGES: PipelineStageKey[] = [
   'scoring',
   'prescreening',
   'prueba_manejo',
-  'evaluaciones',
   'entrevistas',
+  'evaluaciones',
   'estudios',
   'finalistas',
 ];
@@ -212,7 +212,7 @@ export default function CandidateOnepage() {
   const candidate = apiCandidate ?? { id: candidateId, name: '', role: '', sector: '', years: '', location: '', bio: '', score: 0, avatarInitials: candidateId.slice(0, 2).toUpperCase(), avatarColor: '#8750F6', hasCurrentJob: false, superpoder: '', aspiration: '', budget: '', salaryRange: 'en_rango' as const, currentStage: stage, scoringAI: { score: 0, status: 'pendiente' as const, resumen: '', noNegociables: [], logros: [], senales: [] } };
 
   // Cumulative unlock order: each stage unlocks all accordions up to and including it
-  const UNLOCK_ORDER = ['prescreening','prueba_manejo','evaluaciones','entrevistas','estudios','finalistas'] as const;
+  const UNLOCK_ORDER = ['prescreening','prueba_manejo','entrevistas','evaluaciones','estudios','finalistas'] as const;
   const effectiveStage = (candidate.currentStage && UNLOCK_ORDER.includes(candidate.currentStage as typeof UNLOCK_ORDER[number]))
     ? candidate.currentStage
     : stage;
@@ -760,7 +760,7 @@ export default function CandidateOnepage() {
               statusOk={pruebaManejoScore !== undefined}
               isOpen={pruebaManejoOpen}
               onToggle={() => setPruebaManejoOpen(o => !o)}
-              isLocked={pruebaManejoScore === undefined && stage !== 'prueba_manejo' && stage !== 'evaluaciones' && stage !== 'entrevistas' && stage !== 'estudios' && stage !== 'finalistas'}
+              isLocked={pruebaManejoScore === undefined && stage !== 'prueba_manejo' && stage !== 'entrevistas' && stage !== 'evaluaciones' && stage !== 'estudios' && stage !== 'finalistas'}
             >
               {pruebaManejoScore !== undefined || stage === 'prueba_manejo' ? (
                 pruebaManejoScore !== undefined ? (
@@ -782,10 +782,30 @@ export default function CandidateOnepage() {
             </AccordionSection>
           </div>
 
-          {/* 3. Prueba Psicométrica (PRIMA) */}
-          <div ref={evaluacionesSectionRef} style={{ scrollMarginTop: 24 }}>
+          {/* 3. Entrevista */}
+          <div ref={entrevistasSectionRef} style={{ scrollMarginTop: 24 }}>
             <AccordionSection
               number={3}
+              title="Entrevista"
+              statusText={
+                !stageReached('entrevistas') ? 'Sin iniciar'
+                : voiceInterviewDone ? 'Completado'
+                : effectiveStage === 'entrevistas' ? 'En proceso'
+                : 'Sin iniciar'
+              }
+              statusOk={voiceInterviewDone}
+              isOpen={entrevistasOpen}
+              onToggle={() => setEntrevistasOpen(!entrevistasOpen)}
+              isLocked={!stageReached('entrevistas')}
+            >
+              <VoiceInterviewSection onDoneChange={setVoiceInterviewDone} />
+            </AccordionSection>
+          </div>
+
+          {/* 4. Prueba Psicométrica (PRIMA) */}
+          <div ref={evaluacionesSectionRef} style={{ scrollMarginTop: 24 }}>
+            <AccordionSection
+              number={4}
               title="Prueba Psicométrica"
               score={candidate.psychTest?.score}
               statusText={
@@ -806,26 +826,6 @@ export default function CandidateOnepage() {
                   Pendiente: la prueba psicométrica (PRIMA) aún no ha sido completada por el candidato.
                 </div>
               )}
-            </AccordionSection>
-          </div>
-
-          {/* 4. Entrevista */}
-          <div ref={entrevistasSectionRef} style={{ scrollMarginTop: 24 }}>
-            <AccordionSection
-              number={4}
-              title="Entrevista"
-              statusText={
-                !stageReached('entrevistas') ? 'Sin iniciar'
-                : voiceInterviewDone ? 'Completado'
-                : effectiveStage === 'entrevistas' ? 'En proceso'
-                : 'Sin iniciar'
-              }
-              statusOk={voiceInterviewDone}
-              isOpen={entrevistasOpen}
-              onToggle={() => setEntrevistasOpen(!entrevistasOpen)}
-              isLocked={!stageReached('entrevistas')}
-            >
-              <VoiceInterviewSection onDoneChange={setVoiceInterviewDone} />
             </AccordionSection>
           </div>
 
@@ -949,9 +949,9 @@ export default function CandidateOnepage() {
                 }}
               >
                 <CheckCircle2 size={16} />
-                {stage === 'prueba_manejo' ? 'Pasar a Prueba Psicométrica'
-                  : stage === 'evaluaciones' ? 'Pasar a Entrevista'
-                  : stage === 'entrevistas' ? 'Pasar a Validaciones'
+                {stage === 'prueba_manejo' ? 'Pasar a Entrevista'
+                  : stage === 'entrevistas' ? 'Pasar a Prueba Psicométrica'
+                  : stage === 'evaluaciones' ? 'Pasar a Validaciones'
                   : 'Pasar etapa'}
               </Button>
           )}

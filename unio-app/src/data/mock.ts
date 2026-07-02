@@ -3024,21 +3024,21 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
     ({ id, label, stageBadge: badge, status, candidateCount: count, isAI, route: `/pipeline/${jobId}/${id}` });
 
   // ── Pipeline estándar Transporte & Logística ──
-  // counts: scoring, pre, manejo, psicotech, ent, estudios, fin
-  const transpPipeline = (scoring: number, pre: number, manejo: number, psicotech: number, ent: number, est = 0, fin = 0) => [
+  // counts: scoring, pre, manejo, ent, psicotech, estudios, fin
+  const transpPipeline = (scoring: number, pre: number, manejo: number, ent: number, psicotech: number, est = 0, fin = 0) => [
     s('scoring',       'Verificación (RUNT/RNDC)', 'Verificación',     scoring > 0   ? (pre > 0       ? 'completed'    : 'in_progress') : 'not_started', scoring,   true),
     s('prescreening',  'Pre-entrevista IA',         'Pre-entrevista',   pre > 0       ? (manejo > 0    ? 'completed'    : 'in_progress') : 'not_started', pre,       true),
-    s('prueba_manejo', 'Prueba de manejo',           'Prueba manejo',    manejo > 0    ? (psicotech > 0 ? 'completed'    : 'in_progress') : 'not_started', manejo,    false),
-    s('evaluaciones',  'Prueba Psicométrica',        'Psicométrica',     psicotech > 0 ? (ent > 0      ? 'completed'    : 'in_progress') : 'not_started', psicotech, false),
-    s('entrevistas',   'Entrevista',                 'Entrevista',       ent > 0       ? (est > 0      ? 'completed'    : 'in_progress') : 'not_started', ent,       false),
+    s('prueba_manejo', 'Prueba de manejo',           'Prueba manejo',    manejo > 0    ? (ent > 0       ? 'completed'    : 'in_progress') : 'not_started', manejo,    false),
+    s('entrevistas',   'Entrevista',                 'Entrevista',       ent > 0       ? (psicotech > 0 ? 'completed'    : 'in_progress') : 'not_started', ent,       false),
+    s('evaluaciones',  'Prueba Psicométrica',        'Psicométrica',     psicotech > 0 ? (est > 0       ? 'completed'    : 'in_progress') : 'not_started', psicotech, false),
     s('estudios',      'Validaciones',               'Validaciones',     est > 0       ? (fin > 0      ? 'in_progress'  : 'in_progress') : 'not_started', est,       false),
     s('finalistas',    'Aprobados',                  'Aprobados',        fin > 0       ? 'in_progress'                                  : 'not_started', fin,       false),
   ];
 
   switch (jobId) {
-    case 'mock-transp-pub': return transpPipeline(0, 100, 60, 40, 30, 20, 15);
-    case 'mock-vigia':      return transpPipeline(0, 100, 60, 40, 30, 20, 15);
-    case 'mock-distrib':    return transpPipeline(0, 100, 60, 40, 30, 20, 15);
+    case 'mock-transp-pub': return transpPipeline(0, 100, 60, 30, 40, 20, 15);
+    case 'mock-vigia':      return transpPipeline(0, 100, 60, 30, 40, 20, 15);
+    case 'mock-distrib':    return transpPipeline(0, 100, 60, 30, 40, 20, 15);
     case 'mock-recep':
       return [
         s('scoring',      'Scoring IA',        'Scoring',       'in_progress', 15, true),
@@ -3302,13 +3302,13 @@ function _mkBulk(
       salaryRange,
       currentStage: stage,
       hasCV: idx % 4 !== 0, // ~25% perfil por WhatsApp
-      // Prueba Psicotécnica: 2 PRIMA permutations, applied for evaluaciones+ stages
-      psychTest: (['evaluaciones','entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
+      // Prueba Psicométrica: 2 PRIMA permutations, applied for evaluaciones+ stages
+      psychTest: (['evaluaciones','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
         ? (idx % 2 === 0 ? _primaTranspA(name, score) : _primaTranspB(name, score))
         : undefined,
       // Interview verdict: score-based for entrevistas/estudios/finalistas
       // ≥78 = Apto (top ~8), 62–77 = Apto con reservas (~7), <62 = No apto (rest)
-      veredictoEntrevista: (['entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
+      veredictoEntrevista: (['entrevistas','evaluaciones','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
         ? (score >= 78 ? 'apto' : score >= 62 ? 'apto_reservas' : 'no_apto')
         : undefined,
       runtVerification: {

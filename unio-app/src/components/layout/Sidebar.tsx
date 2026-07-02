@@ -35,7 +35,7 @@ export default function Sidebar({ activeItem }: SidebarProps) {
     : true;
   const finalistasLocked = finalistaLocked || (isMockJob && !mockHasFinalists);
 
-  const PIPELINE_STAGES = ['scoring', 'prescreening', 'prueba_manejo', 'evaluaciones', 'entrevistas'] as const;
+  const PIPELINE_STAGES = ['scoring', 'prescreening', 'prueba_manejo', 'entrevistas', 'evaluaciones'] as const;
   const progressIdx = PIPELINE_STAGES.indexOf(progressStage as typeof PIPELINE_STAGES[number]);
 
   const getActiveId = (): string => {
@@ -102,17 +102,17 @@ export default function Sidebar({ activeItem }: SidebarProps) {
       locked: false,
     },
     {
-      id: 'evaluaciones',
-      label: 'Prueba Psicométrica',
-      Icon: BrainCircuit,
-      path: `${stageBase}/evaluaciones`,
-      locked: false,
-    },
-    {
       id: 'entrevistas',
       label: 'Entrevista',
       Icon: MessageSquare,
       path: `${stageBase}/entrevistas`,
+      locked: false,
+    },
+    {
+      id: 'evaluaciones',
+      label: 'Prueba Psicométrica',
+      Icon: BrainCircuit,
+      path: `${stageBase}/evaluaciones`,
       locked: false,
     },
     {
