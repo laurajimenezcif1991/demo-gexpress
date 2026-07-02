@@ -162,8 +162,8 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           src={candidate.photo}
           alt={candidate.name}
           style={{
-            width: 60,
-            height: 60,
+            width: 80,
+            height: 80,
             borderRadius: '50%',
             objectFit: 'cover',
             flexShrink: 0,
@@ -171,7 +171,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           }}
         />
       ) : (
-        <Avatar initials={candidate.avatarInitials} color={candidate.avatarColor} size={60} />
+        <Avatar initials={candidate.avatarInitials} color={candidate.avatarColor} size={80} />
       )}
 
       {/* Info */}
