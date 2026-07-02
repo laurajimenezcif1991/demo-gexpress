@@ -680,7 +680,7 @@ export default function CandidateOnepage() {
               <div ref={prescreeningSectionRef} style={{ scrollMarginTop: 24 }}>
                 <AccordionSection
                   number={1}
-                  title="Pre-entrevista IA"
+                  title="Prescreening"
                   score={prescreeningScore}
                   statusText={
                     hasPrescreeningData
