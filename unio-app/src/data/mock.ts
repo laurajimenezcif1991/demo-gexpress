@@ -1434,9 +1434,10 @@ export const shortlistCandidates = [
 ];
 
 // ─── DEMO VACANTES — SISTEMA DE 5 PROCESOS ────────────────────────────────────
-// Curated portrait indices (range 50–88) — Latin American looking on randomuser.me
-const _LATAM_MEN   = [50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88];
-const _LATAM_WOMEN = [42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80];
+// Curated portrait indices — Latin American looking on randomuser.me
+// Men 58–88: darker/mestizo range; Women 60–82: avoids the European-looking 42–59 range
+const _LATAM_MEN   = [58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88];
+const _LATAM_WOMEN = [60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82];
 const _p = (n: number, g: 'women' | 'men') => {
   const pool = g === 'women' ? _LATAM_WOMEN : _LATAM_MEN;
   const idx  = pool[n % pool.length] ?? n;
