@@ -1441,16 +1441,16 @@ const _LOCAL_WOMEN: string[] = [`${_base}driver-f1.png`, `${_base}driver-f2.png`
 const _RU_MEN   = [1,2,3,6,7,12,18,23,25,27,28,34,35,37,39,40,41,42,43,48,50,51,52,54,55,59,60,61,64,65,69,71,73,74,79,81,82,84,85,86,87,89,93,94,96];
 const _RU_WOMEN = [6,7,8,20,24,27,37,43,44,46,47,51,53,54,55,57,58,62,64,65,66,69,70,78,79,81,82,84,86,87,92];
 
-// Interleave: local photo every 3 slots so same face never appears back-to-back
+// Interleave: 1 local photo every 6 randomuser.me entries → same face every ~14 slots
 const _ru = (g: 'men'|'women', i: number) => `https://randomuser.me/api/portraits/${g}/${i}.jpg`;
 const _POOL_MEN: string[] = _RU_MEN.reduce<string[]>((acc, n, i) => {
   acc.push(_ru('men', n));
-  if (i % 3 === 2) acc.push(_LOCAL_MEN[(Math.floor(i / 3)) % _LOCAL_MEN.length]!);
+  if (i % 6 === 5) acc.push(_LOCAL_MEN[(Math.floor(i / 6)) % _LOCAL_MEN.length]!);
   return acc;
 }, []);
 const _POOL_WOMEN: string[] = _RU_WOMEN.reduce<string[]>((acc, n, i) => {
   acc.push(_ru('women', n));
-  if (i % 3 === 2) acc.push(_LOCAL_WOMEN[(Math.floor(i / 3)) % _LOCAL_WOMEN.length]!);
+  if (i % 6 === 5) acc.push(_LOCAL_WOMEN[(Math.floor(i / 6)) % _LOCAL_WOMEN.length]!);
   return acc;
 }, []);
 
@@ -3417,7 +3417,7 @@ function _mkBulk(
         ? `Conductora profesional con licencia C2/C3 vigente. ${yrs} años de experiencia conduciendo vehículos de carga y pasajeros, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`
         : `Conductor profesional con licencia C2 vigente. ${yrs} años de experiencia en operación de vehículos de carga, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`,
       score,
-      photo: _p(idx % 35, isFemale ? 'women' : 'men'),
+      photo: _p(idx, isFemale ? 'women' : 'men'),
       avatarInitials: initials,
       avatarColor: color,
       hasCurrentJob: score >= 58,

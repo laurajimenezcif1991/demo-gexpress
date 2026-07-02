@@ -129,6 +129,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
         cursor: onClick ? 'pointer' : 'default',
         transition: 'border 0.15s ease',
         marginBottom: '8px',
+        overflow: 'hidden',
       }}
     >
       {/* Checkbox */}
