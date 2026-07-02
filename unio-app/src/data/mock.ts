@@ -1434,13 +1434,30 @@ export const shortlistCandidates = [
 ];
 
 // ─── DEMO VACANTES — SISTEMA DE 5 PROCESOS ────────────────────────────────────
-// Portrait indices verified via randomuser.me API with nat=mx,co (Mexican & Colombian profiles)
-const _LATAM_MEN   = [1,2,3,6,7,12,18,23,25,27,28,34,35,37,39,40,41,42,43,48,50,51,52,54,55,59,60,61,64,65,69,71,73,74,79,81,82,84,85,86,87,89,93,94,96];
-const _LATAM_WOMEN = [6,7,8,20,24,27,37,43,44,46,47,51,53,54,55,57,58,62,64,65,66,69,70,78,79,81,82,84,86,87,92];
+// Local driver photos (real Colombian drivers) + API-verified mx/co randomuser.me indices
+const _base = `${import.meta.env.BASE_URL}drivers/`;
+const _LOCAL_MEN:   string[] = [`${_base}driver-m1.png`, `${_base}driver-m2.png`];
+const _LOCAL_WOMEN: string[] = [`${_base}driver-f1.png`, `${_base}driver-f2.png`, `${_base}driver-f3.png`];
+const _RU_MEN   = [1,2,3,6,7,12,18,23,25,27,28,34,35,37,39,40,41,42,43,48,50,51,52,54,55,59,60,61,64,65,69,71,73,74,79,81,82,84,85,86,87,89,93,94,96];
+const _RU_WOMEN = [6,7,8,20,24,27,37,43,44,46,47,51,53,54,55,57,58,62,64,65,66,69,70,78,79,81,82,84,86,87,92];
+
+// Interleave local photos and randomuser.me so local ones appear often but with variety
+const _POOL_MEN: string[] = [
+  ..._LOCAL_MEN, ..._LOCAL_MEN, ..._LOCAL_MEN,
+  ..._RU_MEN.slice(0, 10).map(i => `https://randomuser.me/api/portraits/men/${i}.jpg`),
+  ..._LOCAL_MEN,
+  ..._RU_MEN.slice(10, 20).map(i => `https://randomuser.me/api/portraits/men/${i}.jpg`),
+];
+const _POOL_WOMEN: string[] = [
+  ..._LOCAL_WOMEN, ..._LOCAL_WOMEN, ..._LOCAL_WOMEN,
+  ..._RU_WOMEN.slice(0, 8).map(i => `https://randomuser.me/api/portraits/women/${i}.jpg`),
+  ..._LOCAL_WOMEN,
+  ..._RU_WOMEN.slice(8, 16).map(i => `https://randomuser.me/api/portraits/women/${i}.jpg`),
+];
+
 const _p = (n: number, g: 'women' | 'men') => {
-  const pool = g === 'women' ? _LATAM_WOMEN : _LATAM_MEN;
-  const idx  = pool[n % pool.length] ?? n;
-  return `https://randomuser.me/api/portraits/${g}/${idx}.jpg`;
+  const pool = g === 'women' ? _POOL_WOMEN : _POOL_MEN;
+  return pool[n % pool.length]!;
 };
 
 // ─── Job history tables per vacancy (c=company, r=role, d=end date) ──────────
