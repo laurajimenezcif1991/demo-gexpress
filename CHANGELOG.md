@@ -7,10 +7,20 @@
 
 ## [Sin commitear]
 
-### Mock data: Sin Validar RUNT visible en candidatos de score bajo
-- `_mkBulk`: `runtVerification` ahora es `undefined` para candidatos con score < 48 (fallaron un no-negociable antes de llegar a la consulta RUNT), activando "Sin Validar" en filas RUNT/RNDC y Antecedentes del Prescreening
-
 ---
+
+## [gc-express-branding] — 01 Jul 2026
+
+### Personalización completa para Grupo Express (demo-gcexpress)
+- Logo reemplazado: `logo-demo-transportes.png` → `logo-gcexpress.png` en ambos sidebars y todas las páginas del flujo
+- Nombre empresa actualizado de "Demo Transportes" a "Grupo Express" en toda la aplicación
+- Todas las simulaciones de WhatsApp renombradas a "Grupo Express Talent"
+- Ubicación en no-negociables y prescreening: Cota / Vía Cota-Siberia → Kennedy, Bogotá
+- Experiencia requerida: 2 años → 6 meses
+- Eliminadas todas las referencias a RNDC y manifiestos de ruta del scoring y pipeline
+- Stage label "Verificación (RUNT/RNDC)" → "Verificación (RUNT)"
+- Analytics: "VAL. RUNT/RNDC" → "VAL. RUNT"
+- Slots de prueba de manejo: ubicación Cota → Kennedy
 
 ## [pending] — 01 Jul 2026
 

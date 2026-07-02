@@ -20,10 +20,10 @@ type ChatPhase =
   | 'done';
 
 const AM_SLOTS = [
-  'Sáb 21 Jun · 8:00 AM — Patio de maniobras Demo Transportes, Cota',
-  'Sáb 21 Jun · 9:30 AM — Patio de maniobras Demo Transportes, Cota',
-  'Dom 22 Jun · 8:00 AM — Patio de maniobras Demo Transportes, Cota',
-  'Sáb 28 Jun · 8:00 AM — Patio de maniobras Demo Transportes, Cota',
+  'Sáb 21 Jun · 8:00 AM — Patio de maniobras Grupo Express, Kennedy',
+  'Sáb 21 Jun · 9:30 AM — Patio de maniobras Grupo Express, Kennedy',
+  'Dom 22 Jun · 8:00 AM — Patio de maniobras Grupo Express, Kennedy',
+  'Sáb 28 Jun · 8:00 AM — Patio de maniobras Grupo Express, Kennedy',
 ];
 const PM_SLOTS = [
   'Sáb 21 Jun · 2:00 PM — Sede Siberia, Bodega 8',
@@ -53,7 +53,7 @@ function buildOpening(firstName: string, jobTitle: string): WaMsg[] {
     return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
   };
   return [
-    { from: 'alex', time: fmt(0), text: `¡Hola ${firstName}! 👋 Soy *Alex*, asistente de selección de *Demo Transportes*.` },
+    { from: 'alex', time: fmt(0), text: `¡Hola ${firstName}! 👋 Soy *Alex*, asistente de selección de *Grupo Express*.` },
     { from: 'alex', time: fmt(1), text: `🎉 ¡Felicitaciones! Has superado la pre-entrevista para el cargo de *${jobTitle}*. El equipo quedó muy conforme con tu perfil y tus antecedentes verificados en RUNT.` },
     { from: 'alex', time: fmt(2), text: 'El siguiente paso es tu *Prueba de Manejo presencial* en nuestro patio de maniobras. La prueba tiene una duración de 45 minutos aproximadamente. ¿Tienes disponibilidad para esta semana? 🚛' },
     { from: 'alex', time: fmt(3), text: '¿Prefieres una franja en la *mañana (AM)* o en la *tarde (PM)*? 🗓️' },
@@ -314,7 +314,7 @@ export default function WhatsAppAgendarEntrevistaModal({
                     Agendar prueba de manejo por WhatsApp
                   </div>
                   <div style={{ fontSize: '13px', color: '#666', marginTop: '1px' }}>
-                    Alex IA · Demo Transportes
+                    Grupo Express Talent
                   </div>
                 </div>
                 <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding: '4px' }}>
@@ -338,7 +338,7 @@ export default function WhatsAppAgendarEntrevistaModal({
                   </div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: '14px', color: '#15803D' }}>
-                      Alex IA · Agendamiento de Prueba de Manejo
+                      Grupo Express Talent
                     </div>
                     <p style={{ fontSize: '13px', color: '#166534', margin: '4px 0 0', lineHeight: 1.55 }}>
                       Alex envía automáticamente un mensaje de felicitaciones e invita al conductor a elegir
@@ -434,7 +434,7 @@ export default function WhatsAppAgendarEntrevistaModal({
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>
-                      Alex IA · Demo Transportes
+                      Grupo Express Talent
                     </div>
                     <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>
                       {isDone

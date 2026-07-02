@@ -148,8 +148,8 @@ export default function CrearVacante() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <img
-            src={assetUrl('/logo-demo-transportes.png')}
-            alt="Demo Transportes"
+            src={assetUrl('/logo-gcexpress.png')}
+            alt="Grupo Express"
             style={{ maxHeight: '100px', maxWidth: '300px', width: 'auto', height: 'auto', objectFit: 'contain' }}
           />
           <div style={{ width: '1px', height: '32px', background: 'var(--color-border-default)' }} />

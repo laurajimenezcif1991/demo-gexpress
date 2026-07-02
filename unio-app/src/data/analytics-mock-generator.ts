@@ -217,7 +217,7 @@ export function generateAnalyticsData(
     { label: 'APLICADOS',        value: aplicados,   pct: 100,                                                    convLabel: '100% · inicio del funnel',              dropoff: null },
     { label: 'SCORING',          value: scoring,     pct: scoringPct,                                             convLabel: `${scoringPct}% conversión`,              dropoff: `${dropoffN} por no negociables` },
     { label: 'PRE-SCREENING',    value: prescreen,   pct: Math.round(prescreen / aplicados * 100),                convLabel: `${Math.round(prescreen/scoring*100)}% conversión`,    dropoff: null },
-    { label: 'VAL. RUNT / RNDC', value: entrevistas, pct: Math.round(entrevistas / aplicados * 100),             convLabel: `${Math.round(entrevistas/prescreen*100)}% conversión`, dropoff: null },
+    { label: 'VAL. RUNT', value: entrevistas, pct: Math.round(entrevistas / aplicados * 100),             convLabel: `${Math.round(entrevistas/prescreen*100)}% conversión`, dropoff: null },
     { label: 'VAL. DOCUMENTAL',  value: evaluacion,  pct: Math.round(evaluacion / aplicados * 100),              convLabel: `${Math.round(evaluacion/entrevistas*100)}% conversión`, dropoff: null },
     { label: 'SHORTLIST',        value: finalistas,  pct: parseFloat((finalistas / aplicados * 100).toFixed(1)), convLabel: `${(finalistas/aplicados*100).toFixed(1)}% conversión`, dropoff: null },
     { label: 'CONTRATADOS',      value: contratados, pct: parseFloat((contratados / aplicados * 100).toFixed(2)), convLabel: `${tasaFinal}% · ratio ${ratioFinal}:1`, dropoff: null },
@@ -248,7 +248,7 @@ export function generateAnalyticsData(
   const timePhases: TimePhase[] = [
     { label: 'Scoring',           days: phaseDays[0], bottleneck: bottleneckIdx === 0 },
     { label: 'Pre-screening',     days: phaseDays[1], bottleneck: bottleneckIdx === 1 },
-    { label: 'Val. RUNT / RNDC',  days: phaseDays[2], bottleneck: bottleneckIdx === 2 },
+    { label: 'Val. RUNT',  days: phaseDays[2], bottleneck: bottleneckIdx === 2 },
     { label: 'Val. Documental',   days: phaseDays[3], bottleneck: bottleneckIdx === 3 },
     { label: 'Shortlist',         days: phaseDays[4], bottleneck: bottleneckIdx === 4 },
   ];

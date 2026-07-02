@@ -17,15 +17,15 @@ function getContexto(cargo: string): { priorities: string[]; autonomy: string } 
     autonomy: 'Media',
   };
   if (c.includes('odonto')) return {
-    priorities: ['Atención pediátrica preventiva con excelencia clínica', 'Educación en salud oral a familias de la red Demo Transportes', 'Reducir incidencia de caries en grupo 0-6 años en 20%'],
+    priorities: ['Atención pediátrica preventiva con excelencia clínica', 'Educación en salud oral a familias de la red Grupo Express', 'Reducir incidencia de caries en grupo 0-6 años en 20%'],
     autonomy: 'Media',
   };
   if (c.includes('bdm') || c.includes('business') || c.includes('comercial')) return {
-    priorities: ['Captar 12+ empresas afiliadas nuevas en el semestre', 'Crecer cartera de cuentas activas en 30%', 'Posicionar servicios Demo Transportes en sector empresarial del Valle'],
+    priorities: ['Captar 12+ empresas afiliadas nuevas en el semestre', 'Crecer cartera de cuentas activas en 30%', 'Posicionar servicios Grupo Express en sector empresarial del Valle'],
     autonomy: 'Alta',
   };
   return {
-    priorities: ['Cumplir los indicadores del área asignada', 'Fortalecer la calidad del servicio al afiliado', 'Apoyar la estrategia de bienestar de Demo Transportes'],
+    priorities: ['Cumplir los indicadores del área asignada', 'Fortalecer la calidad del servicio al afiliado', 'Apoyar la estrategia de bienestar de Grupo Express'],
     autonomy: 'Media',
   };
 }
@@ -229,7 +229,7 @@ export default function RCPGenerado() {
           justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <img src={assetUrl('/logo-demo-transportes.png')} alt="Demo Transportes" style={{ maxHeight: '100px', maxWidth: '300px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+            <img src={assetUrl('/logo-gcexpress.png')} alt="Grupo Express" style={{ maxHeight: '100px', maxWidth: '300px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
             <div style={{ width: '1px', height: '32px', background: 'var(--color-border-default)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-muted)' }}>
               <span>Powered by</span>

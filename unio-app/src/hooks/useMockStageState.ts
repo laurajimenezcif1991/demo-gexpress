@@ -32,7 +32,7 @@ export const DEFAULT_MOCK_PROGRESS: Record<string, MockStageKey> = {
   'mock-comf-gca': 'evaluaciones',
   'mock-comf-gcv': 'evaluaciones',
   'mock-comf-cb':  'evaluaciones',
-  // Demo Transportes — Transporte & Logística
+  // Grupo Express — Transporte & Logística
   'mock-transp-pub': 'estudios',
   'mock-vigia':      'estudios',
   'mock-distrib':    'estudios',

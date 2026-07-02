@@ -50,7 +50,7 @@ function buildConversation(firstName: string, jobTitle: string, aspiration: stri
   };
   return [
     // 0-2 Apertura
-    { from: 'alex',      time: fmt(0),  text: `Hola ${firstName}! 👋 Soy *Alex*, asistente de selección de *Demo Transportes*. Tu perfil quedó bien ranqueado para *${jobTitle}*. ¿Tienes unos 10 minutos para una verificación rápida?` },
+    { from: 'alex',      time: fmt(0),  text: `Hola ${firstName}! 👋 Soy *Alex*, asistente de selección de *Grupo Express*. Tu perfil quedó bien ranqueado para *${jobTitle}*. ¿Tienes unos 10 minutos para una verificación rápida?` },
     { from: 'candidate', time: fmt(1),  text: '¡Hola! Sí, claro. Cuente 😊' },
     { from: 'alex',      time: fmt(2),  text: '¡Perfecto! Vamos directo a lo que necesitamos verificar para este cargo.' },
     // 3-5 Licencia y experiencia
@@ -70,7 +70,7 @@ function buildConversation(firstName: string, jobTitle: string, aspiration: stri
     { from: 'alex',      time: fmt(13), text: `¿Cuál es su expectativa salarial para este cargo?` },
     // 14-16 Cierre
     { from: 'candidate', time: fmt(14), text: aspiration || "$3'200.000 mensuales." },
-    { from: 'alex',      time: fmt(15), text: `¡Perfecto, ${firstName}! 🙌 Sus datos están bien. El equipo de selección revisará su información en RUNT y RNDC y le contactará para los próximos pasos. ¿Tiene alguna duda?` },
+    { from: 'alex',      time: fmt(15), text: `¡Perfecto, ${firstName}! 🙌 Sus datos están bien. El equipo de selección revisará su información en RUNT y le contactará para los próximos pasos. ¿Tiene alguna duda?` },
     { from: 'candidate', time: fmt(16), text: 'No, todo claro. ¡Muchas gracias! 😊' },
     { from: 'alex',      time: fmt(17), text: `¡Fue un gusto, ${firstName}! Le estaremos escribiendo pronto. ¡Mucho éxito! ✅` },
   ];
@@ -246,7 +246,7 @@ export default function WhatsAppPreEntrevistaModal({ isOpen, onClose, candidates
                     Pre-entrevista IA por WhatsApp
                   </div>
                   <div style={{ fontSize: '13px', color: '#666', marginTop: '1px' }}>
-                    Alex IA · Demo Transportes
+                    Grupo Express Talent
                   </div>
                 </div>
                 <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding: '4px', borderRadius: '8px' }}>
@@ -271,7 +271,7 @@ export default function WhatsAppPreEntrevistaModal({ isOpen, onClose, candidates
                   </div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: '14px', color: '#15803D' }}>
-                      Alex IA · Reclutadora de IA
+                      Grupo Express Talent
                     </div>
                     <p style={{ fontSize: '13px', color: '#166534', margin: '4px 0 0', lineHeight: 1.55 }}>
                       Conduce pre-entrevistas de 7–10 min vía WhatsApp. Valida no negociables,
@@ -373,7 +373,7 @@ export default function WhatsAppPreEntrevistaModal({ isOpen, onClose, candidates
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>
-                      Alex IA · Demo Transportes
+                      Grupo Express Talent
                     </div>
                     <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>
                       {isDone ? '✓ Entrevista completada' : isTyping ? (typingFor === 'alex' ? 'escribiendo...' : `${firstName} está escribiendo...`) : 'en línea'}

@@ -73,9 +73,9 @@ function uid() { return Math.random().toString(36).slice(2); }
 
 const VACANCY = {
   title: 'Conductor C2 Distribución Urbana',
-  company: 'Demo Transportes',
+  company: 'Grupo Express',
   salary: '$2.500.000 – $2.700.000',
-  location: 'Cota – Vía Cota-Siberia',
+  location: 'Kennedy – Bogotá',
   schedule: 'Lunes a sábado · Turnos rotativos',
   contrato: 'Término indefinido',
 };
@@ -114,18 +114,18 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
 
     qm_experiencia: {
       botMessages: [
-        '¡Excelente! ✅ ¿Tienes mínimo *2 años de experiencia certificada* en conducción de carga?',
+        '¡Excelente! ✅ ¿Tienes mínimo *6 meses de experiencia certificada* en conducción de carga?',
       ],
       replies: [
-        { id: 'si', label: '✅ Sí, tengo 2+ años', value: 'si' },
-        { id: 'no', label: '❌ Tengo menos de 2 años', value: 'no' },
+        { id: 'si', label: '✅ Sí, tengo 6+ meses', value: 'si' },
+        { id: 'no', label: '❌ Tengo menos de 6 meses', value: 'no' },
       ],
       next: (a) => (a === 'si') ? 'qm_ubicacion' : 'qm_fail',
     },
 
     qm_ubicacion: {
       botMessages: [
-        '¿Vives en *Cota, municipios aledaños o Bogotá* y cuentas con transporte para llegar a la sede en vía Cota-Siberia? 📍',
+        '¿Vives en *Kennedy o Bogotá* y cuentas con transporte para llegar a la sede? 📍',
       ],
       replies: [
         { id: 'si', label: '✅ Sí, estoy en la zona', value: 'si' },
@@ -138,7 +138,7 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
       botMessages: [
         'Gracias por tu interés 🙏',
         'Lamentablemente en este momento el perfil no cumple con los requisitos mínimos para esta vacante.',
-        'Te invitamos a estar atento/a a futuras oportunidades con *Demo Transportes*. ¡Mucho éxito! 💪',
+        'Te invitamos a estar atento/a a futuras oportunidades con *Grupo Express*. ¡Mucho éxito! 💪',
       ],
       next: () => 'qm_fail',
     },
@@ -291,11 +291,11 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
 
     ps_empresa: {
       botMessages: [
-        '¡Genial! Déjame contarte un poco sobre *Demo Transportes* 🏢',
+        '¡Genial! Déjame contarte un poco sobre *Grupo Express* 🏢',
       ],
       card: {
-        title: '🏢 Demo Transportes',
-        subtitle: 'Líder en logística y distribución en Colombia',
+        title: '🏢 Grupo Express',
+        subtitle: 'Líder en logística y distribución urbana en Colombia',
         body: [
           '📦 +15 años operando en el sector logístico',
           '🚚 Flota de +200 vehículos de carga',
@@ -329,17 +329,17 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
     ps_no_neg_1: {
       botMessages: [
         'Ahora vamos a validar los *no negociables* del cargo. Responde con sinceridad, es importante para ambos 🤝',
-        '¿Tu licencia C2 fue expedida hace *mínimo 2 años*?',
+        '¿Tu licencia C2 fue expedida hace *mínimo 6 meses*?',
       ],
       replies: [
-        { id: 'si', label: '✅ Sí, más de 2 años',      value: 'si' },
-        { id: 'no', label: '❌ Tiene menos de 2 años',  value: 'no' },
+        { id: 'si', label: '✅ Sí, más de 6 meses',      value: 'si' },
+        { id: 'no', label: '❌ Tiene menos de 6 meses',  value: 'no' },
       ],
       next: () => 'ps_no_neg_2',
     },
 
     ps_no_neg_2: {
-      botMessages: ['¿Tienes *mínimo 2 años de experiencia certificada* en conducción de carga o distribución?'],
+      botMessages: ['¿Tienes *mínimo 6 meses de experiencia certificada* en conducción de carga o distribución?'],
       replies: [
         { id: 'si', label: '✅ Sí, tengo la experiencia',   value: 'si' },
         { id: 'no', label: '❌ No cumplo este requisito',   value: 'no' },
@@ -349,7 +349,7 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
 
     ps_no_neg_3: {
       botMessages: [
-        '¿Resides en *Cota, Funza, Madrid, Mosquera o Bogotá* y puedes llegar con tu propio medio a la sede en vía Cota-Siberia?',
+        '¿Resides en *Kennedy o Bogotá* y puedes llegar con tu propio medio a la sede?',
       ],
       replies: [
         { id: 'si', label: '✅ Sí, puedo llegar sin problema', value: 'si' },
@@ -376,7 +376,7 @@ function buildScript(answers: Answers): Record<StepId, StepDef> {
         `🎉 *¡Listo, ${nombre}!*`,
         'Tu prescreening ha sido completado exitosamente. Nuestro equipo revisará tu perfil y se comunicará contigo en las próximas *24–48 horas hábiles*.',
         '📬 Recibirás un mensaje de confirmación por este medio.',
-        'Gracias por tu tiempo y tu interés en *Demo Transportes*. ¡Mucho éxito! 💪',
+        'Gracias por tu tiempo y tu interés en *Grupo Express*. ¡Mucho éxito! 💪',
       ],
       next: () => 'ps_complete',
     },
@@ -402,7 +402,7 @@ function WaHeader() {
         <WaIcon size={22} color="#fff" />
       </div>
       <div style={{ flex: 1 }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: '15px', lineHeight: 1.2 }}>Alex · Demo Transportes</div>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: '15px', lineHeight: 1.2 }}>Grupo Express Talent</div>
         <div style={{ color: '#b2dfdb', fontSize: '12px' }}>en línea</div>
       </div>
     </div>

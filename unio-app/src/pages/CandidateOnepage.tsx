@@ -1575,10 +1575,10 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
 
           {/* Standard rows */}
           {[
-            'Cuenta con Licencia de conducción C2 vigente con mínimo 2 años desde su expedición.',
-            'Tiene mínimo 2 años de experiencia certificada en conducción de carga.',
-            'Vive en Cota, municipios aledaños o Bogotá.',
-            'Cuenta con medio de transporte para llegar a la sede en vía Cota-Siberia.',
+            'Cuenta con Licencia de conducción C2 vigente con mínimo 6 meses desde su expedición.',
+            'Tiene mínimo 6 meses de experiencia certificada en conducción de carga.',
+            'Vive en Kennedy o Bogotá.',
+            'Cuenta con medio de transporte para llegar a la sede en Kennedy.',
           ].map((label, i) => (
             <div
               key={i}
@@ -1599,7 +1599,7 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
             </div>
           ))}
 
-          {/* RUNT/RNDC row */}
+          {/* RUNT row */}
           <div
             style={{
               display: 'grid',
@@ -1611,7 +1611,7 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
             <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: runt ? '#363539' : '#9ca3af' }}>
               {runt ? (
                 <>
-                  <div style={{ marginBottom: '6px' }}>Validación RUNT / RNDC verificada sin infracciones graves ni suspensiones vigentes.</div>
+                  <div style={{ marginBottom: '6px' }}>Validación RUNT verificada sin infracciones graves ni suspensiones vigentes.</div>
                   <div style={{ display: 'flex', gap: '12px' }}>
                     <button
                       onClick={() => setRuntModalOpen(true)}
@@ -1626,6 +1626,7 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
                     <button
                       onClick={() => window.open('/manifiestos-vigia.pdf', '_blank')}
                       style={{
+                        display: 'none',
                         background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                         fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px',
                         color: 'var(--color-brand-accent)', textDecoration: 'underline',
@@ -1636,7 +1637,7 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
                   </div>
                 </>
               ) : (
-                <span>Validación RUNT / RNDC no verificada — candidato no cumplió criterios previos.</span>
+                <span>Validación RUNT no verificada — candidato no cumplió criterios previos.</span>
               )}
             </div>
             <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', alignSelf: 'stretch' }}>
