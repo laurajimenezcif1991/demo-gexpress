@@ -2609,45 +2609,45 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
     score: Math.round(score * 0.97),
     status: hi ? 'continua' : md ? 'continua' : 'pendiente',
     resumen: hi
-      ? `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`
+      ? `${name} confirmó licencia C2 vigente y amplia experiencia en conducción de transporte público urbano en Bogotá. Demuestra conocimiento de rutas zonales, protocolo de servicio al usuario y disponibilidad total para turnos rotativos.`
       : md
-      ? `${name} tiene experiencia básica en distribución. Confirmó disponibilidad y licencia vigente, pero con menor detalle en manejo de sistemas de guías y rutas de alto volumen.`
-      : `${name} presentó experiencia limitada en distribución formal. La disponibilidad para cargue y descargue no fue confirmada con claridad.`,
+      ? `${name} tiene licencia C2 vigente y experiencia básica en conducción de vehículos de pasajeros. Confirmó disponibilidad para turnos rotativos, aunque con algunas condiciones que requieren validación en entrevista.`
+      : `${name} presentó experiencia limitada en conducción de transporte público. La disponibilidad para turnos dominicales y festivos no fue confirmada con claridad.`,
     noNegociables: [
-      { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: hi ? score - 1 : md ? score - 6 : score - 15, evidencia: hi ? `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` : md ? `Licencia C2 vigente en límite mínimo.` : `No confirmó vigencia exacta de la licencia.` } as EvalRow,
-      { label: 'Sin comparendos activos ni infracciones graves', score: hi ? score : md ? score - 4 : score - 18, evidencia: hi ? `Record limpio confirmado. Sin multas pendientes en RUNT.` : md ? `Sin comparendos activos declarados.` : `Mencionó infracción pendiente de regularización.` } as EvalRow,
-      { label: 'Disponibilidad para cargue y descargue de mercancía', score: hi ? score - 2 : md ? score - 5 : score - 12, evidencia: hi ? `Confirma disponibilidad total y ha realizado cargue/descargue en ${prevJob.c}.` : md ? `Acepta cargue y descargue con acuerdo previo.` : `Expresó dudas sobre actividades de cargue físico.` } as EvalRow,
-      { label: 'Conocimiento de rutas urbanas en Bogotá y alrededores', score: hi ? score - 1 : md ? score - 7 : score - 14, evidencia: hi ? `Conoce todas las zonas de Bogotá. Describe rutas específicas con naturalidad.` : md ? `Conoce zona norte y centro; menos familiaridad con sur.` : `Conocimiento parcial de rutas.` } as EvalRow,
+      { label: 'Licencia C2 o C3 vigente con más de 6 meses de expedición', score: hi ? score - 1 : md ? score - 6 : score - 15, evidencia: hi ? `Confirmó licencia C2 vigente y relató proceso de renovación reciente.` : md ? `Licencia C2 vigente pero con antigüedad cercana al mínimo requerido.` : `No confirmó vigencia exacta de la licencia.` } as EvalRow,
+      { label: 'Sin comparendos activos ni suspensiones vigentes', score: hi ? score : md ? score - 4 : score - 18, evidencia: hi ? `Record vial limpio confirmado. Sin multas ni suspensiones activas.` : md ? `Sin comparendos activos declarados; pendiente cruce con RUNT.` : `Mencionó infracción pendiente de pago.` } as EvalRow,
+      { label: 'Disponibilidad turnos rotativos domingo a domingo con compensatorio', score: hi ? score - 2 : md ? score - 5 : score - 12, evidencia: hi ? `Confirma disponibilidad total para turnos rotativos incluyendo festivos. Experiencia previa en esquema DOM–DOM.` : md ? `Acepta turnos rotativos con condición de que el compensatorio quede establecido en contrato.` : `Expresó limitaciones para trabajar en festivos y domingos.` } as EvalRow,
+      { label: 'Mínimo 6 meses de experiencia conduciendo transporte público, vehículo de 1.5 ton o 19 pasajeros', score: hi ? score - 1 : md ? score - 7 : score - 14, evidencia: hi ? `${years} de experiencia en operación de rutas urbanas de Bogotá con múltiples operadores.` : md ? `Experiencia confirmada en conducción, pero con menor tiempo en transporte público formal.` : `Experiencia inferior a 6 meses en conducción de vehículos de pasajeros.` } as EvalRow,
     ],
     plusDetectados: hi
-      ? [`Manejo de app de seguimiento de entregas y sistema de guías digital`, `Experiencia en distribución e-commerce — perfil alineado con tendencia del sector`, `Actitud de servicio al cliente final evidenciada en entrevista`]
+      ? [`Conocimiento de rutas SITP en corredores norte y occidental de Bogotá`, `Actitud de servicio al usuario evidenciada durante la conversación`, `Experiencia con articulados TransMilenio — perfil de alto valor para operación CEX`]
       : md
-      ? [`Disposición para aprender plataformas de seguimiento de entregas`, `Conocimiento básico de nomenclatura urbana`]
-      : [`Disposición para trabajar en distribución si se aclaran las condiciones`],
+      ? [`Disposición para capacitación en manejo de articulados y protocolos SITP`, `Conocimiento general de la nomenclatura urbana de Bogotá`]
+      : [`Disposición para integrarse al equipo si se resuelven las dudas sobre el esquema de turnos`],
     senales: hi
-      ? [`Confirmar si tiene experiencia con vehículo NKR o NPR específicamente`]
+      ? [`Confirmar si tiene experiencia específica en articulados o solo buses padrones`]
       : md
-      ? [`Validar conocimiento de rutas en zona sur de Bogotá`, `Confirmar disponibilidad para turnos de madrugada si aplica`]
-      : [`Aclarar situación de licencia y comparendos antes de avanzar`],
+      ? [`Validar disponibilidad festivos antes de firmar contrato`, `Confirmar historial completo en conducción de pasajeros`]
+      : [`Aclarar situación vial antes de avanzar`, `Reconfirmar disponibilidad real para turnos rotativos`],
     entornoPersonal: [
       { label: 'Municipio', value: city, status: wrongCity ? 'warning' : 'ok' },
       { label: 'Disponibilidad inicio', value: hi ? 'Inmediata' : '8 días preaviso', status: hi ? 'ok' : 'neutral' },
-      { label: 'Cargue y descargue', value: hi ? 'Sin restricciones' : 'Con condiciones', status: hi ? 'ok' : 'warning' },
+      { label: 'Turnos rotativos', value: hi ? 'Disponibilidad total' : 'Disponibilidad parcial', status: hi ? 'ok' : 'warning' },
     ],
     experienciaLaboral: [
-      { empresa: job.c, rol: job.r, periodo: hi ? '2023 – Presente' : `2022 – ${job.d}`, descripcion: hi ? `Distribución urbana con ${trips} entregas documentadas. Manejo de sistema de guías y relación directa con clientes comerciales.` : `Reparto urbano y gestión de entregas. Experiencia en cargue y descargue de mercancía.` },
+      { empresa: job.c, rol: job.r, periodo: hi ? '2023 – Presente' : `2022 – ${job.d}`, descripcion: hi ? `Operación de ruta zonal en Bogotá. ${trips} servicios completados sin incidentes mayores. Manejo de recaudo electrónico y atención directa al usuario.` : `Conducción en rutas urbanas con manejo de pasajeros y cumplimiento de frecuencias.` },
       { empresa: prevJob.c, rol: prevJob.r, periodo: prevJob.periodo, descripcion: prevJob.desc },
     ],
   } : undefined;
   return {
-    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
+    id, name, role: 'Conductor/a de Bus Zonal', sector: 'Transporte Público / SITP',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor con licencia C2 y experiencia en distribución urbana y reparto de mercancía. Manejo de rutas de última milla, sistemas de guías y atención al cliente final.',
+    bio: 'Conductor/a de bus zonal con licencia C2 y experiencia en operación de rutas urbanas de Bogotá. Orientado/a al servicio al usuario, cumplimiento de frecuencias y protocolos de seguridad vial. Disponibilidad para turnos rotativos.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: score >= 68,
     ...(score >= 68 ? { currentCompany: job.c, currentRole: job.r } : { lastCompany: job.c, lastRole: job.r, lastDate: job.d }),
-    superpoder: hi ? '"Eficiencia en rutas urbanas con cero pérdidas de mercancía"' : md ? '"Conocimiento de Bogotá y cumplimiento en entregas"' : '"Disposición para trabajar en distribución"',
-    aspiration, budget: "$2'600.000", salaryRange, currentStage: stage,
+    superpoder: hi ? '"Servicio al usuario impecable y cero incidentes en operación de rutas zonales"' : md ? '"Conocimiento de rutas urbanas de Bogotá y cumplimiento de frecuencias"' : '"Disposición para integrarse a la operación de transporte público"',
+    aspiration, budget: "$2'800.000", salaryRange, currentStage: stage,
     runtVerification: {
       cc: runt?.cc ?? '00000000',
       totalManifiestos: trips,
@@ -2858,59 +2858,59 @@ const distribPrescreening = distribCandidates.filter(c => c.currentStage === 'pr
 const distribPruebaManejo = distribCandidates.filter(c => c.currentStage === 'prueba_manejo');
 const distribEntrevistas  = distribCandidates.filter(c => c.currentStage === 'entrevistas');
 
-// ── Candidatos EVALUACIONES — Distribución Urbana ───────────────────────────
+// ── Candidatos EVALUACIONES — Conductor/a Bus Zonal ─────────────────────────
 function _mkDistribEval(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string): Candidate {
-  const job     = _distribJobs[0]    ?? { c: 'DHL Express Colombia', r: 'Conductor C2 Última Milla', d: '2024' };
-  const prevJob = _distribExpPrev[0] ?? { c: 'Coordinadora S.A.', r: 'Conductor Urbano', periodo: '2020–2022', desc: 'Distribución urbana en zona norte de Bogotá.' };
+  const job     = _distribJobs[0]    ?? { c: 'Transmilenio S.A.', r: 'Conductor Bus Zonal', d: '2024' };
+  const prevJob = _distribExpPrev[0] ?? { c: 'SITP Bogotá', r: 'Conductor Urbano', periodo: '2020–2022', desc: 'Operación de rutas zonales en Bogotá.' };
   const runt    = _distribRunt[0];
   const trips   = Math.round(200 + (score - 75) * 12);
   return {
-    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
+    id, name, role: 'Conductor/a de Bus Zonal', sector: 'Transporte Público / SITP',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor con licencia C2 y amplia experiencia en distribución urbana y reparto de mercancía. Experto en rutas de última milla, manejo de guías digitales y atención al cliente final.',
+    bio: 'Conductor/a de bus zonal con licencia C2 y amplia experiencia en operación de rutas urbanas de Bogotá. Orientado/a al servicio al usuario, cumplimiento de frecuencias y protocolos de seguridad vial.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
-    superpoder: '"Eficiencia en rutas urbanas con cero pérdidas de mercancía"',
-    aspiration, budget: "$2'600.000", salaryRange: 'en_rango', currentStage: 'evaluaciones',
+    superpoder: '"Servicio al usuario impecable y cero incidentes en operación de rutas zonales"',
+    aspiration, budget: "$2'800.000", salaryRange: 'en_rango', currentStage: 'evaluaciones',
     runtVerification: {
       cc: runt?.cc ?? '11111111',
       totalManifiestos: trips,
       licenseCategories: (runt?.cats ?? []).map(r => ({ categoria: r.c, fechaExpedicion: r.e, fechaVencimiento: r.v })),
       tipoLicencia: 'C2',
       vigencia: (() => { const v = (runt?.cats ?? []).find(c => c.c === 'C2')?.v; return v ? `Vigente hasta ${v.split('/').reverse().join('-')}` : 'Vigente'; })(),
-      vehiculosExperiencia: ['Camión NKR', 'Camión NPR', 'Camión NQR', 'Furgoneta de reparto'],
+      vehiculosExperiencia: ['Bus articulado TransMilenio', 'Bus padrón SITP', 'Bus zonal'],
       anosExperiencia: parseInt(years) || 1,
     },
     scoringAI: {
       score: Math.round(score * 0.95), status: 'continua',
-      resumen: `${name} cumple todos los criterios. Licencia C2 vigente, ${trips} manifiestos de distribución registrados y sin comparendos activos.`,
+      resumen: `${name} cumple todos los criterios. Licencia C2 vigente, record vial limpio y experiencia comprobada en operación de rutas de transporte público en Bogotá.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
-        { label: 'Sin comparendos activos (RUNT)', cumple: true },
-        { label: 'Residencia en Bogotá o área metropolitana', cumple: true },
+        { label: 'Licencia C2 o C3 vigente con más de 6 meses de expedición', cumple: true },
+        { label: 'Sin comparendos activos ni suspensiones vigentes', cumple: true },
+        { label: 'Residencia en Bogotá o municipios circunvecinos', cumple: true },
         { label: 'Expectativa salarial ≤ $2.800.000', cumple: true },
       ],
-      logros: [`${trips} manifiestos de distribución verificados — supera umbral requerido`, `Licencia C2 vigente con más de 3 años de expedición`, 'Sin comparendos activos en RUNT'],
-      senales: ['Confirmar tipo de vehículo (NPR/NKR/NQR) para asignación de flota'],
+      logros: [`${years} de experiencia comprobada en transporte público urbano de Bogotá`, `Licencia C2 vigente — sin suspensiones ni comparendos activos`, 'Conocimiento de rutas zonales norte y occidental'],
+      senales: ['Confirmar si tiene certificación en manejo de articulados'],
     },
     prescreeningAI: {
       score: Math.round(score * 0.97), status: 'continua',
-      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`,
+      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia en conducción de transporte público urbano en Bogotá. Demuestra conocimiento de rutas zonales, protocolo de servicio al usuario y disponibilidad total para turnos rotativos.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` } as EvalRow,
-        { label: 'Sin comparendos activos ni infracciones graves', score: score, evidencia: `Record limpio confirmado. Sin multas pendientes en RUNT.` } as EvalRow,
-        { label: 'Disponibilidad para cargue y descargue de mercancía', score: score - 2, evidencia: `Confirma disponibilidad total y ha realizado cargue/descargue en ${prevJob.c}.` } as EvalRow,
-        { label: 'Conocimiento de rutas urbanas en Bogotá y alrededores', score: score - 1, evidencia: `Conoce todas las zonas de Bogotá. Describe rutas específicas con naturalidad.` } as EvalRow,
+        { label: 'Licencia C2 o C3 vigente con más de 6 meses de expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Relató proceso de renovación y certificaciones adicionales.` } as EvalRow,
+        { label: 'Sin comparendos activos ni suspensiones vigentes', score: score, evidencia: `Record vial limpio confirmado. Sin multas ni suspensiones activas.` } as EvalRow,
+        { label: 'Disponibilidad turnos rotativos domingo a domingo con compensatorio', score: score - 2, evidencia: `Confirma disponibilidad total para turnos rotativos incluyendo festivos. Experiencia previa en esquema DOM–DOM.` } as EvalRow,
+        { label: 'Mínimo 6 meses de experiencia en transporte público o vehículo de 1.5 ton / 19 pasajeros', score: score - 1, evidencia: `${years} de experiencia en operación de rutas urbanas de Bogotá con múltiples operadores.` } as EvalRow,
       ],
-      plusDetectados: [`Manejo de app de seguimiento de entregas y sistema de guías digital`, `Experiencia en distribución e-commerce — perfil alineado con tendencia del sector`, `Actitud de servicio al cliente final evidenciada en entrevista`],
-      senales: [`Confirmar si tiene experiencia con vehículo NKR o NPR específicamente`],
+      plusDetectados: [`Conocimiento de rutas SITP en corredores norte y occidental de Bogotá`, `Actitud de servicio al usuario evidenciada durante la conversación`, `Experiencia con articulados TransMilenio — perfil de alto valor para operación CEX`],
+      senales: [`Confirmar si tiene experiencia específica en articulados o solo buses padrones`],
       entornoPersonal: [
         { label: 'Municipio', value: city, status: 'ok' },
         { label: 'Disponibilidad inicio', value: 'Inmediata', status: 'ok' },
-        { label: 'Cargue y descargue', value: 'Sin restricciones', status: 'ok' },
+        { label: 'Turnos rotativos', value: 'Disponibilidad total', status: 'ok' },
       ],
       experienciaLaboral: [
-        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Distribución urbana con ${trips} entregas documentadas. Manejo de sistema de guías y relación directa con clientes comerciales.` },
+        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Operación de ruta zonal en Bogotá con ${trips} servicios completados. Atención al usuario y cumplimiento de frecuencias SITP.` },
         { empresa: prevJob.c, rol: prevJob.r, periodo: prevJob.periodo, descripcion: prevJob.desc },
       ],
     },
@@ -3047,7 +3047,7 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
 export const MOCK_VACANTES: Vacante[] = [
   { id: 'mock-transp-pub', jobId: 'mock-transp-pub', status: 'activa',   title: 'Conductor C2 Transporte Público', area: ['Operaciones', 'Transporte Público'], priority: 'alta',  progressLabel: 'Validación RUNT', progressPct: 25, total: 20, activos: 20, fecha: '28 Abr 2026' },
   { id: 'mock-vigia',      jobId: 'mock-vigia',      status: 'activa',   title: 'Conductor C2 Carga Refrigerada',  area: ['Operaciones', 'Logística'],           priority: 'alta',  progressLabel: 'Validación RUNT', progressPct: 10, total: 20, activos: 20, fecha: '03 May 2026' },
-  { id: 'mock-distrib',    jobId: 'mock-distrib',    status: 'activa',   title: 'Conductor C2 Distribución Urbana', area: ['Logística', 'Última Milla'],          priority: 'media', progressLabel: 'Pre-entrevista',  progressPct: 5,  total: 20, activos: 20, fecha: '15 May 2026' },
+  { id: 'mock-distrib',    jobId: 'mock-distrib',    status: 'activa',   title: 'Conductor/a de Bus Zonal', area: ['Operaciones', 'Transporte Público'],  priority: 'alta',  progressLabel: 'Pre-entrevista',  progressPct: 5,  total: 20, activos: 20, fecha: '15 May 2026' },
 ];
 
 export const MOCK_DESCRIPTIONS: Record<string, string> = {
@@ -3056,7 +3056,7 @@ export const MOCK_DESCRIPTIONS: Record<string, string> = {
   'mock-vigia':
     'Conductor de carga seca refrigerada y congelada para Demo Transportes S.A.S. — empresa con 47 años de experiencia en el sector. Responsable del transporte seguro y puntual de mercancía a nivel nacional, conservando la cadena de frío, cumpliendo protocolos HSEQ, BASC y SARLAFT, y gestionando documentación de despacho y cumplidos en cada viaje. Jornada domingo a domingo, turnos de 12 horas. Sede base: vía Cota-Siberia.',
   'mock-distrib':
-    'Conductor de distribución urbana y última milla con licencia C2 para operador logístico. Responsable de la entrega de mercancía a clientes comerciales en Bogotá y área metropolitana, cargue y descargue de productos, uso de sistema de guías digital y cumplimiento de ventanas de entrega. Ruta diaria fija, horario desde las 6:00 AM.',
+    'Se requiere CONDUCTORAS Y CONDUCTORES de bus zonal para la ciudad de Bogotá. Deben contar con Licencia C2 o C3 vigente, mínimo 6 meses de experiencia conduciendo vehículos de mínimo 1.5 toneladas, 19 pasajeros o vehículo particular. Turnos rotativos domingo a domingo con compensatorio. Operamos en el marco del contrato de concesión de transporte masivo suscrito con TMSA. Sede: patios de operación CEX en Bogotá.',
 };
 
 export function getMockPipelineStages(jobId: string): PipelineStage[] {
@@ -3529,13 +3529,13 @@ function _mkBulk(
 // StartIdx blocks (non-overlapping): d=0..270, tp=500..772, vc=1000..1272
 
 // mock-distrib (detailed: pre=15, pm=15, eval=3, entrev=5)
-const distribBulkPre   = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prescreening',        85,   0, [28,94]);
-const distribBulkPM    = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_manejo',        45,  85, [42,92]);
-const distribBulkEntrev= _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','entrevistas',          45, 130, [56,94]);
-const distribBulkEval  = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','evaluaciones',         32, 175, [58,93]);
-const distribBulkConoc = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_conocimiento',  28, 207, [62,93]);
-const distribBulkEstud = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','estudios',             20, 235, [65,94]);
-const distribBulkFinal = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','finalistas',           15, 255, [72,96]);
+const distribBulkPre   = _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','prescreening',        85,   0, [28,94]);
+const distribBulkPM    = _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','prueba_manejo',        45,  85, [42,92]);
+const distribBulkEntrev= _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','entrevistas',          45, 130, [56,94]);
+const distribBulkEval  = _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','evaluaciones',         32, 175, [58,93]);
+const distribBulkConoc = _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','prueba_conocimiento',  28, 207, [62,93]);
+const distribBulkEstud = _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','estudios',             20, 235, [65,94]);
+const distribBulkFinal = _mkBulk('d','Conductor/a de Bus Zonal','Transporte Público / SITP','finalistas',           15, 255, [72,96]);
 
 // mock-transp-pub (detailed: pre=15, pm=13, eval=3, entrev=5)
 const tpBulkPre    = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','prescreening',       85, 500, [28,94]);

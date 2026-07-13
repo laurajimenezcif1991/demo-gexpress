@@ -1620,10 +1620,10 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
 
           {/* Standard rows */}
           {[
-            { label: 'Cuenta con Licencia de conducción C2 vigente con mínimo 2 años desde su expedición.', fails: false },
-            { label: 'Tiene mínimo 2 años de experiencia certificada en conducción de carga.', fails: prescreeningRechazado },
-            { label: 'Vive en Cota, municipios aledaños o Bogotá.', fails: false },
-            { label: 'Cuenta con medio de transporte para llegar a la sede en vía Cota-Siberia.', fails: false },
+            { label: 'Cuenta con Licencia de conducción C2 o C3 vigente.', fails: false },
+            { label: 'Tiene mínimo 6 meses de experiencia conduciendo transporte público, vehículo de mínimo 1.5 toneladas o 19 pasajeros.', fails: prescreeningRechazado },
+            { label: 'Vive en Bogotá o municipios circunvecinos del área metropolitana.', fails: false },
+            { label: 'Disponibilidad para turnos rotativos domingo a domingo con compensatorio.', fails: false },
           ].map(({ label, fails }, i) => (
             <div
               key={i}
@@ -1653,61 +1653,6 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
               </div>
             </div>
           ))}
-
-          {/* RUNT/RNDC row */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 120px',
-              borderBottom: '1px solid #d4d4d5',
-              alignItems: 'center',
-            }}
-          >
-            <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: runt ? '#363539' : '#9ca3af' }}>
-              {runt ? (
-                <>
-                  <div style={{ marginBottom: '6px' }}>Validación RUNT / RNDC verificada sin infracciones graves ni suspensiones vigentes.</div>
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <button
-                      onClick={() => setRuntModalOpen(true)}
-                      style={{
-                        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                        fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px',
-                        color: 'var(--color-brand-accent)', textDecoration: 'underline',
-                      }}
-                    >
-                      Consultar RUNT
-                    </button>
-                    <button
-                      onClick={() => window.open('/manifiestos-vigia.pdf', '_blank')}
-                      style={{
-                        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                        fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px',
-                        color: 'var(--color-brand-accent)', textDecoration: 'underline',
-                      }}
-                    >
-                      Ver Manifiestos
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <span>Validación RUNT / RNDC no verificada — candidato no cumplió criterios previos.</span>
-              )}
-            </div>
-            <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', alignSelf: 'stretch' }}>
-              {runt ? (
-                <>
-                  <CheckCircle2 size={15} color="#15803d" />
-                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#15803d' }}>Cumple</span>
-                </>
-              ) : (
-                <>
-                  <MinusCircle size={15} color="#9ca3af" />
-                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#9ca3af' }}>Sin Validar</span>
-                </>
-              )}
-            </div>
-          </div>
 
           {/* Antecedentes row */}
           <div
