@@ -7,20 +7,13 @@
 
 ## [Sin commitear]
 
+### Prescreening OnePager: 3 escenarios de flujo condicional
+- `CandidateOnepage.tsx`: cuando `resumeValidation.status !== 'passed'` ya no se renderiza `PrescreeningContent`; se muestra mensaje contextual diferenciado para `failed` vs `pending`/`not_available`
+- `CandidateOnepage.tsx`: nueva prop `prescreeningRechazado` en `PrescreeningContent`; cuando el prescreening está rechazado, la fila "mínimo 2 años de experiencia" muestra "No cumple" en rojo con `XCircle`
+- `CandidateOnepage.tsx`: fila de antecedentes ahora refleja correctamente el resultado — si `antVar === 'alto_riesgo'` muestra "No cumple" en rojo con `XCircle` en lugar de "Cumple"; fondo rojo suave en la celda
+- Importado `XCircle` de lucide-react
+
 ---
-
-## [gc-express-branding] — 01 Jul 2026
-
-### Personalización completa para Grupo Express (demo-gcexpress)
-- Logo reemplazado: `logo-demo-transportes.png` → `logo-gcexpress.png` en ambos sidebars y todas las páginas del flujo
-- Nombre empresa actualizado de "Demo Transportes" a "Grupo Express" en toda la aplicación
-- Todas las simulaciones de WhatsApp renombradas a "Grupo Express Talent"
-- Ubicación en no-negociables y prescreening: Cota / Vía Cota-Siberia → Kennedy, Bogotá
-- Experiencia requerida: 2 años → 6 meses
-- Eliminadas todas las referencias a RNDC y manifiestos de ruta del scoring y pipeline
-- Stage label "Verificación (RUNT/RNDC)" → "Verificación (RUNT)"
-- Analytics: "VAL. RUNT/RNDC" → "VAL. RUNT"
-- Slots de prueba de manejo: ubicación Cota → Kennedy
 
 ## [pending] — 01 Jul 2026
 

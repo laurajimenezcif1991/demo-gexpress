@@ -29,6 +29,7 @@ import {
   FileText,
   CalendarDays,
   MinusCircle,
+  XCircle,
 } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import WizardBar from '../components/layout/WizardBar';
@@ -282,13 +283,13 @@ export default function CandidateOnepage() {
       name: 'Informe_Medico_Ocupacional_ConductorC2.pdf',
       size: 0,
       uploadedAt: new Date('2026-06-18T10:30:00'),
-      url: '/demo-gexpress/Informe_Medico_Ocupacional_ConductorC2.pdf',
+      url: '/demo-transportes/Informe_Medico_Ocupacional_ConductorC2.pdf',
     },
     estudioSeguridad: {
       name: 'Estudio_Seguridad_Personal_ConductorC2.pdf',
       size: 0,
       uploadedAt: new Date('2026-06-19T14:15:00'),
-      url: '/demo-gexpress/Estudio_Seguridad_Personal_ConductorC2.pdf',
+      url: '/demo-transportes/Estudio_Seguridad_Personal_ConductorC2.pdf',
     },
     visitaDomiciliaria: null,
   } : { examenMedico: null, estudioSeguridad: null, visitaDomiciliaria: null };
@@ -766,6 +767,8 @@ export default function CandidateOnepage() {
                           whatsappPrescreening: { status: waStatus as PrescreeningProgress['whatsappPrescreening']['status'] },
                         };
                       })();
+                      const rvStatus = derivedProgress.resumeValidation.status;
+                      const rvPassed = rvStatus === 'passed';
                       return (
                         <>
                           <PrescreeningProgressComponent
@@ -773,13 +776,24 @@ export default function CandidateOnepage() {
                             whatsappPrescreening={derivedProgress.whatsappPrescreening}
                             variant="onePager"
                           />
-                          <PrescreeningContent
-                            prescreening={prescreeningData}
-                            hasCV={candidate.hasCV}
-                            runt={candidate.runtVerification}
-                            candidateScore={candidate.score}
-                            isPendingEvaluaciones={isPendingEvaluaciones}
-                          />
+                          {rvPassed ? (
+                            <PrescreeningContent
+                              prescreening={prescreeningData}
+                              hasCV={candidate.hasCV}
+                              runt={candidate.runtVerification}
+                              candidateScore={candidate.score}
+                              isPendingEvaluaciones={isPendingEvaluaciones}
+                              prescreeningRechazado={prescreeningData.status === 'rechazado'}
+                            />
+                          ) : (
+                            <div style={{ marginTop: '16px', padding: '14px 18px', background: '#f8f8fa', borderRadius: '12px', border: '1px solid #e2e2e4' }}>
+                              <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+                                {rvStatus === 'failed'
+                                  ? 'La HV no pasó la validación de criterios básicos. El proceso de prescreening no continúa hasta que el candidato actualice y vuelva a cargar su hoja de vida.'
+                                  : 'La validación de HV está en proceso. Las siguientes etapas (pre-entrevista, no negociables y antecedentes) se habilitarán una vez completada.'}
+                              </p>
+                            </div>
+                          )}
                         </>
                       );
                     })() : (
@@ -1548,15 +1562,17 @@ function RuntModal({ runt, onClose }: { runt: RuntData; onClose: () => void }) {
 
 // ─── Prescreening content ─────────────────────────────────────────────────────
 
-function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, isPendingEvaluaciones = false }: {
+function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, isPendingEvaluaciones = false, prescreeningRechazado = false }: {
   prescreening: NonNullable<Candidate['prescreeningAI']>;
   hasCV?: boolean;
   runt?: RuntData;
   candidateScore?: number;
   isPendingEvaluaciones?: boolean;
+  prescreeningRechazado?: boolean;
 }) {
   const [runtModalOpen, setRuntModalOpen] = useState(false);
   const antVar: VariantKey = candidateScore >= 80 ? 'sin_novedad' : 'alto_riesgo';
+  const antecedentesAltoRiesgo = antVar === 'alto_riesgo';
 
   return (
     <div style={{ paddingTop: '20px' }}>
@@ -1604,11 +1620,11 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
 
           {/* Standard rows */}
           {[
-            'Cuenta con Licencia de conducción C2 vigente con mínimo 2 años desde su expedición.',
-            'Tiene mínimo 2 años de experiencia certificada en conducción de carga.',
-            'Vive en Cota, municipios aledaños o Bogotá.',
-            'Cuenta con medio de transporte para llegar a la sede en vía Cota-Siberia.',
-          ].map((label, i) => (
+            { label: 'Cuenta con Licencia de conducción C2 vigente con mínimo 2 años desde su expedición.', fails: false },
+            { label: 'Tiene mínimo 2 años de experiencia certificada en conducción de carga.', fails: prescreeningRechazado },
+            { label: 'Vive en Cota, municipios aledaños o Bogotá.', fails: false },
+            { label: 'Cuenta con medio de transporte para llegar a la sede en vía Cota-Siberia.', fails: false },
+          ].map(({ label, fails }, i) => (
             <div
               key={i}
               style={{
@@ -1616,14 +1632,24 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
                 gridTemplateColumns: '1fr 120px',
                 borderBottom: '1px solid #d4d4d5',
                 alignItems: 'center',
+                background: fails ? '#fff5f5' : undefined,
               }}
             >
-              <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: '#363539' }}>
+              <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: fails ? '#b91c1c' : '#363539' }}>
                 {label}
               </div>
               <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <CheckCircle2 size={15} color="#15803d" />
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#15803d' }}>Cumple</span>
+                {fails ? (
+                  <>
+                    <XCircle size={15} color="#b91c1c" />
+                    <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#b91c1c' }}>No cumple</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 size={15} color="#15803d" />
+                    <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#15803d' }}>Cumple</span>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -1689,11 +1715,14 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
               display: 'grid',
               gridTemplateColumns: '1fr 120px',
               alignItems: 'center',
+              background: (runt && !isPendingEvaluaciones && antecedentesAltoRiesgo) ? '#fff5f5' : undefined,
             }}
           >
-            <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: (!runt || isPendingEvaluaciones) ? '#9ca3af' : '#363539' }}>
+            <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: (!runt || isPendingEvaluaciones) ? '#9ca3af' : antecedentesAltoRiesgo ? '#b91c1c' : '#363539' }}>
               {(!runt || isPendingEvaluaciones) ? (
                 <span>Validación de antecedentes no verificada — pendiente de etapas previas.</span>
+              ) : antecedentesAltoRiesgo ? (
+                <span>Validación de antecedentes con registros de riesgo — se detectaron novedades que requieren revisión.</span>
               ) : (
                 <span>Validación de antecedentes verificada sin registros judiciales ni disciplinarios activos.</span>
               )}
@@ -1703,6 +1732,11 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
                 <>
                   <MinusCircle size={15} color="#9ca3af" />
                   <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#9ca3af' }}>Sin Validar</span>
+                </>
+              ) : antecedentesAltoRiesgo ? (
+                <>
+                  <XCircle size={15} color="#b91c1c" />
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#b91c1c' }}>No cumple</span>
                 </>
               ) : (
                 <>
