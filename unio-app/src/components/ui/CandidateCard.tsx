@@ -3,6 +3,7 @@ import { type CandidateStatus } from '../../context/CandidateStatusContext';
 import Avatar from './Avatar';
 import { getScoreColors } from './ScorePill';
 import Badge from './Badge';
+import PrescreeningProgressComponent from './PrescreeningProgress';
 import { useState } from 'react';
 import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle, FileText, Send, FolderCheck, Eye, EyeOff, CalendarDays } from 'lucide-react';
 
@@ -112,9 +113,6 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
   const innerBg = selected ? 'var(--color-secondary-50)' : '#ffffff';
 
   const currentStatus = statusLabel ? statusConfig[statusLabel] : null;
-  const shortBio = candidate.bio && candidate.bio.length > 95
-    ? candidate.bio.slice(0, 95) + '…'
-    : candidate.bio;
 
   return (
     <div
@@ -123,16 +121,15 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
       onMouseLeave={() => setHovered(false)}
       style={{
         display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '12px 16px',
+        alignItems: 'flex-start',
+        gap: '16px',
+        padding: '16px 20px',
         background: showGradient ? gradientBorderBg(innerBg) : innerBg,
         border: showGradient ? '2px solid transparent' : '1px solid var(--color-border-default)',
         borderRadius: 'var(--radius-lg)',
         cursor: onClick ? 'pointer' : 'default',
         transition: 'border 0.15s ease',
-        marginBottom: '6px',
-        minWidth: 0,
+        marginBottom: '8px',
       }}
     >
       {/* Checkbox */}
@@ -166,8 +163,8 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           src={candidate.photo}
           alt={candidate.name}
           style={{
-            width: 80,
-            height: 80,
+            width: 48,
+            height: 48,
             borderRadius: '50%',
             objectFit: 'cover',
             flexShrink: 0,
@@ -175,11 +172,11 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
           }}
         />
       ) : (
-        <Avatar initials={candidate.avatarInitials} color={candidate.avatarColor} size={80} />
+        <Avatar initials={candidate.avatarInitials} color={candidate.avatarColor} size={48} />
       )}
 
       {/* Info */}
-      <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', width: 0 }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
         {/* Pending chip — shown for newly advanced candidates, not in finalistas */}
         {isPending && (viewStage ?? candidate.currentStage) !== 'finalistas' && (
           <div
@@ -315,17 +312,18 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
         {/* Bio */}
         <p
           style={{
-            margin: '0 0 6px',
-            fontSize: '12.5px',
+            margin: '0 0 8px',
+            fontSize: '13px',
             color: 'var(--color-text-muted)',
-            lineHeight: '1.4',
-            whiteSpace: 'nowrap',
+            lineHeight: '1.5',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            maxWidth: '100%',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
           }}
         >
-          {shortBio}
+          {candidate.bio}
         </p>
 
         {/* Meta row: fecha de aplicación + estado revisión */}
@@ -465,7 +463,15 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
             </span>
           </div>
         );
-      })() : (viewStage ?? candidate.currentStage) !== 'entrevistas' || !candidate.veredictoEntrevista ? (
+      })() : (viewStage ?? candidate.currentStage) === 'prescreening' ? (
+        candidate.prescreeningProgress ? (
+          <PrescreeningProgressComponent
+            resumeValidation={candidate.prescreeningProgress.resumeValidation}
+            whatsappPrescreening={candidate.prescreeningProgress.whatsappPrescreening}
+            variant="card"
+          />
+        ) : null
+      ) : (viewStage ?? candidate.currentStage) !== 'entrevistas' || !candidate.veredictoEntrevista ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
           <span style={{ fontSize: '10px', color: 'var(--color-text-muted)', fontWeight: 600 }}>Total</span>
           <div

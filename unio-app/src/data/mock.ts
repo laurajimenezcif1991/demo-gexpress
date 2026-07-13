@@ -6,6 +6,23 @@ export type StageStatus = 'completed' | 'in_progress' | 'not_started';
 export type SalaryRange = 'en_rango' | 'fuera_de_rango';
 export type PipelineStageKey = 'scoring' | 'prescreening' | 'prueba_manejo' | 'entrevistas' | 'evaluaciones' | 'prueba_conocimiento' | 'estudios' | 'finalistas';
 
+// ── Prescreening two-step progress ───────────────────────────────────────────
+export type ResumeValidationStatus = 'pending' | 'passed' | 'failed' | 'not_available';
+export type WaPrescreeningStatus   = 'not_started' | 'in_progress' | 'completed';
+
+export interface PrescreeningProgress {
+  resumeValidation: {
+    status: ResumeValidationStatus;
+    validatedAt?: string;
+    matchedCriteria?: number;
+    totalCriteria?: number;
+    failReason?: string;
+  };
+  whatsappPrescreening: {
+    status: WaPrescreeningStatus;
+  };
+}
+
 export interface Vacante {
   id: string;
   status: VacanteStatus;
@@ -91,6 +108,8 @@ export interface Candidate {
   pruebaManejo?: { status: 'agendada'; fecha: string; hora: string; lugar: string } | { status: 'pendiente' };
   /** Interview verdict — shown as chip on candidate cards in entrevistas/estudios/finalistas */
   veredictoEntrevista?: 'apto' | 'apto_reservas' | 'no_apto';
+  /** Two-step prescreening progress: resume validation → WA prescreening */
+  prescreeningProgress?: PrescreeningProgress;
 }
 
 export interface NoNegociable {
@@ -263,7 +282,7 @@ export const candidates: Candidate[] = [
     location: 'Buenos Aires, Argentina',
     bio: 'Desarrolladora de herramientas educativas digitales, centradas en la gamificación y la interactividad.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/women/68.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/44.jpg',
     avatarInitials: 'CF',
     avatarColor: '#8750F6',
     hasCurrentJob: false,
@@ -329,7 +348,7 @@ export const candidates: Candidate[] = [
     location: 'Lima, Perú',
     bio: 'Investigador en el uso de IA para diagnósticos médicos, con un enfoque en la precisión y la accesibilidad.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/men/62.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/32.jpg',
     avatarInitials: 'GC',
     avatarColor: '#27BE69',
     hasCurrentJob: true,
@@ -490,7 +509,7 @@ export const candidates: Candidate[] = [
     location: 'Lima, Perú',
     bio: 'Investigadora en el uso de IA para diagnósticos médicos, con un enfoque en la precisión y la accesibilidad.',
     score: 92,
-    photo: 'https://randomuser.me/api/portraits/women/54.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/25.jpg',
     avatarInitials: 'IF',
     avatarColor: '#295BFF',
     hasCurrentJob: true,
@@ -553,7 +572,7 @@ export const candidates: Candidate[] = [
     location: 'São Paulo, Brasil',
     bio: 'Desarrolladora de experiencias de realidad aumentada para eventos y entretenimiento, creando interacciones memorables.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/women/74.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/48.jpg',
     avatarInitials: 'MT',
     avatarColor: '#FFBF0F',
     hasCurrentJob: true,
@@ -616,7 +635,7 @@ export const candidates: Candidate[] = [
     location: 'Quito, Ecuador',
     bio: 'Experto en soluciones tecnológicas para la industria automotriz, centrado en la movilidad eléctrica y conectividad.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/men/71.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/18.jpg',
     avatarInitials: 'RT',
     avatarColor: '#8750F6',
     hasCurrentJob: true,
@@ -678,7 +697,7 @@ export const candidates: Candidate[] = [
     location: 'Medellín, Colombia',
     bio: 'Especialista en la optimización de procesos logísticos y en la mejora de la experiencia de compra en línea.',
     score: 96,
-    photo: 'https://randomuser.me/api/portraits/men/83.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/41.jpg',
     avatarInitials: 'JL',
     avatarColor: '#27BE69',
     hasCurrentJob: true,
@@ -741,7 +760,7 @@ export const candidates: Candidate[] = [
     location: 'Buenos Aires, Argentina',
     bio: 'Estratega de contenido digital: ayudando a marcas a construir su presencia en redes sociales y aumentar el engagement.',
     score: 74,
-    photo: 'https://randomuser.me/api/portraits/women/80.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/56.jpg',
     avatarInitials: 'AG',
     avatarColor: '#D32F2F',
     hasCurrentJob: true,
@@ -783,7 +802,7 @@ export const candidates: Candidate[] = [
     location: 'Santiago, Chile',
     bio: 'Consultora en proyectos de energías limpias, enfocada en promover la sostenibilidad y la eficiencia energética.',
     score: 74,
-    photo: 'https://randomuser.me/api/portraits/women/89.jpg',
+    photo: 'https://randomuser.me/api/portraits/women/62.jpg',
     avatarInitials: 'SM',
     avatarColor: '#FFBF0F',
     hasCurrentJob: false,
@@ -825,7 +844,7 @@ export const candidates: Candidate[] = [
     location: 'Montevideo, Uruguay',
     bio: 'Investigador en biotecnología, enfocado en el desarrollo de nuevos terapias y tratamientos innovadores.',
     score: 74,
-    photo: 'https://randomuser.me/api/portraits/men/87.jpg',
+    photo: 'https://randomuser.me/api/portraits/men/55.jpg',
     avatarInitials: 'DP',
     avatarColor: '#295BFF',
     hasCurrentJob: true,
@@ -1434,30 +1453,7 @@ export const shortlistCandidates = [
 ];
 
 // ─── DEMO VACANTES — SISTEMA DE 5 PROCESOS ────────────────────────────────────
-// Local driver photos (real Colombian drivers) + API-verified mx/co randomuser.me indices
-const _base = `${import.meta.env.BASE_URL}drivers/`;
-const _LOCAL_MEN:   string[] = [`${_base}driver-m1.png`, `${_base}driver-m2.png`];
-const _LOCAL_WOMEN: string[] = [`${_base}driver-f1.png`, `${_base}driver-f2.png`, `${_base}driver-f3.png`];
-const _RU_MEN   = [1,2,3,6,7,12,18,23,25,27,28,34,35,37,39,40,41,42,43,48,50,51,52,54,55,59,60,61,64,65,69,71,73,74,79,81,82,84,85,86,87,89,93,94,96];
-const _RU_WOMEN = [6,7,8,20,24,27,37,43,44,46,47,51,53,54,55,57,58,62,64,65,66,69,70,78,79,81,82,84,86,87,92];
-
-// Interleave: 1 local photo every 6 randomuser.me entries → same face every ~14 slots
-const _ru = (g: 'men'|'women', i: number) => `https://randomuser.me/api/portraits/${g}/${i}.jpg`;
-const _POOL_MEN: string[] = _RU_MEN.reduce<string[]>((acc, n, i) => {
-  acc.push(_ru('men', n));
-  if (i % 6 === 5) acc.push(_LOCAL_MEN[(Math.floor(i / 6)) % _LOCAL_MEN.length]!);
-  return acc;
-}, []);
-const _POOL_WOMEN: string[] = _RU_WOMEN.reduce<string[]>((acc, n, i) => {
-  acc.push(_ru('women', n));
-  if (i % 6 === 5) acc.push(_LOCAL_WOMEN[(Math.floor(i / 6)) % _LOCAL_WOMEN.length]!);
-  return acc;
-}, []);
-
-const _p = (n: number, g: 'women' | 'men') => {
-  const pool = g === 'women' ? _POOL_WOMEN : _POOL_MEN;
-  return pool[n % pool.length]!;
-};
+const _p = (n: number, g: 'women' | 'men') => `https://randomuser.me/api/portraits/${g}/${n}.jpg`;
 
 // ─── Job history tables per vacancy (c=company, r=role, d=end date) ──────────
 const _recepJobs = [
@@ -2215,9 +2211,9 @@ const _vigiaPersonal: { label: string; value: string; status: 'ok' | 'warning' |
 ];
 
 const _vigiaTestSlots = [
-  { fecha: 'Sáb 21 Jun 2026', hora: '08:00 AM', lugar: 'Patio de maniobras Grupo Express — Kennedy' },
-  { fecha: 'Sáb 21 Jun 2026', hora: '09:30 AM', lugar: 'Patio de maniobras Grupo Express — Kennedy' },
-  { fecha: 'Dom 22 Jun 2026', hora: '08:00 AM', lugar: 'Patio de maniobras Grupo Express — Kennedy' },
+  { fecha: 'Sáb 21 Jun 2026', hora: '08:00 AM', lugar: 'Patio de maniobras Demo Transportes — Cota' },
+  { fecha: 'Sáb 21 Jun 2026', hora: '09:30 AM', lugar: 'Patio de maniobras Demo Transportes — Cota' },
+  { fecha: 'Dom 22 Jun 2026', hora: '08:00 AM', lugar: 'Patio de maniobras Demo Transportes — Cota' },
 ];
 
 function _mkVigia(id: string, name: string, score: number, photo: string, initials: string, color: string, city: string, years: string, aspiration: string, salaryRange: SalaryRange, stage: 'scoring' | 'prescreening' | 'entrevistas' = 'scoring', extras?: Partial<Candidate>): Candidate {
@@ -2292,40 +2288,44 @@ function _mkVigia(id: string, name: string, score: number, photo: string, initia
       score: Math.round(score * 0.95),
       status: score >= 58 ? 'continua' : 'pendiente',
       resumen: hi
-        ? `${name} cumple todos los criterios verificados en RUNT. Licencia C2 con ${licYears}+ años de expedición y sin infracciones graves registradas.`
+        ? `${name} cumple todos los criterios verificados en RUNT y RNDC. Licencia C2 con ${licYears}+ años de expedición, ${trips} manifiestos de ruta verificados en los últimos 5 años y sin infracciones graves registradas.`
         : md
-        ? `${name} cumple parcialmente los criterios de verificación RUNT. Algunos criterios presentan observaciones que requieren validación adicional en el proceso.`
-        : `${name} no cumple los requisitos mínimos verificados en RUNT. Se identificaron brechas en licencia vigente o criterios de ubicación.`,
+        ? `${name} cumple parcialmente los criterios de verificación RUNT/RNDC. Algunos criterios presentan observaciones que requieren validación adicional en el proceso.`
+        : `${name} no cumple los requisitos mínimos verificados en RUNT/RNDC. Se identificaron brechas en licencia vigente, historial de viajes o criterios de ubicación.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', cumple: hi || (md && score >= 65) },
-        { label: 'Residencia en Kennedy o Bogotá', cumple: !wrongCity },
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: hi || (md && score >= 65) },
+        { label: 'Mínimo 100 manifiestos de ruta verificados (RUNT/RNDC, últimos 5 años)', cumple: hi || (md && score >= 63) },
+        { label: 'Residencia en Cota, municipios aledaños o Bogotá', cumple: !wrongCity },
         { label: 'Expectativa salarial ≤ $3.500.000', cumple: salaryRange === 'en_rango' },
       ],
       logros: hi
         ? [
+            `${trips} manifiestos de ruta verificados en RNDC — supera el umbral mínimo requerido de 100 viajes`,
             `Licencia C2 con ${licYears} años de expedición vigente y sin suspensiones registradas en RUNT`,
             'Cero infracciones graves ni comparendos vigentes registrados en el sistema RUNT',
           ]
         : md
         ? [
+            `${trips} viajes verificados en RNDC — requiere complementar manifiestos para alcanzar el umbral mínimo`,
             'Licencia C2 vigente con período de expedición cercano al límite mínimo requerido',
           ]
         : [
-            'Historial de viajes por debajo del umbral mínimo requerido',
+            'Historial de viajes en RNDC por debajo del umbral mínimo requerido de 100 manifiestos',
           ],
       senales: hi
         ? ['Confirmar disponibilidad para turnos domingo a domingo con compensatorio previamente acordado']
         : md
         ? [
+            'Validar manifiestos de ruta faltantes directamente con empleadores anteriores',
             score < 68 ? 'Confirmar manejo de caja Fuller con prueba técnica presencial' : 'Verificar experiencia documentada en control de unidades de refrigeración',
           ]
         : [
             wrongCity
-              ? `Candidato residente en ${city} — fuera de la cobertura geográfica requerida (Kennedy / Bogotá)`
-              : 'Experiencia insuficiente para el cargo',
+              ? `Candidato residente en ${city} — fuera de la cobertura geográfica requerida (Cota / municipios aledaños / Bogotá)`
+              : 'Historial de viajes insuficiente — no supera el mínimo de 100 manifiestos verificables en RNDC',
             salaryRange === 'fuera_de_rango'
               ? 'Expectativa salarial por encima del presupuesto del cargo ($3.500.000)'
-              : 'Período de expedición de licencia inferior al mínimo requerido de 6 meses',
+              : 'Período de expedición de licencia inferior al mínimo requerido de 2 años',
           ],
     },
     veredictoEntrevista: (['entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
@@ -2439,7 +2439,7 @@ function _mkTranspPub(id: string, name: string, score: number, photo: string, in
       ? `${name} tiene licencia C2 vigente y experiencia básica en transporte urbano. La disponibilidad para turnos nocturnos y festivos requiere confirmación adicional.`
       : `${name} manifestó incertidumbre sobre la disponibilidad para turnos rotativos. Su historial de experiencia en transporte público no fue confirmado con detalle.`,
     noNegociables: [
-      { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', score: hi ? score - 1 : md ? score - 7 : score - 18, evidencia: hi ? `Confirmó licencia C2 vigente y relató proceso de renovación reciente. Sin suspensiones.` : md ? `Licencia C2 vigente pero con antigüedad cercana al mínimo.` : `No pudo confirmar estado exacto de vigencia de licencia.` } as EvalRow,
+      { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: hi ? score - 1 : md ? score - 7 : score - 18, evidencia: hi ? `Confirmó licencia C2 vigente y relató proceso de renovación reciente. Sin suspensiones.` : md ? `Licencia C2 vigente pero con antigüedad cercana al mínimo.` : `No pudo confirmar estado exacto de vigencia de licencia.` } as EvalRow,
       { label: 'Sin comparendos activos ni suspensiones en RUNT', score: hi ? score : md ? score - 5 : score - 20, evidencia: hi ? `Declara record limpio verificado en RUNT. Consistente con etapa anterior.` : md ? `No reporta comparendos activos, pero hay período sin información.` : `Mencionó una multa pendiente de pago.` } as EvalRow,
       { label: 'Disponibilidad para turnos rotativos (incluye fines de semana y festivos)', score: hi ? score - 2 : md ? score - 6 : score - 15, evidencia: hi ? `Confirma disponibilidad total, ha operado en turnos nocturnos y dominicales previamente.` : md ? `Acepta turnos rotativos con condiciones; prefiere no trabajar domingo.` : `Expresó limitaciones para trabajar en festivos.` } as EvalRow,
       { label: 'Experiencia mínima 2 años en transporte público o carga', score: hi ? score - 1 : md ? score - 8 : score - 12, evidencia: hi ? `${years} de experiencia en transporte público urbano con múltiples operadores SITP.` : md ? `Experiencia confirmada pero con interrupciones en el historial.` : `Experiencia inferior a 2 años en transporte público formal.` } as EvalRow,
@@ -2492,7 +2492,7 @@ function _mkTranspPub(id: string, name: string, score: number, photo: string, in
         ? `${name} cumple parcialmente. Algunos criterios presentan observaciones que requieren validación adicional.`
         : `${name} no cumple los requisitos mínimos. Se identificaron brechas en licencia, historial de servicios o disponibilidad.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', cumple: hi || (md && score >= 65) },
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: hi || (md && score >= 65) },
         { label: 'Sin comparendos activos ni suspensiones (RUNT)', cumple: hi || (md && score >= 62) },
         { label: 'Disponibilidad para turnos rotativos (incluye festivos)', cumple: !wrongCity && (hi || (md && score >= 60)) },
         { label: 'Residencia en Bogotá o municipios del área metropolitana', cumple: !wrongCity },
@@ -2591,7 +2591,7 @@ const _distribExpPrev = [
   { c: 'Última Milla Express',    r: 'Conductor C2',            periodo: '2021–2023', desc: 'Distribución de mercancía paletizada en zona norte de Bogotá. Rutas diarias con 15-20 entregas a clientes comerciales. Responsable de cargue, descargue y firma de guías.' },
   { c: 'Red Logística S.A.S.',    r: 'Conductor Reparto',       periodo: '2020–2022', desc: 'Reparto urbano de electrodomésticos y mercancía a granel. Manejo de camión NQR. Control de inventario en vehículo y uso de sistema de guías digital.' },
   { c: 'DHL Supply Chain',        r: 'Conductor Distribución',  periodo: '2019–2021', desc: 'Distribución de paquetería y carga mediana en zona centro de Bogotá. Manejo de rutas de alto tráfico y cumplimiento de ventanas de entrega.' },
-  { c: 'Coordinadora Mercantil',  r: 'Conductor C2',            periodo: '2021–2023', desc: 'Transporte de encomiendas y carga general en ruta Bogotá–Villavicencio. Gestión de despachos y firma de recibidos.' },
+  { c: 'Coordinadora Mercantil',  r: 'Conductor C2',            periodo: '2021–2023', desc: 'Transporte de encomiendas y carga general en ruta Bogotá–Villavicencio. Gestión de manifiestos de ruta y firma de recibidos.' },
   { c: 'TuEnvío Colombia',        r: 'Conductor Mensajería',    periodo: '2020–2022', desc: 'Entrega de paquetes e-commerce en Bogotá. Uso de app de seguimiento de entregas, gestión de cliente y recolección de devoluciones.' },
 ];
 
@@ -2609,12 +2609,12 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
     score: Math.round(score * 0.97),
     status: hi ? 'continua' : md ? 'continua' : 'pendiente',
     resumen: hi
-      ? `${name} confirmó licencia C2 vigente y amplia experiencia conduciendo buses y vehículos de carga en Bogotá. Demuestra conocimiento de rutas zonales y cumplimiento de normas de tránsito.`
+      ? `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`
       : md
       ? `${name} tiene experiencia básica en distribución. Confirmó disponibilidad y licencia vigente, pero con menor detalle en manejo de sistemas de guías y rutas de alto volumen.`
       : `${name} presentó experiencia limitada en distribución formal. La disponibilidad para cargue y descargue no fue confirmada con claridad.`,
     noNegociables: [
-      { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', score: hi ? score - 1 : md ? score - 6 : score - 15, evidencia: hi ? `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` : md ? `Licencia C2 vigente en límite mínimo.` : `No confirmó vigencia exacta de la licencia.` } as EvalRow,
+      { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: hi ? score - 1 : md ? score - 6 : score - 15, evidencia: hi ? `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` : md ? `Licencia C2 vigente en límite mínimo.` : `No confirmó vigencia exacta de la licencia.` } as EvalRow,
       { label: 'Sin comparendos activos ni infracciones graves', score: hi ? score : md ? score - 4 : score - 18, evidencia: hi ? `Record limpio confirmado. Sin multas pendientes en RUNT.` : md ? `Sin comparendos activos declarados.` : `Mencionó infracción pendiente de regularización.` } as EvalRow,
       { label: 'Disponibilidad para cargue y descargue de mercancía', score: hi ? score - 2 : md ? score - 5 : score - 12, evidencia: hi ? `Confirma disponibilidad total y ha realizado cargue/descargue en ${prevJob.c}.` : md ? `Acepta cargue y descargue con acuerdo previo.` : `Expresó dudas sobre actividades de cargue físico.` } as EvalRow,
       { label: 'Conocimiento de rutas urbanas en Bogotá y alrededores', score: hi ? score - 1 : md ? score - 7 : score - 14, evidencia: hi ? `Conoce todas las zonas de Bogotá. Describe rutas específicas con naturalidad.` : md ? `Conoce zona norte y centro; menos familiaridad con sur.` : `Conocimiento parcial de rutas.` } as EvalRow,
@@ -2640,9 +2640,9 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
     ],
   } : undefined;
   return {
-    id, name, role: 'Conductor/a Bus Zonal – Bogotá', sector: 'Transporte Público / Bus Zonal',
+    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor/a de bus zonal con licencia C2 o C3 y experiencia conduciendo vehículos de más de 1.5 toneladas y/o 19 pasajeros en Bogotá.',
+    bio: 'Conductor con licencia C2 y experiencia en distribución urbana y reparto de mercancía. Manejo de rutas de última milla, sistemas de guías y atención al cliente final.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: score >= 68,
     ...(score >= 68 ? { currentCompany: job.c, currentRole: job.r } : { lastCompany: job.c, lastRole: job.r, lastDate: job.d }),
@@ -2662,25 +2662,25 @@ function _mkDistrib(id: string, name: string, score: number, photo: string, init
       score: Math.round(score * 0.95),
       status: score >= 58 ? 'continua' : 'pendiente',
       resumen: hi
-        ? `${name} cumple todos los criterios. Licencia C2 con ${licYears}+ años de experiencia y sin comparendos activos.`
+        ? `${name} cumple todos los criterios. Licencia C2 con ${licYears}+ años, ${trips} manifiestos registrados y sin comparendos activos.`
         : md
         ? `${name} cumple parcialmente. Requiere validación adicional de historial y disponibilidad.`
         : `${name} no cumple los requisitos mínimos. Brechas en licencia, historial o disponibilidad.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', cumple: hi || (md && score >= 65) },
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: hi || (md && score >= 65) },
         { label: 'Sin comparendos activos (RUNT)', cumple: hi || (md && score >= 62) },
         { label: 'Residencia en Bogotá o área metropolitana', cumple: !wrongCity },
         { label: 'Expectativa salarial ≤ $2.800.000', cumple: salaryRange === 'en_rango' },
       ],
       logros: hi
-        ? [`${trips} entregas de distribución verificadas — supera umbral requerido`, `Licencia C2 con ${licYears} años de expedición vigente`, 'Sin comparendos activos en RUNT']
+        ? [`${trips} manifiestos de distribución verificados — supera umbral requerido`, `Licencia C2 con ${licYears} años de expedición vigente`, 'Sin comparendos activos en RUNT']
         : md
-        ? [`Experiencia en límite del umbral mínimo`, 'Licencia vigente con expedición reciente']
+        ? [`${trips} manifiestos — en límite del umbral mínimo`, 'Licencia vigente con expedición reciente']
         : ['Historial de entregas insuficiente para el umbral mínimo'],
       senales: hi
         ? ['Confirmar tipo de vehículo (NPR/NKR/NQR) para asignación de flota']
         : md
-        ? ['Validar experiencia documentada', 'Confirmar disponibilidad para cargue físico']
+        ? ['Validar manifiestos faltantes', 'Confirmar disponibilidad para cargue físico']
         : [wrongCity ? `Candidato en ${city} — fuera del área de operación de Bogotá` : 'Historial insuficiente o aspiración salarial fuera de rango'],
     },
     veredictoEntrevista: (['entrevistas','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
@@ -2809,7 +2809,7 @@ function _mkTranspPubEval(id: string, name: string, score: number, photo: string
       score: Math.round(score * 0.95), status: 'continua',
       resumen: `${name} cumple todos los criterios de verificación. Licencia C2 vigente, ${trips} servicios SITP registrados y sin comparendos activos en RUNT.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', cumple: true },
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
         { label: 'Sin comparendos activos ni suspensiones (RUNT)', cumple: true },
         { label: 'Disponibilidad para turnos rotativos (incluye festivos)', cumple: true },
         { label: 'Residencia en Bogotá o municipios del área metropolitana', cumple: true },
@@ -2821,7 +2821,7 @@ function _mkTranspPubEval(id: string, name: string, score: number, photo: string
       score: Math.round(score * 0.96), status: 'continua',
       resumen: `${name} confirmó licencia C2 vigente y record vial limpio. Con ${years} de experiencia en transporte público, demostró conocimiento del protocolo de servicio al usuario y disponibilidad total para turnos rotativos.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Sin suspensiones.` } as EvalRow,
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Sin suspensiones.` } as EvalRow,
         { label: 'Sin comparendos activos ni suspensiones en RUNT', score: score, evidencia: `Declara record limpio verificado en RUNT.` } as EvalRow,
         { label: 'Disponibilidad para turnos rotativos (incluye fines de semana y festivos)', score: score - 2, evidencia: `Confirma disponibilidad total, ha operado en turnos nocturnos y dominicales.` } as EvalRow,
         { label: 'Experiencia mínima 2 años en transporte público o carga', score: score - 1, evidencia: `${years} de experiencia en transporte público urbano con múltiples operadores SITP.` } as EvalRow,
@@ -2865,9 +2865,9 @@ function _mkDistribEval(id: string, name: string, score: number, photo: string, 
   const runt    = _distribRunt[0];
   const trips   = Math.round(200 + (score - 75) * 12);
   return {
-    id, name, role: 'Conductor/a Bus Zonal – Bogotá', sector: 'Transporte Público / Bus Zonal',
+    id, name, role: 'Conductor C2 Distribución Urbana', sector: 'Logística / Última Milla',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor/a de bus zonal con licencia C2 o C3 y amplia experiencia conduciendo vehículos de pasajeros y carga en Bogotá. Historial de conducción limpio y orientación al servicio.',
+    bio: 'Conductor con licencia C2 y amplia experiencia en distribución urbana y reparto de mercancía. Experto en rutas de última milla, manejo de guías digitales y atención al cliente final.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
     superpoder: '"Eficiencia en rutas urbanas con cero pérdidas de mercancía"',
@@ -2883,21 +2883,21 @@ function _mkDistribEval(id: string, name: string, score: number, photo: string, 
     },
     scoringAI: {
       score: Math.round(score * 0.95), status: 'continua',
-      resumen: `${name} cumple todos los criterios. Licencia C2 vigente y amplia experiencia en distribución sin comparendos activos.`,
+      resumen: `${name} cumple todos los criterios. Licencia C2 vigente, ${trips} manifiestos de distribución registrados y sin comparendos activos.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', cumple: true },
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
         { label: 'Sin comparendos activos (RUNT)', cumple: true },
         { label: 'Residencia en Bogotá o área metropolitana', cumple: true },
         { label: 'Expectativa salarial ≤ $2.800.000', cumple: true },
       ],
-      logros: [`Experiencia extensa en distribución urbana verificada`, `Licencia C2 vigente con más de 3 años de expedición`, 'Sin comparendos activos en RUNT'],
+      logros: [`${trips} manifiestos de distribución verificados — supera umbral requerido`, `Licencia C2 vigente con más de 3 años de expedición`, 'Sin comparendos activos en RUNT'],
       senales: ['Confirmar tipo de vehículo (NPR/NKR/NQR) para asignación de flota'],
     },
     prescreeningAI: {
       score: Math.round(score * 0.97), status: 'continua',
-      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia conduciendo buses y vehículos de carga en Bogotá. Demuestra conocimiento de rutas zonales y cumplimiento de normas de tránsito.`,
+      resumen: `${name} confirmó licencia C2 vigente y amplia experiencia en rutas de distribución urbana. Demuestra conocimiento detallado de procesos de cargue/descargue y manejo de guías digitales.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` } as EvalRow,
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente. Relató proceso de renovación y categorías adicionales.` } as EvalRow,
         { label: 'Sin comparendos activos ni infracciones graves', score: score, evidencia: `Record limpio confirmado. Sin multas pendientes en RUNT.` } as EvalRow,
         { label: 'Disponibilidad para cargue y descargue de mercancía', score: score - 2, evidencia: `Confirma disponibilidad total y ha realizado cargue/descargue en ${prevJob.c}.` } as EvalRow,
         { label: 'Conocimiento de rutas urbanas en Bogotá y alrededores', score: score - 1, evidencia: `Conoce todas las zonas de Bogotá. Describe rutas específicas con naturalidad.` } as EvalRow,
@@ -2933,7 +2933,7 @@ function _mkVigiaEval(id: string, name: string, score: number, photo: string, in
   return {
     id, name, role: 'Conductor C2 – Carga Refrigerada', sector: 'Logística / Cadena de Frío',
     years, location: `${city}, Colombia`,
-    bio: 'Conductor con licencia C2 y amplia experiencia en transporte de carga refrigerada y cadena de frío. Manejo de rutas intermunicipales, control de temperatura y registro de despachos.',
+    bio: 'Conductor con licencia C2 y amplia experiencia en transporte de carga refrigerada y cadena de frío. Manejo de rutas intermunicipales, control de temperatura y registro de manifiestos en plataforma RNDC.',
     score, photo, avatarInitials: initials, avatarColor: color,
     hasCurrentJob: true, currentCompany: job.c, currentRole: job.r,
     superpoder: '"Dominio de cadena de frío con cero incidentes de temperatura en más de 150 rutas"',
@@ -2949,14 +2949,14 @@ function _mkVigiaEval(id: string, name: string, score: number, photo: string, in
     },
     scoringAI: {
       score: Math.round(score * 0.95), status: 'continua',
-      resumen: `${name} cumple todos los criterios de verificación. Licencia C2 vigente y amplia experiencia en carga refrigerada sin comparendos activos en RUNT.`,
+      resumen: `${name} cumple todos los criterios de verificación. Licencia C2 vigente, ${trips} manifiestos de carga refrigerada registrados y sin comparendos activos en RUNT.`,
       noNegociables: [
-        { label: 'Licencia C2 vigente con mínimo 6 meses desde expedición', cumple: true },
+        { label: 'Licencia C2 vigente con mínimo 2 años desde expedición', cumple: true },
         { label: 'Sin comparendos activos ni suspensiones (RUNT)', cumple: true },
         { label: 'Experiencia en cadena de frío o carga perecedera', cumple: true },
         { label: 'Disponibilidad para rutas intermunicipales', cumple: true },
       ],
-      logros: [`Experiencia extensa en carga refrigerada verificada`, `Licencia C2 con más de 4 años de expedición, sin suspensiones en RUNT`, 'Cero comparendos activos ni multas pendientes'],
+      logros: [`${trips} manifiestos de carga refrigerada registrados en RNDC`, `Licencia C2 con más de 4 años de expedición, sin suspensiones en RUNT`, 'Cero comparendos activos ni multas pendientes'],
       senales: ['Confirmar si tiene experiencia en vehículos NPR con termógrafo instalado'],
     },
     prescreeningAI: {
@@ -2965,10 +2965,10 @@ function _mkVigiaEval(id: string, name: string, score: number, photo: string, in
       noNegociables: [
         { label: 'Licencia C2 vigente con mínimo 4 años desde expedición', score: score - 1, evidencia: `Confirmó licencia C2 vigente con categorías adicionales. Renovación reciente sin observaciones.` } as EvalRow,
         { label: 'Sin comparendos activos ni infracciones de tránsito graves', score: score, evidencia: `Record limpio en RUNT confirmado. Sin multas de tránsito pendientes.` } as EvalRow,
-        { label: 'Experiencia en cadena de frío y temperatura controlada', score: score - 2, evidencia: `Amplia experiencia con carga refrigerada. Conoce procedimiento de alarma de temperatura.` } as EvalRow,
+        { label: 'Experiencia en cadena de frío y temperatura controlada', score: score - 2, evidencia: `Reporta ${trips} manifiestos con carga refrigerada. Conoce procedimiento de alarma de temperatura.` } as EvalRow,
         { label: 'Disponibilidad para viajes intermunicipales (pernoctar fuera)', score: score - 3, evidencia: `Confirma disponibilidad total para viajes de 2–5 días con pernocte en destino.` } as EvalRow,
       ],
-      plusDetectados: [`Amplia experiencia en carga refrigerada — supera umbral requerido`, `Experiencia en rutas Bogotá-Cali y Bogotá-Medellín con carga de alimentos`, `Conocimiento del procedimiento de alarma y registro de temperatura en trayecto`],
+      plusDetectados: [`${trips} manifiestos de carga refrigerada registrados — supera umbral de 100`, `Experiencia en rutas Bogotá-Cali y Bogotá-Medellín con carga de alimentos`, `Conocimiento del procedimiento de alarma y registro de temperatura en trayecto`],
       senales: [`Confirmar si cuenta con certificación en manejo de mercancías peligrosas (si aplica)`],
       entornoPersonal: [
         { label: 'Municipio', value: city, status: 'ok' },
@@ -2976,7 +2976,7 @@ function _mkVigiaEval(id: string, name: string, score: number, photo: string, in
         { label: 'Viajes intermunicipales', value: 'Disponibilidad total', status: 'ok' },
       ],
       experienciaLaboral: [
-        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Transporte de carga refrigerada con amplia experiencia en rutas intermunicipales. Control de temperatura y entrega certificada.` },
+        { empresa: job.c, rol: job.r, periodo: '2023 – Presente', descripcion: `Transporte de carga refrigerada con ${trips} manifiestos registrados en RNDC. Rutas intermunicipales con control de temperatura y entrega certificada.` },
         { empresa: prevJob.c, rol: prevJob.r, periodo: prevJob.periodo, descripcion: prevJob.desc },
       ],
     },
@@ -3047,16 +3047,16 @@ export const MOCK_INITIAL_STATUSES: Record<string, Partial<Record<string, Record
 export const MOCK_VACANTES: Vacante[] = [
   { id: 'mock-transp-pub', jobId: 'mock-transp-pub', status: 'activa',   title: 'Conductor C2 Transporte Público', area: ['Operaciones', 'Transporte Público'], priority: 'alta',  progressLabel: 'Validación RUNT', progressPct: 25, total: 20, activos: 20, fecha: '28 Abr 2026' },
   { id: 'mock-vigia',      jobId: 'mock-vigia',      status: 'activa',   title: 'Conductor C2 Carga Refrigerada',  area: ['Operaciones', 'Logística'],           priority: 'alta',  progressLabel: 'Validación RUNT', progressPct: 10, total: 20, activos: 20, fecha: '03 May 2026' },
-  { id: 'mock-distrib',    jobId: 'mock-distrib',    status: 'activa',   title: 'Conductor/a Bus Zonal – Bogotá', area: ['Logística', 'Transporte Público'],    priority: 'media', progressLabel: 'Pre-entrevista',  progressPct: 5,  total: 20, activos: 20, fecha: '15 May 2026' },
+  { id: 'mock-distrib',    jobId: 'mock-distrib',    status: 'activa',   title: 'Conductor C2 Distribución Urbana', area: ['Logística', 'Última Milla'],          priority: 'media', progressLabel: 'Pre-entrevista',  progressPct: 5,  total: 20, activos: 20, fecha: '15 May 2026' },
 ];
 
 export const MOCK_DESCRIPTIONS: Record<string, string> = {
   'mock-transp-pub':
     'Conductor de bus urbano con licencia C2 para operador de transporte público de Bogotá (SITP/TransMilenio). Responsable de la operación segura y puntual de la ruta asignada, atención al usuario, cumplimiento de frecuencias y reporte de novedades en plataforma del concesionario. Turnos rotativos domingo a domingo con compensatorio. Sede: patios de operación en Bogotá.',
   'mock-vigia':
-    'Conductor de carga seca refrigerada y congelada para Grupo Express S.A.S. — empresa con 47 años de experiencia en el sector. Responsable del transporte seguro y puntual de mercancía a nivel nacional, conservando la cadena de frío, cumpliendo protocolos HSEQ, BASC y SARLAFT, y gestionando documentación de despacho y cumplidos en cada viaje. Jornada domingo a domingo, turnos de 12 horas. Sede base: Kennedy, Bogotá.',
+    'Conductor de carga seca refrigerada y congelada para Demo Transportes S.A.S. — empresa con 47 años de experiencia en el sector. Responsable del transporte seguro y puntual de mercancía a nivel nacional, conservando la cadena de frío, cumpliendo protocolos HSEQ, BASC y SARLAFT, y gestionando documentación de despacho y cumplidos en cada viaje. Jornada domingo a domingo, turnos de 12 horas. Sede base: vía Cota-Siberia.',
   'mock-distrib':
-    'Se requiere CONDUCTORAS Y CONDUCTORES de bus zonal para la ciudad de Bogotá. Deben contar con Licencia C2 o C3, mínimo 6 meses de experiencia conduciendo vehículos de mínimo 1.5 toneladas, 19 pasajeros o vehículo particular.',
+    'Conductor de distribución urbana y última milla con licencia C2 para operador logístico. Responsable de la entrega de mercancía a clientes comerciales en Bogotá y área metropolitana, cargue y descargue de productos, uso de sistema de guías digital y cumplimiento de ventanas de entrega. Ruta diaria fija, horario desde las 6:00 AM.',
 };
 
 export function getMockPipelineStages(jobId: string): PipelineStage[] {
@@ -3066,7 +3066,7 @@ export function getMockPipelineStages(jobId: string): PipelineStage[] {
   // ── Pipeline estándar Transporte & Logística ──
   // counts: scoring, pre, manejo, ent, psicotech, conocimiento, estudios, fin
   const transpPipeline = (scoring: number, pre: number, manejo: number, ent: number, psicotech: number, conoc: number, est = 0, fin = 0) => [
-    s('scoring',              'Verificación (RUNT)', 'Verificación',     scoring > 0   ? (pre > 0       ? 'completed'    : 'in_progress') : 'not_started', scoring,   true),
+    s('scoring',              'Verificación (RUNT/RNDC)', 'Verificación',     scoring > 0   ? (pre > 0       ? 'completed'    : 'in_progress') : 'not_started', scoring,   true),
     s('prescreening',         'Pre-entrevista IA',         'Pre-entrevista',   pre > 0       ? (manejo > 0    ? 'completed'    : 'in_progress') : 'not_started', pre,       true),
     s('prueba_manejo',        'Prueba de manejo',           'Prueba manejo',    manejo > 0    ? (ent > 0       ? 'completed'    : 'in_progress') : 'not_started', manejo,    false),
     s('entrevistas',          'Entrevista',                 'Entrevista',       ent > 0       ? (psicotech > 0 ? 'completed'    : 'in_progress') : 'not_started', ent,       false),
@@ -3162,8 +3162,8 @@ function _primaTranspA(name: string, score: number): PsychTestResult {
       {
         axis: 'Orientación a procedimientos',
         idealScore: 88, candidateScore: Math.max(50, s - 6),
-        summary: 'Adherencia a protocolos de carga y documentación.',
-        detail: 'Cumple rigurosamente con el diligenciamiento de guías de transporte y registros de despacho. Crucial para evitar sanciones y garantizar trazabilidad de la carga.',
+        summary: 'Adherencia a protocolos de carga, RNDC y documentación.',
+        detail: 'Cumple rigurosamente con el diligenciamiento de manifiestos, guías de transporte y registros RNDC. Crucial para evitar sanciones y garantizar trazabilidad de la carga.',
       },
     ],
     radarPoints: [
@@ -3213,8 +3213,8 @@ function _primaTranspB(name: string, score: number): PsychTestResult {
       {
         axis: 'Orientación a procedimientos',
         idealScore: 88, candidateScore: Math.max(35, s - 15),
-        summary: 'Áreas de mejora en documentación de despacho.',
-        detail: 'El diligenciamiento de guías de transporte y registros digitales presenta inconsistencias bajo presión. Se sugiere acompañamiento durante el primer mes y verificación de registros en la fase de inducción.',
+        summary: 'Áreas de mejora en documentación RNDC.',
+        detail: 'El diligenciamiento de manifiestos y registros digitales presenta inconsistencias bajo presión. Se sugiere acompañamiento durante el primer mes y verificación de registros RNDC en la fase de inducción.',
       },
     ],
     radarPoints: [
@@ -3239,29 +3239,26 @@ function _primaTranspB(name: string, score: number): PsychTestResult {
 
 // ── Bulk candidate generator for funnel demo ──────────────────────────────────
 // Generates lightweight placeholder candidates to fill realistic funnel counts.
-// [firstName, lastName, gender]
-const _BULK_NAMES: [string, string, 'M'|'F'][] = [
-  ['Alexánder','Rincón','M'],   ['Luisa','Silva','F'],        ['Camilo','Pedraza','M'],    ['Daniela','Quiroga','F'],
-  ['Edgardo','Fuentes','M'],    ['Fernando','Cano','M'],      ['Gerardo','Pinto','M'],     ['Harold','Castro','M'],
-  ['Ignacio','Toro','M'],       ['Jorge','Melo','M'],         ['Kevin','Buitrago','M'],    ['Leonardo','Crespo','M'],
-  ['Manuel','Acosta','M'],      ['Norberto','Zapata','M'],    ['Marcela','Mora','F'],      ['Patricio','Jiménez','M'],
-  ['Sandra','Ospino','F'],      ['Rafael','Delgado','M'],     ['Saúl','Arango','M'],       ['Paola','Palomino','F'],
-  ['Ubaldo','Escobar','M'],     ['Víctor','Trujillo','M'],    ['William','Padilla','M'],   ['Yamid','Cifuentes','M'],
-  ['Zairo','Becerra','M'],      ['Álvaro','Quintana','M'],    ['Édgar','Solano','M'],      ['Félix','Mejías','M'],
-  ['Gonzalo','Vega','M'],       ['Carolina','Sandoval','F'],  ['Ismael','Restrepo','M'],   ['Javier','Guevara','M'],
-  ['Laureano','Navarro','M'],   ['Lorenzo','Pacheco','M'],    ['Misael','Oñate','M'],      ['Néstor','Ibáñez','M'],
-  ['Óscar','Aguilar','M'],      ['Pedro','Blanco','M'],       ['Rubén','Tafur','M'],       ['Simón','Camargo','M'],
-  ['Tomás','Alvarado','M'],     ['Uriel','Benítez','M'],      ['Walter','Romero','M'],     ['Yamil','Flórez','M'],
-  ['Abel','Murillo','M'],       ['Benito','Salazar','M'],     ['Celio','Torres','M'],      ['Dario','Peñaloza','M'],
-  ['Efraín','Londoño','M'],     ['Franklin','Ramírez','M'],   ['Gilberto','Villamizar','M'],['Hernando','Ávila','M'],
-  ['Iván','Guerrero','M'],      ['Julio','Holguín','M'],      ['Kléber','Fandiño','M'],    ['Lorenzo','Serrano','M'],
-  ['Valentina','Pinzón','F'],   ['Nomar','Gutiérrez','M'],    ['Octavio','Franco','M'],    ['Porfirio','Castaño','M'],
-  ['Rodolfo','Parra','M'],      ['Santiago','Peña','M'],      ['Tatiana','García','F'],    ['Uriel','Cárdenas','M'],
-  ['Valentín','Suárez','M'],    ['Wilson','Lozano','M'],      ['Xavier','Gil','M'],        ['Yonier','Rojas','M'],
-  ['Alfonso','Forero','M'],     ['Brayan','Muñoz','M'],       ['César','Vargas','M'],      ['Diana','Mendoza','F'],
-  ['Emilio','Morales','M'],     ['Fernando','Torres','M'],    ['Adriana','López','F'],     ['Hernán','Cruz','M'],
-  ['Natalia','Ramírez','F'],    ['Claudia','Herrera','F'],    ['Stephany','Ríos','F'],     ['Karen','Vargas','F'],
-  ['Lina','Martínez','F'],      ['Juliana','Castro','F'],     ['Andrea','Peña','F'],       ['Camila','Rojas','F'],
+const _BULK_NAMES: [string, string][] = [
+  ['Alexánder','Rincón'],['Bernardo','Silva'],['Camilo','Pedraza'],['Daniel','Quiroga'],
+  ['Edgardo','Fuentes'],['Fernando','Cano'],['Gerardo','Pinto'],['Harold','Castro'],
+  ['Ignacio','Toro'],['Jorge','Melo'],['Kevin','Buitrago'],['Leonardo','Crespo'],
+  ['Manuel','Acosta'],['Norberto','Zapata'],['Orlando','Mora'],['Patricio','Jiménez'],
+  ['Quintín','Ospino'],['Rafael','Delgado'],['Saúl','Arango'],['Teodoro','Palomino'],
+  ['Ubaldo','Escobar'],['Víctor','Trujillo'],['William','Padilla'],['Yamid','Cifuentes'],
+  ['Zairo','Becerra'],['Álvaro','Quintana'],['Édgar','Solano'],['Félix','Mejías'],
+  ['Gonzalo','Vega'],['Horacio','Sandoval'],['Ismael','Restrepo'],['Javier','Guevara'],
+  ['Laureano','Navarro'],['Lorenzo','Pacheco'],['Misael','Oñate'],['Néstor','Ibáñez'],
+  ['Óscar','Aguilar'],['Pedro','Blanco'],['Rubén','Tafur'],['Simón','Camargo'],
+  ['Tomás','Alvarado'],['Uriel','Benítez'],['Walter','Romero'],['Yamil','Flórez'],
+  ['Abel','Murillo'],['Benito','Salazar'],['Celio','Torres'],['Dario','Peñaloza'],
+  ['Efraín','Londoño'],['Franklin','Ramírez'],['Gilberto','Villamizar'],['Hernando','Ávila'],
+  ['Iván','Guerrero'],['Julio','Holguín'],['Kléber','Fandiño'],['Lorenzo','Serrano'],
+  ['Manuel','Pinzón'],['Nomar','Gutiérrez'],['Octavio','Franco'],['Porfirio','Castaño'],
+  ['Rodolfo','Parra'],['Santiago','Peña'],['Tadeo','García'],['Uriel','Cárdenas'],
+  ['Valentín','Suárez'],['Wilson','Lozano'],['Xavier','Gil'],['Yonier','Rojas'],
+  ['Alfonso','Forero'],['Brayan','Muñoz'],['César','Vargas'],['David','Mendoza'],
+  ['Emilio','Morales'],['Fernando','Torres'],['Guillermo','López'],['Hernán','Cruz'],
 ];
 const _BULK_COMPANIES = [
   'TCC S.A.','Coordinadora Mercantil','Servientrega','Deprisa','Envía Colvanes',
@@ -3276,7 +3273,7 @@ const _BULK_ROLES_PREV = [
 ];
 const _BULK_LOGROS = [
   ['Cero accidentes en 3 años consecutivos de operación','Reconocimiento por puntualidad en entregas'],
-  ['Más de 500 servicios completados sin novedad','Licencia C2 vigente sin infracciones'],
+  ['Más de 500 manifiestos completados sin novedad','Licencia C2 vigente sin infracciones'],
   ['Operación en zona AMVA y Bogotá D.C. sin incidentes','Conocimiento de rutas intermunicipales'],
   ['Manejo de mercancía perecedera y carga especial','Turno rotativo sin ausentismo en último año'],
   ['Capacitación en conducción defensiva certificada','Gestión de documentos de transporte sin errores'],
@@ -3388,9 +3385,8 @@ function _mkBulk(
   const hasPre = stage !== 'scoring';
   return Array.from({ length: count }, (_, i) => {
     const idx = startIdx + i;
-    const nameArr = _BULK_NAMES[idx % _BULK_NAMES.length] ?? ['Candidato','Demo','M'];
+    const nameArr = _BULK_NAMES[idx % _BULK_NAMES.length] ?? ['Candidato','Demo'];
     const name = `${nameArr[0]} ${nameArr[1]}`;
-    const isFemale = nameArr[2] === 'F';
     const score = Math.max(22, Math.min(97, scoreRange[0] + Math.round(Math.abs(Math.sin(idx * 4.7 + 2.3)) * (scoreRange[1] - scoreRange[0]))));
     const color = colors[idx % colors.length]!;
     const city  = cities[idx % cities.length]!;
@@ -3405,6 +3401,38 @@ function _mkBulk(
       score >= 68 ? 'continua' : score >= 45 ? 'pendiente' : 'rechazado';
     const logros  = _BULK_LOGROS[idx % _BULK_LOGROS.length] ?? [];
     const senales = score < 60 ? (_BULK_SIGNALS_NEG[idx % _BULK_SIGNALS_NEG.length] ?? []) : [];
+    const hasCV   = idx % 4 !== 0; // ~25% built via WhatsApp, no uploaded résumé
+
+    // ── Prescreening progress ──────────────────────────────────────────────
+    const _failReasons = [
+      'La experiencia en conducción C2 requerida no fue identificada en la HV.',
+      'La HV no acredita licencia de conducción categoría C2 vigente.',
+      'Los años de experiencia no alcanzan el mínimo requerido para el cargo.',
+      'La HV no refleja tiempo mínimo en el último cargo registrado.',
+    ];
+    const _rvStatus: ResumeValidationStatus =
+      !hasCV          ? 'not_available'
+      : preStatus === 'rechazado' ? (idx % 5 === 0 ? 'pending' : 'failed')
+      : preStatus === 'pendiente' ? (idx % 12 === 0 ? 'pending' : 'passed')
+      : 'passed';
+    const _matchedCriteria =
+      _rvStatus === 'passed' ? (preStatus === 'continua' ? 5 + (idx % 2) : 5)
+      : _rvStatus === 'failed' ? (1 + (idx % 3))
+      : undefined;
+    const _waStatus: WaPrescreeningStatus =
+      _rvStatus !== 'passed' ? 'not_started'
+      : preStatus === 'continua' ? 'completed'
+      : (idx % 8 === 0 ? 'not_started' : 'in_progress');
+    const _prescreeningProgress: PrescreeningProgress = {
+      resumeValidation: {
+        status: _rvStatus,
+        validatedAt: (_rvStatus === 'passed' || _rvStatus === 'failed') ? '2026-06-15' : undefined,
+        matchedCriteria: _matchedCriteria,
+        totalCriteria: _rvStatus !== 'not_available' ? 6 : undefined,
+        failReason: _rvStatus === 'failed' ? (_failReasons[idx % _failReasons.length] ?? _failReasons[0]) : undefined,
+      },
+      whatsappPrescreening: { status: _waStatus },
+    };
 
     return {
       id: `${prefix}-blk-${idx}`,
@@ -3413,11 +3441,9 @@ function _mkBulk(
       sector,
       years: `${yrs} Año${yrs !== 1 ? 's' : ''}`,
       location: `${city}, Colombia`,
-      bio: isFemale
-        ? `Conductora profesional con licencia C2/C3 vigente. ${yrs} años de experiencia conduciendo vehículos de carga y pasajeros, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`
-        : `Conductor profesional con licencia C2 vigente. ${yrs} años de experiencia en operación de vehículos de carga, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`,
+      bio: `Conductor profesional con licencia C2 vigente. ${yrs} años de experiencia en operación de vehículos de carga, incluyendo ${prevYrs} años en ${company} como ${prevRole}.`,
       score,
-      photo: _p(idx, isFemale ? 'women' : 'men'),
+      photo: _p(idx % 35, 'men'),
       avatarInitials: initials,
       avatarColor: color,
       hasCurrentJob: score >= 58,
@@ -3425,12 +3451,13 @@ function _mkBulk(
       currentRole:    score >= 58 ? prevRole : undefined,
       lastCompany:    score < 58 ? company : undefined,
       lastRole:       score < 58 ? prevRole : undefined,
-      superpoder: `"${yrs} años conduciendo ${isFemale ? 'bus zonal' : 'C2'} — cero incidentes"`,
+      superpoder: `"${yrs} años conduciendo C2 — cero incidentes"`,
       aspiration: salary,
       budget:     salary,
       salaryRange,
       currentStage: stage,
-      hasCV: idx % 4 !== 0, // ~25% perfil por WhatsApp
+      hasCV,
+      prescreeningProgress: _prescreeningProgress,
       // Prueba Psicométrica: 2 PRIMA permutations, applied for evaluaciones+ stages
       psychTest: (['evaluaciones','prueba_conocimiento','estudios','finalistas'] as PipelineStageKey[]).includes(stage)
         ? (idx % 2 === 0 ? _primaTranspA(name, score) : _primaTranspB(name, score))
@@ -3485,7 +3512,7 @@ function _mkBulk(
           { label: 'Años de exp.', value: `${yrs} años`, status: yrs >= 2 ? 'ok' : 'warning' },
         ],
         experienciaLaboral: [
-          { empresa: company, rol: prevRole, periodo: `${2026 - yrs} – Presente`, descripcion: `Operación de rutas de carga con ${company}. Más de ${yrs * 80} servicios completados.` },
+          { empresa: company, rol: prevRole, periodo: `${2026 - yrs} – Presente`, descripcion: `Operación de rutas de carga con ${company}. ${yrs * 80}+ manifiestos completados.` },
         ],
       } : undefined,
     };
@@ -3502,13 +3529,13 @@ function _mkBulk(
 // StartIdx blocks (non-overlapping): d=0..270, tp=500..772, vc=1000..1272
 
 // mock-distrib (detailed: pre=15, pm=15, eval=3, entrev=5)
-const distribBulkPre   = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','prescreening',        85,   0, [28,94]);
-const distribBulkPM    = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','prueba_manejo',        45,  85, [42,92]);
-const distribBulkEntrev= _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','entrevistas',          45, 130, [56,94]);
-const distribBulkEval  = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','evaluaciones',         32, 175, [58,93]);
-const distribBulkConoc = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','prueba_conocimiento',  28, 207, [62,93]);
-const distribBulkEstud = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','estudios',             20, 235, [65,94]);
-const distribBulkFinal = _mkBulk('d','Conductor/a Bus Zonal – Bogotá','Transporte Público / Bus Zonal','finalistas',           15, 255, [72,96]);
+const distribBulkPre   = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prescreening',        85,   0, [28,94]);
+const distribBulkPM    = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_manejo',        45,  85, [42,92]);
+const distribBulkEntrev= _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','entrevistas',          45, 130, [56,94]);
+const distribBulkEval  = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','evaluaciones',         32, 175, [58,93]);
+const distribBulkConoc = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','prueba_conocimiento',  28, 207, [62,93]);
+const distribBulkEstud = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','estudios',             20, 235, [65,94]);
+const distribBulkFinal = _mkBulk('d','Conductor C2 Distribución Urbana','Logística / Última Milla','finalistas',           15, 255, [72,96]);
 
 // mock-transp-pub (detailed: pre=15, pm=13, eval=3, entrev=5)
 const tpBulkPre    = _mkBulk('tp','Conductor C2 Transporte Público','Transporte Público','prescreening',       85, 500, [28,94]);
@@ -3601,8 +3628,8 @@ export const mockTechFeedback: Record<string, TechTestFeedback> = {
   'd-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buena orientación espacial y conocimiento de rutas en zona sur. Manejo correcto del proceso de liquidación de guías al final del turno. Disposición para el trabajo físico de cargue y descargue sin reservas.', senalAlerta: 'Menor fluidez en el manejo del caso de reclamación en destino; reforzar protocolo de atención al receptor en la inducción.', recomendacion: 'avanzar_reservas', files: [] },
   // Carga Refrigerada (Vigía) — Prueba técnica: simulación de ruta intermunicipal con cadena de frío
   'v-e1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 5 }, destacados: 'Identificó correctamente la alarma de temperatura del termógrafo en el caso simulado y siguió el protocolo: parada, verificación de la unidad refrigerante, contacto con despacho y registro en bitácora. Conocimiento preciso de la ruta Bogotá–Cali con puntos de control de temperatura en Buga y Palmira.', senalAlerta: 'El tiempo de decisión ante la alarma fue correcto pero podría ser más rápido; practicar protocolo hasta hacerlo automático.', recomendacion: 'avanzar', files: [] },
-  'v-e2': { ratings: { dominio: 5, resolucion: 4, calidad: 5, comunicacion: 4, iniciativa: 4 }, destacados: 'Muy buen dominio del proceso de precooling del furgón antes de cargue. Resolvió el caso de fallo de la unidad refrigerante en ruta con decisión correcta (estación de servicio certificada más cercana). Registro de despachos sin errores en la simulación.', senalAlerta: 'La comunicación con el cliente receptor en el caso de retraso fue básica; reforzar el protocolo de notificación proactiva.', recomendacion: 'avanzar', files: [] },
-  'v-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buen conocimiento de la cadena de frío para alimentos perecederos. Manejo correcto del proceso de entrega con verificación de temperatura en recepción y firma de remisión refrigerada. Conoce las diferencias de manejo entre NPR con motor auxiliar y sin motor auxiliar.', senalAlerta: 'El caso de documentación de novedad en despacho fue menos ágil; reforzar el proceso de registro digital durante la inducción.', recomendacion: 'avanzar_reservas', files: [] },
+  'v-e2': { ratings: { dominio: 5, resolucion: 4, calidad: 5, comunicacion: 4, iniciativa: 4 }, destacados: 'Muy buen dominio del proceso de precooling del furgón antes de cargue. Resolvió el caso de fallo de la unidad refrigerante en ruta con decisión correcta (estación de servicio certificada más cercana). Registro en RNDC sin errores en la simulación.', senalAlerta: 'La comunicación con el cliente receptor en el caso de retraso fue básica; reforzar el protocolo de notificación proactiva.', recomendacion: 'avanzar', files: [] },
+  'v-e3': { ratings: { dominio: 4, resolucion: 4, calidad: 4, comunicacion: 4, iniciativa: 4 }, destacados: 'Buen conocimiento de la cadena de frío para alimentos perecederos. Manejo correcto del proceso de entrega con verificación de temperatura en recepción y firma de remisión refrigerada. Conoce las diferencias de manejo entre NPR con motor auxiliar y sin motor auxiliar.', senalAlerta: 'El caso de documentación de novedad en RNDC fue menos ágil; reforzar el proceso de registro digital durante la inducción.', recomendacion: 'avanzar_reservas', files: [] },
   // Finanzas: 3 de 6 respondieron la prueba técnica
   'mfin-1': { ratings: { dominio: 5, resolucion: 5, calidad: 5, comunicacion: 4, iniciativa: 4 }, destacados: 'Dominio profundo de análisis financiero y costeo industrial. Resolvió el caso de presupuesto con precisión metodológica, identificando desviaciones clave y proponiendo acciones correctivas concretas con sustento cuantitativo.', senalAlerta: 'El análisis de escenarios fue conservador; en situaciones de alta incertidumbre podría limitarse a lo conocido.', recomendacion: 'avanzar', files: [] },
   'mfin-2': { ratings: { dominio: 5, resolucion: 4, calidad: 5, comunicacion: 5, iniciativa: 4 }, destacados: 'Solución financiera muy bien estructurada con foco en eficiencia operativa. Identificó con precisión los centros de costo con mayor desviación y propuso reducciones con fundamento técnico claro.', senalAlerta: 'La presentación del caso tomó más tiempo del estipulado; reforzar agilidad bajo presión de tiempo.', recomendacion: 'avanzar', files: [] },

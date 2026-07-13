@@ -32,7 +32,10 @@ type StageFilter =
   // estudios validaciones
   | 'val_sin_iniciar' | 'val_en_progreso' | 'val_completo'
   // finalistas docs
-  | 'docs_sin_solicitar' | 'docs_solicitado' | 'docs_recibido' | 'docs_contratado';
+  | 'docs_sin_solicitar' | 'docs_solicitado' | 'docs_recibido' | 'docs_contratado'
+  // prescreening — resume validation + WA prescreening
+  | 'resume_passed' | 'resume_pending' | 'resume_failed' | 'resume_not_available'
+  | 'wa_completed' | 'wa_in_progress';
 
 // Estado dropdown — global candidate status filter
 type StatusFilter = 'all' | 'visitado' | 'no_revisado' | 'continua' | 'rechazados' | 'no_validado';
@@ -71,9 +74,19 @@ const RESULT_DOCS: ResultOption[] = [
   { value: 'docs_contratado',     label: 'Contratados' },
 ];
 
+const RESULT_PRESCREENING: ResultOption[] = [
+  { value: 'todos',                label: 'Todos' },
+  { value: 'resume_passed',        label: 'HV cumple requisitos' },
+  { value: 'resume_pending',       label: 'HV en revisión' },
+  { value: 'resume_failed',        label: 'HV no cumple requisitos' },
+  { value: 'resume_not_available', label: 'Sin hoja de vida' },
+  { value: 'wa_completed',         label: 'Pre-entrevista completada' },
+  { value: 'wa_in_progress',       label: 'Pre-entrevista en progreso' },
+];
+
 const RESULT_OPTIONS_BY_STAGE: Record<string, ResultOption[]> = {
   scoring:       RESULT_SCORING,
-  prescreening:  RESULT_SCORING,
+  prescreening:  RESULT_PRESCREENING,
   prueba_manejo: RESULT_SCORING,
   evaluaciones:  RESULT_SCORING,
   entrevistas:   RESULT_ENTREVISTAS,
@@ -86,8 +99,14 @@ type ChipDef = { id: StageFilter; label: string };
 const SCORING_CHIPS: ChipDef[] = [
   { id: 'todos', label: 'Todos' }, { id: 'high', label: 'Alto' }, { id: 'mid', label: 'Medio' }, { id: 'low', label: 'Bajo' },
 ];
+const PRESCREENING_CHIPS: ChipDef[] = [
+  { id: 'todos', label: '' }, { id: 'resume_passed', label: '' }, { id: 'resume_pending', label: '' },
+  { id: 'resume_failed', label: '' }, { id: 'resume_not_available', label: '' },
+  { id: 'wa_completed', label: '' }, { id: 'wa_in_progress', label: '' },
+];
+
 const STAGE_CHIPS: Record<string, ChipDef[]> = {
-  scoring: SCORING_CHIPS, prescreening: SCORING_CHIPS, prueba_manejo: SCORING_CHIPS, evaluaciones: SCORING_CHIPS, prueba_conocimiento: SCORING_CHIPS,
+  scoring: SCORING_CHIPS, prescreening: PRESCREENING_CHIPS, prueba_manejo: SCORING_CHIPS, evaluaciones: SCORING_CHIPS, prueba_conocimiento: SCORING_CHIPS,
   entrevistas: [{ id: 'todos', label: '' }, { id: 'apto', label: '' }, { id: 'apto_reservas', label: '' }, { id: 'no_apto', label: '' }],
   estudios: [{ id: 'todos', label: '' }, { id: 'val_sin_iniciar', label: '' }, { id: 'val_en_progreso', label: '' }, { id: 'val_completo', label: '' }],
   finalistas: [{ id: 'todos', label: '' }, { id: 'docs_sin_solicitar', label: '' }, { id: 'docs_solicitado', label: '' }, { id: 'docs_recibido', label: '' }, { id: 'docs_contratado', label: '' }],
@@ -319,6 +338,13 @@ export default function CandidateList() {
       case 'docs_solicitado':    list = list.filter((c) => getDocsStatusKey(c.id) === 'docs_solicitado'); break;
       case 'docs_recibido':      list = list.filter((c) => getDocsStatusKey(c.id) === 'docs_recibido'); break;
       case 'docs_contratado':    list = list.filter((c) => isContratado(c.id)); break;
+      // prescreening — resume validation
+      case 'resume_passed':        list = list.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'passed'); break;
+      case 'resume_pending':       list = list.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'pending'); break;
+      case 'resume_failed':        list = list.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'failed'); break;
+      case 'resume_not_available': list = list.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'not_available'); break;
+      case 'wa_completed':         list = list.filter((c) => c.prescreeningProgress?.whatsappPrescreening.status === 'completed'); break;
+      case 'wa_in_progress':       list = list.filter((c) => c.prescreeningProgress?.whatsappPrescreening.status === 'in_progress'); break;
     }
 
     // ── Estado filter ─────────────────────────────────────────────────────────
@@ -390,6 +416,17 @@ export default function CandidateList() {
         apto:          sc(candidates.filter((c) => c.veredictoEntrevista === 'apto').length),
         apto_reservas: sc(candidates.filter((c) => c.veredictoEntrevista === 'apto_reservas').length),
         no_apto:       sc(candidates.filter((c) => c.veredictoEntrevista === 'no_apto').length),
+      };
+    }
+    if (currentStage === 'prescreening') {
+      return {
+        todos:                total,
+        resume_passed:        sc(candidates.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'passed').length),
+        resume_pending:       sc(candidates.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'pending').length),
+        resume_failed:        sc(candidates.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'failed').length),
+        resume_not_available: sc(candidates.filter((c) => c.prescreeningProgress?.resumeValidation.status === 'not_available').length),
+        wa_completed:         sc(candidates.filter((c) => c.prescreeningProgress?.whatsappPrescreening.status === 'completed').length),
+        wa_in_progress:       sc(candidates.filter((c) => c.prescreeningProgress?.whatsappPrescreening.status === 'in_progress').length),
       };
     }
     if (currentStage === 'estudios') {
