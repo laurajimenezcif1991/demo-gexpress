@@ -76,10 +76,9 @@ const RESULT_DOCS: ResultOption[] = [
 
 const RESULT_PRESCREENING: ResultOption[] = [
   { value: 'todos',                label: 'Todos' },
-  { value: 'resume_passed',        label: 'HV cumple requisitos' },
-  { value: 'resume_pending',       label: 'HV en revisión' },
-  { value: 'resume_failed',        label: 'HV no cumple requisitos' },
-  { value: 'resume_not_available', label: 'Sin hoja de vida' },
+  { value: 'resume_passed',        label: 'HV Cumple' },
+  { value: 'resume_pending',       label: 'HV en validación' },
+  { value: 'resume_failed',        label: 'HV No cumple' },
   { value: 'wa_completed',         label: 'Pre-entrevista completada' },
   { value: 'wa_in_progress',       label: 'Pre-entrevista en progreso' },
 ];

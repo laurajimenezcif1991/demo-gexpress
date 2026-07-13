@@ -3,9 +3,8 @@ import { type CandidateStatus } from '../../context/CandidateStatusContext';
 import Avatar from './Avatar';
 import { getScoreColors } from './ScorePill';
 import Badge from './Badge';
-import PrescreeningProgressComponent from './PrescreeningProgress';
 import { useState } from 'react';
-import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle, FileText, Send, FolderCheck, Eye, EyeOff, CalendarDays } from 'lucide-react';
+import { MapPin, Clock, HelpCircle, CheckCircle2, XCircle, CheckCheck, AlertTriangle, Circle, FileText, Send, FolderCheck, Eye, EyeOff, CalendarDays, Check } from 'lucide-react';
 
 const VEREDICTO_CONFIG = {
   apto:          { label: 'Apto',                icon: <CheckCheck size={12} />,     color: '#15803d', bg: '#dcfce7', border: '#86efac' },
@@ -107,7 +106,11 @@ const gradientBorderBg = (innerColor: string) =>
 
 export default function CandidateCard({ candidate, statusLabel, selected, onSelect, onClick, showStageChip = true, isPending = false, viewStage, appliedDate, isVisited, isContratado = false }: CandidateCardProps & { isContratado?: boolean }) {
   const { bg: scoreBg, fg: scoreFg } = getScoreColors(candidate.score);
-  const isNoRealizada = candidate.prescreeningAI?.status === 'no_realizada';
+  // Show "--" when WA prescreening is not yet completed (prescreening stage) or AI interview not done
+  const _prescStage = viewStage ?? candidate.currentStage;
+  const _waIncomplete = _prescStage === 'prescreening'
+    && candidate.prescreeningProgress?.whatsappPrescreening.status !== 'completed';
+  const isNoRealizada = candidate.prescreeningAI?.status === 'no_realizada' || _waIncomplete;
   const [hovered, setHovered] = useState(false);
   const showGradient = hovered || !!selected;
   const innerBg = selected ? 'var(--color-secondary-50)' : '#ffffff';
@@ -245,6 +248,35 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
               {candidate.location}
             </span>
           )}
+          {/* Prescreening: HV validation badge + WA status icon inline with location */}
+          {(viewStage ?? candidate.currentStage) === 'prescreening' && candidate.prescreeningProgress && (() => {
+            const rv = candidate.prescreeningProgress.resumeValidation;
+            const wa = candidate.prescreeningProgress.whatsappPrescreening;
+            const rvLabel = rv.status === 'passed' ? 'HV Cumple' : rv.status === 'failed' ? 'HV No cumple' : 'HV en validación';
+            const rvColor = rv.status === 'passed' ? '#15803d' : rv.status === 'failed' ? '#b91c1c' : '#d97706';
+            const rvBg    = rv.status === 'passed' ? '#f0fdf4'  : rv.status === 'failed' ? '#fef2f2'  : '#fffbeb';
+            const rvBorder= rv.status === 'passed' ? '#86efac'  : rv.status === 'failed' ? '#fca5a5'  : '#fcd34d';
+            const rvIcon  = rv.status === 'passed' ? <CheckCircle2 size={10} /> : rv.status === 'failed' ? <XCircle size={10} /> : <Clock size={10} />;
+            const waColor = wa.status === 'completed' ? '#15803d' : '#9ca3af';
+            const waIcon  = wa.status === 'completed' ? <CheckCheck size={12} color={waColor} /> : <Check size={12} color={waColor} />;
+            return (
+              <>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '3px',
+                  fontSize: '11px', fontWeight: 700, color: rvColor,
+                  background: rvBg, border: `1px solid ${rvBorder}`,
+                  borderRadius: '20px', padding: '2px 8px',
+                  fontFamily: 'var(--font-display)',
+                }}>
+                  {rvIcon}
+                  {rvLabel}
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  {waIcon}
+                </span>
+              </>
+            );
+          })()}
           {(viewStage ?? candidate.currentStage) === 'prueba_manejo' && (() => {
             const key = getManejoResult(candidate.score);
             const m = MANEJO_RESULT_CONFIG[key];
@@ -463,15 +495,7 @@ export default function CandidateCard({ candidate, statusLabel, selected, onSele
             </span>
           </div>
         );
-      })() : (viewStage ?? candidate.currentStage) === 'prescreening' ? (
-        candidate.prescreeningProgress ? (
-          <PrescreeningProgressComponent
-            resumeValidation={candidate.prescreeningProgress.resumeValidation}
-            whatsappPrescreening={candidate.prescreeningProgress.whatsappPrescreening}
-            variant="card"
-          />
-        ) : null
-      ) : (viewStage ?? candidate.currentStage) !== 'entrevistas' || !candidate.veredictoEntrevista ? (
+      })() : (viewStage ?? candidate.currentStage) !== 'entrevistas' || !candidate.veredictoEntrevista ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
           <span style={{ fontSize: '10px', color: 'var(--color-text-muted)', fontWeight: 600 }}>Total</span>
           <div
