@@ -1654,6 +1654,49 @@ function PrescreeningContent({ prescreening, hasCV, runt, candidateScore = 0, is
             </div>
           ))}
 
+          {/* RUNT row — sin manifiestos para CEX */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 120px',
+              borderBottom: '1px solid #d4d4d5',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ padding: '14px 24px', fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '13px', lineHeight: '21px', color: runt ? '#363539' : '#9ca3af' }}>
+              {runt ? (
+                <>
+                  <div style={{ marginBottom: '6px' }}>Validación RUNT verificada sin infracciones graves ni suspensiones vigentes.</div>
+                  <button
+                    onClick={() => setRuntModalOpen(true)}
+                    style={{
+                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px',
+                      color: 'var(--color-brand-accent)', textDecoration: 'underline',
+                    }}
+                  >
+                    Consultar RUNT
+                  </button>
+                </>
+              ) : (
+                <span>Validación RUNT no verificada — candidato no cumplió criterios previos.</span>
+              )}
+            </div>
+            <div style={{ padding: '14px 16px', borderLeft: '1px solid #d4d4d5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', alignSelf: 'stretch' }}>
+              {runt ? (
+                <>
+                  <CheckCircle2 size={15} color="#15803d" />
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#15803d' }}>Cumple</span>
+                </>
+              ) : (
+                <>
+                  <MinusCircle size={15} color="#9ca3af" />
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '13px', color: '#9ca3af' }}>Sin Validar</span>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* Antecedentes row */}
           <div
             style={{
