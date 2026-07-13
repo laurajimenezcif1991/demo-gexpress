@@ -20,8 +20,8 @@ const RV_CONFIG: Record<ResumeValidationStatus, {
   explanation: string;
 }> = {
   passed: {
-    label: 'HV cumple requisitos',
-    shortLabel: 'HV cumple',
+    label: 'HV Cumple',
+    shortLabel: 'HV Cumple',
     color: '#15803d',
     bg: '#f0fdf4',
     border: '#86efac',
@@ -29,8 +29,8 @@ const RV_CONFIG: Record<ResumeValidationStatus, {
     explanation: 'La hoja de vida cumple los requisitos básicos del cargo.',
   },
   failed: {
-    label: 'HV no cumple requisitos',
-    shortLabel: 'HV no cumple',
+    label: 'HV No cumple',
+    shortLabel: 'HV No cumple',
     color: '#b91c1c',
     bg: '#fef2f2',
     border: '#fca5a5',
@@ -38,8 +38,8 @@ const RV_CONFIG: Record<ResumeValidationStatus, {
     explanation: 'La hoja de vida no cumple los requisitos básicos del cargo.',
   },
   pending: {
-    label: 'Revisando HV',
-    shortLabel: 'En revisión',
+    label: 'HV en validación',
+    shortLabel: 'HV en validación',
     color: '#d97706',
     bg: '#fffbeb',
     border: '#fcd34d',
@@ -47,13 +47,13 @@ const RV_CONFIG: Record<ResumeValidationStatus, {
     explanation: 'La hoja de vida está siendo revisada contra los requisitos del cargo.',
   },
   not_available: {
-    label: 'Sin hoja de vida',
-    shortLabel: 'Sin HV',
-    color: '#6b7280',
-    bg: '#f9fafb',
-    border: '#d1d5db',
-    icon: <FileX size={13} color="#6b7280" />,
-    explanation: 'El candidato no ha cargado una hoja de vida. Es requerida para iniciar la validación.',
+    label: 'HV en validación',
+    shortLabel: 'HV en validación',
+    color: '#d97706',
+    bg: '#fffbeb',
+    border: '#fcd34d',
+    icon: <Loader2 size={13} color="#d97706" />,
+    explanation: 'La hoja de vida está siendo procesada para iniciar la validación.',
   },
 };
 
@@ -76,14 +76,14 @@ const WA_CONFIG: Record<WaPrescreeningStatus, {
     label: 'Pre-entrevista en progreso',
     shortLabel: 'En progreso',
     color: '#d97706',
-    icon: <Loader2 size={13} color="#d97706" />,
+    icon: <CheckCheck size={13} color="#9ca3af" />,
     explanation: () => 'El candidato está completando la pre-entrevista por WhatsApp.',
   },
   not_started: {
-    label: 'Pre-entrevista no iniciada',
-    shortLabel: 'No iniciada',
+    label: 'Pre-entrevista pendiente',
+    shortLabel: 'Pendiente',
     color: '#9ca3af',
-    icon: <MessageCircle size={13} color="#9ca3af" />,
+    icon: <CheckCheck size={13} color="#d1d5db" />,
     explanation: (rv) =>
       rv !== 'passed'
         ? 'La pre-entrevista inicia automáticamente una vez que la HV pase la validación.'
@@ -204,8 +204,10 @@ function OnePagerVariant({ resumeValidation: rv, whatsappPrescreening: wa }: Omi
               {rv.status === 'failed' && rv.failReason ? rv.failReason : rvCfg.explanation}
             </p>
             {rv.matchedCriteria !== undefined && rv.totalCriteria !== undefined && (
-              <p style={{ margin: '0 0 2px', fontSize: '11px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
-                {rv.matchedCriteria} de {rv.totalCriteria} criterios básicos validados
+              <p style={{ margin: '0 0 2px', fontSize: '11px', color: rv.status === 'failed' ? '#b91c1c' : 'var(--color-text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
+                {rv.status === 'failed'
+                  ? `No cumple ${rv.totalCriteria - rv.matchedCriteria} de ${rv.totalCriteria} criterios no negociables`
+                  : `${rv.matchedCriteria} de ${rv.totalCriteria} criterios básicos validados`}
                 {rv.validatedAt ? ` · ${new Date(rv.validatedAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}` : ''}
               </p>
             )}
